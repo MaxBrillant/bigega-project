@@ -1,0 +1,44 @@
+// Import necessary types and functions
+import { NextRequest, NextResponse } from "next/server";
+import fetch from "node-fetch";
+
+const token = process.env.WHAPI_TOKEN;
+export async function POST(request: NextRequest) {
+  const body = await request.json();
+  const campaignTitle: string = body.title;
+  const campaignLink: string = body.link;
+  const organizerWhatsappNumber: string = body.organizer_whatsapp_number;
+  const groupId: string = body.group_id;
+
+  const options = {
+    method: "POST",
+    headers: {
+      accept: "application/json",
+      "content-type": "application/json",
+      authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      to: groupId,
+      media:
+        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdWRtZGhwazBhZzY2ZTh1dWxuYW5ram83MWJlNjY0MmJqem04NW9iZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/XD9o33QG9BoMis7iM4/giphy.mp4",
+      autoplay: true,
+      caption: `Hello everyone, @${organizerWhatsappNumber}  has just created a new campaign named "${campaignTitle}".
+Make a donation here: ${campaignLink} and support the cause.
+We will be sending continuous updates and notifications here when donations are received.`,
+    }),
+  };
+
+  await fetch("https://gate.whapi.cloud/messages/gif", options)
+    .then((response) =>
+      response.json().then((data: any) => {
+        if (data.error) {
+          console.error("Error trying to send the whatsapp message.");
+        }
+      })
+    )
+    .catch((err) => {
+      console.error(err);
+    });
+
+  return new NextResponse();
+}
