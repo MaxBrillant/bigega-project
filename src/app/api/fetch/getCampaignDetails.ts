@@ -28,9 +28,6 @@ type returnedType = [
     lumicash_number: string | undefined;
     ecocash_number: string | undefined;
     // mtn_momo_number: string | undefined;
-    whatsapp_group_id: string;
-    whatsapp_group_link: string;
-    language_of_communication: "en" | "fr" | "bi" | "rw";
     organizers: {
       full_name: string;
     };
@@ -60,9 +57,6 @@ type campaignType = {
   lumicashNumber: string | undefined;
   ecocashNumber: string | undefined;
   //   mtnMomoNumber: string | undefined;
-  whatsappGroupId: string;
-  whatsappGroupLink: string;
-  languageOfCommunication: "en" | "fr" | "bi" | "rw";
   organizerName: string;
 };
 
@@ -109,9 +103,6 @@ export async function GetCampaignDetails(campaignId: number) {
     numberOfDonations: data[0].number_of_donations,
     lumicashNumber: data[0].lumicash_number,
     ecocashNumber: data[0].ecocash_number,
-    whatsappGroupId: data[0].whatsapp_group_id,
-    whatsappGroupLink: data[0].whatsapp_group_link,
-    languageOfCommunication: data[0].language_of_communication,
     organizerName: data[0].organizers.full_name,
   } as campaignType;
 }

@@ -1,0 +1,118 @@
+"use server";
+
+import { supabase } from "@/app/supabaseClient";
+import { DonationSchema } from "@/app/validation/donationFormValidation";
+import { headers } from "next/headers";
+import fetch from "node-fetch";
+
+type props = {
+  campaignId: number;
+  amount: number;
+  lumicashNumber: string | undefined;
+  ecocashNumber: string | undefined;
+  donorName: string;
+  isDonorAnonymous: boolean;
+};
+type returnedData = [
+  {
+    id: number;
+  }
+];
+export async function InitiateDonation(formData: props) {
+  try {
+    DonationSchema.parse({
+      amount: formData.amount,
+      lumicashNumber: formData.lumicashNumber,
+      ecocashNumber: formData.ecocashNumber,
+      donorName: formData.donorName,
+      isDonorAnonymous: formData.isDonorAnonymous,
+    });
+
+    const { data, error } = await supabase
+      .from("donations")
+      .insert({
+        campaign_id: formData.campaignId,
+        donor_name: formData.donorName,
+        is_donor_anonymous: formData.isDonorAnonymous,
+        amount: formData.amount,
+        payment_method:
+          formData.ecocashNumber != undefined
+            ? "ecocash"
+            : formData.lumicashNumber != undefined
+            ? "lumicash"
+            : null,
+        currency: "BIF",
+        reference: "No reference",
+      })
+      .select()
+      .limit(1)
+      .returns<returnedData>();
+
+    if (error) {
+      throw new Error(
+        `Error while initiating a donation from "${formData.donorName}": The error is: "${error.message}"`
+      );
+    }
+    console.log(
+      `A new donation of ID: "${data[0].id}" from donor: "${formData.donorName}" has been successfully initiated`
+    );
+
+    const paymentData = await initiatePayment({
+      donationId: String(data[0].id),
+      amount: formData.amount,
+      paymentMethod:
+        formData.ecocashNumber != undefined ? "ECOCASH" : "LUMICASH",
+      phoneNumber:
+        formData.ecocashNumber != undefined
+          ? (formData.ecocashNumber as string)
+          : (formData.lumicashNumber as string),
+    });
+    return paymentData;
+  } catch (error) {
+    throw new Error(
+      `Error while initiating a donation from "${formData.donorName}": The error is: "${error}"`
+    );
+  }
+}
+
+type paymentProps = {
+  donationId: string;
+  amount: number;
+  paymentMethod: "ECOCASH" | "LUMICASH";
+  phoneNumber: string;
+};
+async function initiatePayment(payment: paymentProps) {
+  const headerList = headers();
+  const pathname = headerList.get("x-pathname");
+  const origin = new URL(pathname as string).origin;
+
+  const options = {
+    method: "POST",
+    headers: {
+      accept: "application/json",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      donation_id: payment.donationId,
+      phone_number: payment.phoneNumber,
+      payment_method: payment.paymentMethod,
+      amount: payment.amount,
+    }),
+  };
+
+  const paymentData = await fetch(origin + "/api/payment/afripay", options)
+    .then((response) => {
+      if (response.ok) {
+        response.json().then((data: any) => {
+          return data;
+        });
+      } else {
+        throw new Error("Error trying to initiate payment");
+      }
+    })
+    .catch((err) => {
+      throw new Error("Error trying to initiate payment. The error is: " + err);
+    });
+
+  return paymentData;
+}

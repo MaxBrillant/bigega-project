@@ -110,7 +110,7 @@ export async function CreateCampaign(formData: props) {
     console.log(
       `The campaign of title: "${formData.title}" and ID: "${data[0].id}" has been successfully created`
     );
-    sendCampaignCreationMessages({
+    await sendCampaignCreationMessages({
       campaignId: data[0].id,
       campaignTitle: formData.title,
       whatsappGroupId: formData.whatsappGroupId,

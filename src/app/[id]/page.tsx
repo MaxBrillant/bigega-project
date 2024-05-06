@@ -37,9 +37,6 @@ export default async function Main({ params }: { params: { id: string } }) {
         title={data.title}
         lumicashNumber={data.lumicashNumber}
         ecocashNumber={data.ecocashNumber}
-        whatsappGroupId={data.whatsappGroupId}
-        whatsappGroupLink={data.whatsappGroupLink}
-        languageOfCommunication={data.languageOfCommunication}
       />
       <div>
         <p>Organizer</p>
