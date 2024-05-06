@@ -24,7 +24,7 @@ export const DonationSchema = z
       .optional(),
 
     donorName: z.string().min(5, { message: "Write your full name" }),
-    isDonorAnonimous: z.boolean(),
+    isDonorAnonymous: z.boolean(),
   })
   .refine(
     (data) => {

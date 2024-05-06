@@ -7,15 +7,14 @@ import { DonationSchema } from "../validation/donationFormValidation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { InitiateDonation } from "../api/mutations/initiateDonation";
+import { useToast } from "@/components/ui/use-toast";
 
 type props = {
   id: number;
   title: string;
   lumicashNumber: string | undefined;
   ecocashNumber: string | undefined;
-  whatsappGroupId: string;
-  whatsappGroupLink: string;
-  languageOfCommunication: "en" | "fr" | "bi" | "rw";
 };
 type formSchemaType = z.infer<typeof DonationSchema>;
 export default function PaymentForm(form: props) {
@@ -34,10 +33,34 @@ export default function PaymentForm(form: props) {
   >();
 
   const listOfErrors = Object.values(errors).map((error) => error);
-  const onSubmit = (data: formSchemaType) => {
-    console.log(data);
+
+  const { toast } = useToast();
+
+  const onSubmit = async (data: formSchemaType) => {
+    try {
+      const paymentData = await InitiateDonation({
+        campaignId: form.id,
+        amount: data.amount,
+        ecocashNumber: data.ecocashNumber,
+        lumicashNumber: data.lumicashNumber,
+        donorName: data.donorName,
+        isDonorAnonymous: data.isDonorAnonymous,
+      });
+      console.log(paymentData);
+
+      toast({
+        variant: "default",
+        title: `${paymentData}`,
+        duration: 3000,
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: `${error}`,
+        duration: 7000,
+      });
+    }
   };
-  console.log(form.ecocashNumber);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
@@ -148,7 +171,7 @@ export default function PaymentForm(form: props) {
       <div>
         <p>Full name</p>
         <Input {...register("donorName")} placeholder="Jacques Niyongabo" />
-        <input {...register("isDonorAnonimous")} type="checkbox" id="hide" />
+        <input {...register("isDonorAnonymous")} type="checkbox" id="hide" />
         <label htmlFor="hide">
           Hide my name (only organizers will be able to see your name)
         </label>
