@@ -170,27 +170,27 @@ async function sendCampaignCreationMessages(message: messageProps) {
   const pathname = headerList.get("x-pathname");
   const origin = new URL(pathname as string).origin;
   const id = message.campaignId;
+  const link = "https://www.bigega.com/" + id;
 
   await fetch(origin + "/api/whatsapp/send-welcome-message", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       title: message.campaignTitle,
-      link: "https://www.bigega.com/" + id,
+      link: link,
       name: message.organizerName,
       recipient_number: message.organizerWhatsappNumber,
     }),
-  }).then(
-    async () =>
-      await fetch(origin + "/api/whatsapp/groups/send-opening-message", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: message.campaignTitle,
-          link: "https://www.bigega.com/" + id,
-          organizer_whatsapp_number: message.organizerWhatsappNumber,
-          group_id: message.whatsappGroupId,
-        }),
-      })
-  );
+  });
+
+  await fetch(origin + "/api/whatsapp/groups/send-opening-message", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      title: message.campaignTitle,
+      link: link,
+      organizer_whatsapp_number: message.organizerWhatsappNumber,
+      group_id: message.whatsappGroupId,
+    }),
+  });
 }
