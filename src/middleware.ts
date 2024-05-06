@@ -15,5 +15,5 @@ export async function middleware(req: NextRequest) {
 
 // Ensure the middleware is only called for relevant paths.
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)", "/start", "/[id]"],
 };
