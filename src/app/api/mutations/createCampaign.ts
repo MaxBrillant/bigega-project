@@ -168,7 +168,7 @@ type messageProps = {
 async function sendCampaignCreationMessages(message: messageProps) {
   const headerList = headers();
   const pathname = headerList.get("x-pathname");
-  const origin = new URL(pathname as string).origin;
+  const origin = new URL(pathname as string).origin.replaceAll("https", "http");
   const id = message.campaignId;
   const link = "https://www.bigega.com/" + id;
 

@@ -9,7 +9,6 @@ export default async function Main({ params }: { params: { id: string } }) {
   }
   const data = await GetCampaignDetails(Number(params.id));
 
-  console.log(data);
   return (
     <div className="px-5">
       <Image src={"/love.png"} width={150} height={150} alt="love"></Image>
