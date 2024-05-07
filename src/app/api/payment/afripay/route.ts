@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 import FormData from "form-data";
+import { stringify } from "flatted";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -52,7 +53,7 @@ export async function POST(request: NextRequest) {
     });
 
   return new NextResponse(
-    JSON.stringify({
+    stringify({
       data,
     })
   );
