@@ -67,7 +67,8 @@ export async function InitiateDonation(formData: props) {
           ? (formData.ecocashNumber as string)
           : (formData.lumicashNumber as string),
     });
-    return paymentData;
+    console.log(paymentData);
+    return "success";
   } catch (error) {
     throw new Error(
       `Error while initiating a donation from "${formData.donorName}": The error is: "${error}"`

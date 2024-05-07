@@ -47,7 +47,6 @@ export async function POST(request: NextRequest) {
         `Error trying to process the transaction. The error is: ${err}`
       );
     });
-
   return new NextResponse(
     JSON.stringify({
       data,
