@@ -51,9 +51,5 @@ export async function POST(request: NextRequest) {
       );
     });
 
-  return new NextResponse(
-    JSON.stringify({
-      data: data,
-    })
-  );
+  return new NextResponse(`${data}`);
 }
