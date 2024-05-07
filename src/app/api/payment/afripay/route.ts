@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 import FormData from "form-data";
+import { stringify } from "flatted";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -41,14 +42,18 @@ export async function POST(request: NextRequest) {
 
   const data = await axios
     .post("https://www.api.afripay.africa", formData, { headers: headers })
-    .then((response) => response.data.replaceAll("}{", "}','{"))
+    .then((data) => {
+      console.log(data);
+      return data;
+    })
     .catch((err) => {
       throw new Error(
         `Error trying to process the transaction. The error is: ${err}`
       );
     });
+
   return new NextResponse(
-    JSON.stringify({
+    stringify({
       data,
     })
   );
