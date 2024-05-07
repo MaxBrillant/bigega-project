@@ -40,13 +40,17 @@ export default function WhatsappGroupDetailsForm(form: props) {
     }));
 
     if (!isDialogOpen) {
-      const response = await fetch("/api/whatsapp/groups/accept-invite", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          invite_code: data.whatsappGroupLink.split("/").pop(),
-        }),
-      });
+      const response = await fetch(
+        location.origin.replaceAll("https", "http") +
+          "/api/whatsapp/groups/accept-invite",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            invite_code: data.whatsappGroupLink.split("/").pop(),
+          }),
+        }
+      );
       if (response.status !== 200) {
         toast({
           variant: "destructive",

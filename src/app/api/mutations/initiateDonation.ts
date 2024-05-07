@@ -84,7 +84,7 @@ type paymentProps = {
 async function initiatePayment(payment: paymentProps) {
   const headerList = headers();
   const pathname = headerList.get("x-pathname");
-  const origin = new URL(pathname as string).origin;
+  const origin = new URL(pathname as string).origin.replaceAll("https", "http");
 
   const options = {
     method: "POST",
@@ -107,7 +107,7 @@ async function initiatePayment(payment: paymentProps) {
           return data;
         });
       } else {
-        throw new Error("Error trying to initiate payment");
+        throw new Error("Error trying to initiate payment: " + response.status);
       }
     })
     .catch((err) => {
