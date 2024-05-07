@@ -103,9 +103,7 @@ async function initiatePayment(payment: paymentProps) {
   const paymentData = await fetch(origin + "/api/payment/afripay", options)
     .then((response) => {
       if (response.ok) {
-        response.json().then((data: any) => {
-          return data;
-        });
+        return response;
       } else {
         throw new Error("Error trying to initiate payment: " + response.status);
       }

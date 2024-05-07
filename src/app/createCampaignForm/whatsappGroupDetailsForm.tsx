@@ -41,7 +41,6 @@ export default function WhatsappGroupDetailsForm(form: props) {
 
     if (!isDialogOpen) {
       const response = await fetch(
-        location.origin.replaceAll("https", "http") +
           "/api/whatsapp/groups/accept-invite",
         {
           method: "POST",
