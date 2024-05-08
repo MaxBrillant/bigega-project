@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
 
   formData.append(
     "request",
-    (paymentMethod === "LUMICASH" && !otp) ? "transaction" : "payment"
+    paymentMethod === "LUMICASH" && !otp ? "transaction" : "payment"
   );
   formData.append("payment_type", "3");
   formData.append("app_id", process.env.AFRIPAY_APP_ID as string);
@@ -27,10 +27,14 @@ export async function POST(request: NextRequest) {
   formData.append("client_token", donationId);
   formData.append("payment_method", paymentMethod);
   formData.append("amount", amount);
-  formData.append(
-    "initiator",
-    paymentMethod === "LUMICASH" ? "257" + phoneNumber : phoneNumber
-  );
+  if (paymentMethod === "LUMICASH" && !otp) {
+    formData.append("mobile", `257${phoneNumber}`);
+  } else {
+    formData.append(
+      "initiator",
+      paymentMethod === "LUMICASH" ? `257${phoneNumber}` : phoneNumber
+    );
+  }
   if (otp) {
     formData.append("otp", otp);
   }
@@ -46,7 +50,7 @@ export async function POST(request: NextRequest) {
   const data = axios
     .post("https://www.api.afripay.africa", formData, { headers: headers })
     .then((response) => {
-      console.log(response.data);
+      console.log(`This is the response: ${response.data}`);
       return response.data;
     })
     .catch((err) => {
