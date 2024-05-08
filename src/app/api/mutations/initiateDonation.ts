@@ -67,7 +67,9 @@ export async function InitiateDonation(formData: props) {
           ? (formData.ecocashNumber as string)
           : (formData.lumicashNumber as string),
     });
-    console.log(`The returned data is: ${paymentData}`);
+    console.log(
+      `The returned data is: ${paymentData.json().then((data) => data)}`
+    );
     return "success";
   } catch (error) {
     throw new Error(

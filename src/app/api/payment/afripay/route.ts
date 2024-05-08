@@ -47,11 +47,18 @@ export async function POST(request: NextRequest) {
     ...formData.getHeaders(),
   };
 
-  const data = axios
+  const data = await axios
     .post("https://www.api.afripay.africa", formData, { headers: headers })
     .then((response) => {
-      console.log(`This is the response: ${response.data}`);
-      return response.data;
+      const returnedData = response.data;
+      console.log(
+        `This is the response: ${stringify({
+          returnedData,
+        })})}`
+      );
+      return stringify({
+        returnedData,
+      });
     })
     .catch((err) => {
       throw new Error(
@@ -59,9 +66,5 @@ export async function POST(request: NextRequest) {
       );
     });
 
-  return new NextResponse(
-    stringify({
-      data,
-    })
-  );
+  return new NextResponse(data);
 }
