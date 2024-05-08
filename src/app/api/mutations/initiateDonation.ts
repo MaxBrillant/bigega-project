@@ -69,6 +69,7 @@ export async function InitiateDonation(formData: props) {
           : (formData.lumicashNumber as string),
       otp: formData.otp,
     });
+    return data[0].id;
   } catch (error) {
     throw new Error(
       `Error while initiating a donation from "${formData.donorName}": The error is: "${error}"`
@@ -118,6 +119,8 @@ async function initiatePayment(payment: paymentProps) {
         "Error trying to initiate payment. Try checking that your balance is enough or that your phone number is correct"
       );
     }
+
+    return "success";
   } catch (error) {
     throw new Error("Error trying to initiate payment. The error is: " + error);
   }
@@ -155,4 +158,5 @@ export async function getOTP(amount: number, phoneNumber: string) {
     .catch((err) => {
       throw new Error("Error trying to get the OTP. The error is: " + err);
     });
+  return "success";
 }
