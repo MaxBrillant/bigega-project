@@ -107,12 +107,10 @@ async function initiatePayment(payment: paymentProps) {
   try {
     const paymentData = await fetch(origin + "/api/payment/afripay", options);
 
-    const jsonData = await paymentData.json();
+    const jsonData: any = await paymentData.json();
     console.log(jsonData);
 
-    const isPaymentInitiated: boolean = await paymentData
-      .json()
-      .then((data: any) => data.includes("success"));
+    const isPaymentInitiated: boolean = jsonData.includes("success");
 
     if (!isPaymentInitiated) {
       throw new Error(
