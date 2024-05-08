@@ -12,6 +12,9 @@ export async function POST(request: NextRequest) {
   const amount: string = body.amount;
   const otp: string | undefined = body.otp;
 
+  console.log("processing payment");
+  console.log(body);
+
   const formData = new FormData();
 
   formData.append(
