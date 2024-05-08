@@ -40,8 +40,6 @@ export default function PaymentForm(form: props) {
   const { toast } = useToast();
 
   const onSubmit = async (data: formSchemaType) => {
-    console.log("submitting payment");
-    console.log(data);
     if (data.lumicashNumber != undefined && data.otp == undefined) {
       try {
         const response = await getOTP(data.amount, data.lumicashNumber);
@@ -231,7 +229,10 @@ export default function PaymentForm(form: props) {
             })}
             placeholder="123456"
           />
-          <Button type="submit" onClick={() => handleSubmit(onSubmit)}>
+          <Button
+            type="submit"
+            onClick={async () => await handleSubmit(onSubmit)}
+          >
             Donate
           </Button>
         </DialogContent>
