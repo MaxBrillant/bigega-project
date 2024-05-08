@@ -185,6 +185,7 @@ export default function PaymentForm(form: props) {
         <Input
           type="number"
           {...register("amount", {
+            valueAsNumber: true,
             setValueAs: (value) => (value === "" ? undefined : value),
           })}
           placeholder="BIF 0"
