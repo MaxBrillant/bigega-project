@@ -41,12 +41,21 @@ export default function PaymentForm(form: props) {
 
   const onSubmit = async (data: formSchemaType) => {
     if (data.lumicashNumber != undefined && data.otp == undefined) {
-      await getOTP(data.amount, data.lumicashNumber).then(() =>
-        setIsOtpRequired(true)
-      );
+      try {
+        const response = await getOTP(data.amount, data.lumicashNumber);
+        if (response) {
+          setIsOtpRequired(true);
+        }
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: `Error while trying to get the code from Lumicash, please try again`,
+          duration: 7000,
+        });
+      }
     } else {
       try {
-        await InitiateDonation({
+        const response = await InitiateDonation({
           campaignId: form.id,
           amount: data.amount,
           ecocashNumber: data.ecocashNumber,
@@ -56,13 +65,15 @@ export default function PaymentForm(form: props) {
           otp: data.otp,
         });
 
-        setValue("otp", undefined);
-        setIsOtpRequired(false);
-        toast({
-          variant: "default",
-          title: `Payment has been sent`,
-          duration: 3000,
-        });
+        if (response) {
+          setIsOtpRequired(false);
+          setValue("otp", undefined);
+          toast({
+            variant: "default",
+            title: `Payment has been sent`,
+            duration: 3000,
+          });
+        }
       } catch (error) {
         toast({
           variant: "destructive",
@@ -174,7 +185,6 @@ export default function PaymentForm(form: props) {
         <Input
           type="number"
           {...register("amount", {
-            valueAsNumber: true,
             setValueAs: (value) => (value === "" ? undefined : value),
           })}
           placeholder="BIF 0"
@@ -198,13 +208,22 @@ export default function PaymentForm(form: props) {
       )}
       <Button type="submit">Donate</Button>
 
-      <Dialog open={isOtpRequired} onOpenChange={setIsOtpRequired}>
+      <Dialog
+        open={isOtpRequired}
+        onOpenChange={() => {
+          if (isOtpRequired) {
+            setIsOtpRequired(false);
+            setValue("otp", undefined);
+          } else {
+            setIsOtpRequired(true);
+          }
+        }}
+      >
         <DialogContent>
           <p>Write your code here</p>
           <Input
             type="number"
             {...register("otp", {
-              valueAsNumber: true,
               setValueAs: (value) => (value === "" ? undefined : value),
             })}
             placeholder="123456"
