@@ -10,6 +10,7 @@ import { z } from "zod";
 import { InitiateDonation, getOTP } from "../api/mutations/initiateDonation";
 import { useToast } from "@/components/ui/use-toast";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { watch } from "fs";
 
 type props = {
   id: number;
@@ -22,6 +23,7 @@ export default function PaymentForm(form: props) {
   const {
     register,
     handleSubmit,
+    watch,
     setValue,
     formState: { errors },
   } = useForm<formSchemaType>({
@@ -230,8 +232,17 @@ export default function PaymentForm(form: props) {
             placeholder="123456"
           />
           <Button
-            type="submit"
-            onClick={async () => await handleSubmit(onSubmit)}
+            type="button"
+            onClick={() =>
+              onSubmit({
+                amount: watch("amount"),
+                ecocashNumber: watch("ecocashNumber"),
+                lumicashNumber: watch("lumicashNumber"),
+                donorName: watch("donorName"),
+                isDonorAnonymous: watch("isDonorAnonymous"),
+                otp: watch("otp"),
+              })
+            }
           >
             Donate
           </Button>
