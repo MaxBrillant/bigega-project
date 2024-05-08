@@ -229,7 +229,9 @@ export default function PaymentForm(form: props) {
             })}
             placeholder="123456"
           />
-          <Button type="submit">Donate</Button>
+          <Button type="submit" onClick={()=>handleSubmit(onSubmit)}>
+            Donate
+          </Button>
         </DialogContent>
       </Dialog>
     </form>
