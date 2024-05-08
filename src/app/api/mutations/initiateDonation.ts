@@ -10,6 +10,7 @@ type props = {
   amount: number;
   lumicashNumber: string | undefined;
   ecocashNumber: string | undefined;
+  otp: string | undefined;
   donorName: string;
   isDonorAnonymous: boolean;
 };
@@ -57,7 +58,7 @@ export async function InitiateDonation(formData: props) {
       `A new donation of ID: "${data[0].id}" from donor: "${formData.donorName}" has been successfully initiated`
     );
 
-    const paymentData = await initiatePayment({
+    await initiatePayment({
       donationId: String(data[0].id),
       amount: formData.amount,
       paymentMethod:
@@ -66,9 +67,8 @@ export async function InitiateDonation(formData: props) {
         formData.ecocashNumber != undefined
           ? (formData.ecocashNumber as string)
           : (formData.lumicashNumber as string),
+      otp: formData.otp,
     });
-    console.log(paymentData.json());
-    return "success";
   } catch (error) {
     throw new Error(
       `Error while initiating a donation from "${formData.donorName}": The error is: "${error}"`
@@ -81,6 +81,7 @@ type paymentProps = {
   amount: number;
   paymentMethod: "ECOCASH" | "LUMICASH";
   phoneNumber: string;
+  otp: string | undefined;
 };
 async function initiatePayment(payment: paymentProps) {
   const headerList = headers();
@@ -98,20 +99,60 @@ async function initiatePayment(payment: paymentProps) {
       phone_number: payment.phoneNumber,
       payment_method: payment.paymentMethod,
       amount: payment.amount,
+      otp: payment.otp,
     }),
   };
 
-  const paymentData = await fetch(origin + "/api/payment/afripay", options)
+  try {
+    const paymentData = await fetch(origin + "/api/payment/afripay", options);
+
+    const jsonData = await paymentData.json();
+    console.log(jsonData);
+
+    const isPaymentInitiated: boolean = await paymentData
+      .json()
+      .then((data: any) => data.includes("success"));
+
+    if (!isPaymentInitiated) {
+      throw new Error(
+        "Error trying to initiate payment. Try checking that your balance is enough or that your phone number is correct"
+      );
+    }
+  } catch (error) {
+    throw new Error("Error trying to initiate payment. The error is: " + error);
+  }
+}
+
+export async function getOTP(amount: number, phoneNumber: string) {
+  const headerList = headers();
+  const pathname = headerList.get("x-pathname");
+  const origin = new URL(pathname as string).origin.replaceAll("https", "http");
+
+  const options = {
+    method: "POST",
+    headers: {
+      accept: "application/json",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      donation_id: "",
+      phone_number: phoneNumber,
+      payment_method: "LUMICASH",
+      amount: amount,
+    }),
+  };
+
+  await fetch(origin + "/api/payment/afripay", options)
     .then((response) => {
       if (response.ok) {
         return response;
       } else {
-        throw new Error("Error trying to initiate payment: " + response.status);
+        throw new Error(
+          "Error trying to get the OTP payment: " + response.status
+        );
       }
     })
     .catch((err) => {
-      throw new Error("Error trying to initiate payment. The error is: " + err);
+      throw new Error("Error trying to get the OTP. The error is: " + err);
     });
-
-  return paymentData;
 }

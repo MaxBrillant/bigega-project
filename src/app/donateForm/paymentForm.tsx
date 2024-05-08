@@ -7,8 +7,9 @@ import { DonationSchema } from "../validation/donationFormValidation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { InitiateDonation } from "../api/mutations/initiateDonation";
+import { InitiateDonation, getOTP } from "../api/mutations/initiateDonation";
 import { useToast } from "@/components/ui/use-toast";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 type props = {
   id: number;
@@ -32,33 +33,43 @@ export default function PaymentForm(form: props) {
     "lumicash" | "ecocash" | undefined
   >();
 
+  const [isOtpRequired, setIsOtpRequired] = useState(false);
+
   const listOfErrors = Object.values(errors).map((error) => error);
 
   const { toast } = useToast();
 
   const onSubmit = async (data: formSchemaType) => {
-    try {
-      const paymentData = await InitiateDonation({
-        campaignId: form.id,
-        amount: data.amount,
-        ecocashNumber: data.ecocashNumber,
-        lumicashNumber: data.lumicashNumber,
-        donorName: data.donorName,
-        isDonorAnonymous: data.isDonorAnonymous,
-      });
-      console.log(paymentData);
+    if (data.lumicashNumber != undefined && data.otp == undefined) {
+      await getOTP(data.amount, data.lumicashNumber).then(() =>
+        setIsOtpRequired(true)
+      );
+    } else {
+      try {
+        await InitiateDonation({
+          campaignId: form.id,
+          amount: data.amount,
+          ecocashNumber: data.ecocashNumber,
+          lumicashNumber: data.lumicashNumber,
+          donorName: data.donorName,
+          isDonorAnonymous: data.isDonorAnonymous,
+          otp: data.otp,
+        });
 
-      toast({
-        variant: "default",
-        title: `${paymentData}`,
-        duration: 3000,
-      });
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: `${error}`,
-        duration: 7000,
-      });
+        setValue("otp", undefined);
+        setIsOtpRequired(false);
+        toast({
+          variant: "default",
+          title: `Payment has been sent`,
+          duration: 3000,
+        });
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: `The payment could not be sent. Make sure you have enough balance or that your phone number is correct`,
+          duration: 7000,
+        });
+      }
     }
   };
 
@@ -161,6 +172,7 @@ export default function PaymentForm(form: props) {
       <div>
         <p>Amount</p>
         <Input
+          type="number"
           {...register("amount", {
             valueAsNumber: true,
             setValueAs: (value) => (value === "" ? undefined : value),
@@ -185,6 +197,21 @@ export default function PaymentForm(form: props) {
         </div>
       )}
       <Button type="submit">Donate</Button>
+
+      <Dialog open={isOtpRequired} onOpenChange={setIsOtpRequired}>
+        <DialogContent>
+          <p>Write your code here</p>
+          <Input
+            type="number"
+            {...register("otp", {
+              valueAsNumber: true,
+              setValueAs: (value) => (value === "" ? undefined : value),
+            })}
+            placeholder="123456"
+          />
+          <Button type="submit">Donate</Button>
+        </DialogContent>
+      </Dialog>
     </form>
   );
 }
