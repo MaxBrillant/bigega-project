@@ -16,7 +16,10 @@ export async function POST(request: NextRequest) {
 
   const formData = new FormData();
 
-  formData.append("request", "payment");
+  formData.append(
+    "request",
+    (paymentMethod === "LUMICASH" && !otp) ? "transaction" : "payment"
+  );
   formData.append("payment_type", "3");
   formData.append("app_id", process.env.AFRIPAY_APP_ID as string);
   formData.append("app_secret", process.env.AFRIPAY_APP_SECRET as string);
@@ -40,7 +43,7 @@ export async function POST(request: NextRequest) {
     ...formData.getHeaders(),
   };
 
-  const data = await axios
+  const data = axios
     .post("https://www.api.afripay.africa", formData, { headers: headers })
     .then((response) => {
       console.log(response.data);
