@@ -20,8 +20,6 @@ type returnedData = [
   }
 ];
 export async function InitiateDonation(formData: props) {
-  console.log("initiating payment");
-  console.log(formData);
   try {
     DonationSchema.parse({
       amount: formData.amount,
