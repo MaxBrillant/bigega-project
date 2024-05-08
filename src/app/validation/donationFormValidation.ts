@@ -22,6 +22,7 @@ export const DonationSchema = z
         message: "Write a valid Ecocash number",
       })
       .optional(),
+    otp: z.string().length(6, "Write a valid code").optional(),
 
     donorName: z.string().min(5, { message: "Write your full name" }),
     isDonorAnonymous: z.boolean(),

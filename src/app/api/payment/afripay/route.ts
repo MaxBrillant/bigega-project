@@ -6,8 +6,6 @@ import { stringify } from "flatted";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-
-  console.log(body);
   const donationId: string = body.donation_id;
   const phoneNumber: string = body.phone_number;
   const paymentMethod: "ECOCASH" | "LUMICASH" = body.payment_method;
@@ -54,7 +52,7 @@ export async function POST(request: NextRequest) {
       console.log(
         `This is the response: ${stringify({
           returnedData,
-        })})}`
+        })}`
       );
       return stringify({
         returnedData,
