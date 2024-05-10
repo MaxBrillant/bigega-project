@@ -4,11 +4,11 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useContext, useState } from "react";
+import { useContext, useState, useTransition } from "react";
 import { WhatsappGroupDetailsSchema } from "../validation/campaignFormValidation";
 import CampaignFormContext from "./formContext";
 import { useToast } from "@/components/ui/use-toast";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import OrganizerDetailsForm from "./organizerDetailsForm";
 
 type props = {};
@@ -29,45 +29,44 @@ export default function WhatsappGroupDetailsForm(form: props) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { toast } = useToast();
+  const [isPending, startTransition] = useTransition();
 
   const listOfErrors = Object.values(errors).map((error) => error);
 
-  const onSubmit = async (data: detailsType) => {
-    setFormState((prevState) => ({
-      ...prevState,
-      whatsappGroupLink: data.whatsappGroupLink,
-      languageOfCommunication: data.languageOfCommunication,
-    }));
+  const onSubmit = (data: detailsType) =>
+    startTransition(async () => {
+      setFormState((prevState) => ({
+        ...prevState,
+        whatsappGroupLink: data.whatsappGroupLink,
+        languageOfCommunication: data.languageOfCommunication,
+      }));
 
-    if (!isDialogOpen) {
-      const response = await fetch(
-          "/api/whatsapp/groups/accept-invite",
-        {
+      if (!isDialogOpen) {
+        const response = await fetch("/api/whatsapp/groups/accept-invite", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             invite_code: data.whatsappGroupLink.split("/").pop(),
           }),
-        }
-      );
-      if (response.status !== 200) {
-        toast({
-          variant: "destructive",
-          title:
-            "Uh oh! Something went wrong while trying to join the Whatsapp group.",
         });
-      } else {
-        const groupId: string = await response
-          .json()
-          .then((data) => data.groupId);
-        setFormState((prevState) => ({
-          ...prevState,
-          whatsappGroupId: groupId,
-        }));
-        setIsDialogOpen(true);
+        if (response.status !== 200) {
+          toast({
+            variant: "destructive",
+            title:
+              "Uh oh! Something went wrong while trying to join the Whatsapp group.",
+          });
+        } else {
+          const groupId: string = await response
+            .json()
+            .then((data) => data.groupId);
+          setFormState((prevState) => ({
+            ...prevState,
+            whatsappGroupId: groupId,
+          }));
+          setIsDialogOpen(true);
+        }
       }
-    }
-  };
+    });
 
   return (
     <form
@@ -133,7 +132,9 @@ export default function WhatsappGroupDetailsForm(form: props) {
           ))}
         </div>
       )}
-      <Button type="submit">Finish</Button>
+      <Button type="submit" disabled={isPending}>
+        {isPending ? "Loading..." : "Finish"}
+      </Button>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>

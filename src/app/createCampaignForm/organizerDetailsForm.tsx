@@ -7,7 +7,7 @@ import { z } from "zod";
 import { OrganizerDetailsSchema } from "../validation/campaignFormValidation";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
-import { useContext } from "react";
+import { useContext, useTransition } from "react";
 import CampaignFormContext from "./formContext";
 import { CreateCampaign } from "../api/mutations/createCampaign";
 import { useToast } from "@/components/ui/use-toast";
@@ -29,50 +29,52 @@ export default function OrganizerDetailsForm() {
   const listOfErrors = Object.values(errors).map((error) => error);
 
   const { toast } = useToast();
+  const [isPending, startTransition] = useTransition();
 
-  const onSubmit = async (data: detailsType) => {
-    try {
-      const response = await CreateCampaign({
-        title: formState.title as string,
-        category:
-          formState.category != undefined ? formState.category : "other",
-        description: formState.description,
-        country: formState.country as "burundi" | "rwanda",
-        targetAmount: formState.targetAmount as number,
-        ecocashNumber: formState.ecocashNumber,
-        lumicashNumber: formState.lumicashNumber,
-        mtnMomoNumber: formState.mtnMomoNumber,
-        whatsappGroupId: formState.whatsappGroupId as string,
-        whatsappGroupLink: formState.whatsappGroupLink as string,
-        languageOfCommunication: formState.languageOfCommunication as
-          | "en"
-          | "fr"
-          | "bi"
-          | "rw",
-        organizerName: data.organizerName,
-        organizerWhatsappNumber: data.organizerWhatsappNumber,
-      });
+  const onSubmit = (data: detailsType) =>
+    startTransition(async () => {
+      try {
+        const response = await CreateCampaign({
+          title: formState.title as string,
+          category:
+            formState.category != undefined ? formState.category : "other",
+          description: formState.description,
+          country: formState.country as "burundi" | "rwanda",
+          targetAmount: formState.targetAmount as number,
+          ecocashNumber: formState.ecocashNumber,
+          lumicashNumber: formState.lumicashNumber,
+          mtnMomoNumber: formState.mtnMomoNumber,
+          whatsappGroupId: formState.whatsappGroupId as string,
+          whatsappGroupLink: formState.whatsappGroupLink as string,
+          languageOfCommunication: formState.languageOfCommunication as
+            | "en"
+            | "fr"
+            | "bi"
+            | "rw",
+          organizerName: data.organizerName,
+          organizerWhatsappNumber: data.organizerWhatsappNumber,
+        });
 
-      if (response) {
+        if (response) {
+          toast({
+            variant: "default",
+            title: `The "${formState.title}" campaign has been successfully created`,
+            duration: 3000,
+          });
+        }
+      } catch (e) {
         toast({
-          variant: "default",
-          title: `The "${formState.title}" campaign has been successfully created`,
-          duration: 3000,
+          variant: "destructive",
+          title: `Something went wrong while creating the "${formState.title}" campaign`,
+          action: (
+            <ToastAction onClick={() => onSubmit(data)} altText="Try again">
+              Try again
+            </ToastAction>
+          ),
+          duration: 7000,
         });
       }
-    } catch (e) {
-      toast({
-        variant: "destructive",
-        title: `Something went wrong while creating the "${formState.title}" campaign`,
-        action: (
-          <ToastAction onClick={() => onSubmit(data)} altText="Try again">
-            Try again
-          </ToastAction>
-        ),
-        duration: 7000,
-      });
-    }
-  };
+    });
 
   return (
     <form
@@ -100,7 +102,9 @@ export default function OrganizerDetailsForm() {
           ))}
         </div>
       )}
-      <Button type="submit">Create Campaign</Button>
+      <Button type="submit" disabled={isPending}>
+        {isPending ? "Loading..." : "Create Campaign"}
+      </Button>
     </form>
   );
 }

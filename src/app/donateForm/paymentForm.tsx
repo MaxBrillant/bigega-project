@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { DonationSchema } from "../validation/donationFormValidation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,51 +40,57 @@ export default function PaymentForm(form: props) {
   const listOfErrors = Object.values(errors).map((error) => error);
 
   const { toast } = useToast();
+  const [isPending, startTransition] = useTransition();
 
-  const onSubmit = async (data: formSchemaType) => {
-    if (data.lumicashNumber != undefined && data.otp == undefined) {
-      try {
-        const response = await getOTP(data.amount, data.lumicashNumber);
-        if (response) {
-          setIsOtpRequired(true);
-        }
-      } catch (error) {
-        toast({
-          variant: "destructive",
-          title: `Error while trying to get the code from Lumicash, please try again`,
-          duration: 7000,
-        });
-      }
-    } else {
-      try {
-        const response = await InitiateDonation({
-          campaignId: form.id,
-          amount: data.amount,
-          ecocashNumber: data.ecocashNumber,
-          lumicashNumber: data.lumicashNumber,
-          donorName: data.donorName,
-          isDonorAnonymous: data.isDonorAnonymous,
-          otp: data.otp,
-        });
-
-        if (response) {
+  const onSubmit = (data: formSchemaType) =>
+    startTransition(async () => {
+      if (data.lumicashNumber != undefined && data.otp == undefined) {
+        try {
+          const response = await getOTP(data.amount, data.lumicashNumber);
+          if (response) {
+            setIsOtpRequired(true);
+          }
+        } catch (error) {
           setIsOtpRequired(false);
           setValue("otp", undefined);
           toast({
-            variant: "default",
-            title: `Payment has been sent`,
-            duration: 3000,
+            variant: "destructive",
+            title: `Error while trying to get the code from Lumicash, please try again`,
+            duration: 7000,
           });
         }
-      } catch (error) {
-        toast({
-          variant: "destructive",
-          title: `The payment could not be sent. Make sure you have enough balance or that your phone number is correct`,
-          duration: 7000,
-        });
+      } else {
+        try {
+          const response = await InitiateDonation({
+            campaignId: form.id,
+            amount: data.amount,
+            ecocashNumber: data.ecocashNumber,
+            lumicashNumber: data.lumicashNumber,
+            donorName: data.donorName,
+            isDonorAnonymous: data.isDonorAnonymous,
+            otp: data.otp,
+          });
+
+          if (response) {
+            setIsOtpRequired(false);
+            setValue("otp", undefined);
+            toast({
+              variant: "default",
+              title: `Payment has been sent`,
+              duration: 3000,
+            });
+          }
+        } catch (error) {
+          toast({
+            variant: "destructive",
+            title: data.lumicashNumber
+              ? `The payment could not be sent. Make sure that the code is valid, that you have enough balance or that your phone number is correct`
+              : `The payment could not be sent. Make sure you have enough balance or that your phone number is correct`,
+            duration: 7000,
+          });
+        }
       }
-    }
-  };
+    });
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
@@ -209,7 +215,9 @@ export default function PaymentForm(form: props) {
           ))}
         </div>
       )}
-      <Button type="submit">Donate</Button>
+      <Button type="submit" disabled={isPending}>
+        {isPending ? "Loading..." : "Donate"}
+      </Button>
 
       <Dialog
         open={isOtpRequired}
@@ -243,8 +251,9 @@ export default function PaymentForm(form: props) {
                 otp: watch("otp"),
               })
             }
+            disabled={isPending}
           >
-            Donate
+            {isPending ? "Loading..." : "Donate"}
           </Button>
         </DialogContent>
       </Dialog>
