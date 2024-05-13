@@ -30,6 +30,7 @@
     "react-hook-form": "^7.51.3",
     "react-international-phone": "^4.2.9",
     "react-paystack": "^5.0.0",
+    "sharp": "^0.33.3",
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^9.0.1",
