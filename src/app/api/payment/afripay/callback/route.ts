@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   console.log("The webhook has been received");
+  console.log(request);
+  console.log(request.body);
   const body = request.json();
   console.log(body);
   console.log(request.body);
