@@ -10,7 +10,8 @@ import { z } from "zod";
 import { InitiateDonation, getOTP } from "../api/mutations/initiateDonation";
 import { useToast } from "@/components/ui/use-toast";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { watch } from "fs";
+import Image from "next/image";
+import { Separator } from "@/components/ui/separator";
 
 type props = {
   id: number;
@@ -93,75 +94,21 @@ export default function PaymentForm(form: props) {
     });
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-      <div>
-        <p>Select a Payment Method</p>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex flex-col gap-3 mx-3 p-5 mb-7 bg-background border border-slate-300 rounded-2xl"
+    >
+      <div className="space-y-1">
+        <p className="font-semibold text-lg">Choose a Payment Method</p>
 
-        {form.lumicashNumber && (
-          <div
-            className={
-              selectedMethod === "lumicash"
-                ? "flex flex-row gap-5 items-center p-3 bg-slate-300 rounded-xl"
-                : "flex flex-row gap-5 items-center p-[11px] border rounded-xl"
-            }
-          >
-            <input
-              type="radio"
-              value="lumicash"
-              id="lumicash"
-              checked={selectedMethod === "lumicash"}
-              className="w-7 h-7"
-              onClick={() => {
-                setSelectedMethod("lumicash");
-                setValue("ecocashNumber", undefined);
-              }}
-            />
+        <div className="space-y-2 py-2">
+          {form.ecocashNumber && (
             <button
-              onClick={(e) => {
-                e.preventDefault();
-                if (selectedMethod !== "lumicash") {
-                  document?.getElementById("lumicash")?.click();
-                } else {
-                  document?.getElementById("lumicash-number")?.focus();
-                }
-              }}
-            >
-              <p>Lumicash</p>
-            </button>
-            {selectedMethod === "lumicash" && (
-              <Input
-                type="number"
-                {...register("lumicashNumber", {
-                  setValueAs: (value) => (value === "" ? undefined : value),
-                })}
-                id="lumicash-number"
-                placeholder="62201233"
-                autoFocus
-                className="w-36 text-lg bg-white"
-              />
-            )}
-          </div>
-        )}
-        {form.ecocashNumber && (
-          <div
-            className={
-              selectedMethod === "ecocash"
-                ? "flex flex-row gap-5 items-center p-3 bg-slate-300 rounded-xl"
-                : "flex flex-row gap-5 items-center p-[11px] border rounded-xl"
-            }
-          >
-            <input
-              type="radio"
-              value="ecocash"
-              id="ecocash"
-              checked={selectedMethod === "ecocash"}
-              className="w-7 h-7"
-              onClick={() => {
-                setSelectedMethod("ecocash");
-                setValue("lumicashNumber", undefined);
-              }}
-            />
-            <button
+              className={
+                selectedMethod === "ecocash"
+                  ? "w-full flex flex-row gap-5 items-center p-3 bg-highlight border border-heading rounded-xl"
+                  : "w-full flex flex-row gap-5 items-center p-[11px] border border-slate-400 rounded-xl"
+              }
               onClick={(e) => {
                 e.preventDefault();
                 if (selectedMethod !== "ecocash") {
@@ -171,51 +118,182 @@ export default function PaymentForm(form: props) {
                 }
               }}
             >
-              <p>Ecocash</p>
-            </button>
-            {selectedMethod === "ecocash" && (
-              <Input
-                type="number"
-                {...register("ecocashNumber", {
-                  setValueAs: (value) => (value === "" ? undefined : value),
-                })}
-                id="ecocash-number"
-                placeholder="71020135"
-                autoFocus
-                className="w-36 text-lg bg-white"
+              <input
+                type="radio"
+                value="ecocash"
+                id="ecocash"
+                checked={selectedMethod === "ecocash"}
+                className="w-7 h-7"
+                onClick={() => {
+                  setSelectedMethod("ecocash");
+                  setValue("lumicashNumber", undefined);
+                }}
               />
-            )}
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (selectedMethod !== "ecocash") {
+                    document?.getElementById("ecocash")?.click();
+                  } else {
+                    document?.getElementById("ecocash-number")?.focus();
+                  }
+                }}
+              >
+                <Image
+                  src={"/ecocash.png"}
+                  width={120}
+                  height={20}
+                  alt="ecocash"
+                  className="object-contain h-fit mx-auto rounded-lg border border-slate-500"
+                />
+              </button>
+              {selectedMethod === "ecocash" && (
+                <Input
+                  type="number"
+                  {...register("ecocashNumber", {
+                    setValueAs: (value) => (value === "" ? undefined : value),
+                  })}
+                  id="ecocash-number"
+                  placeholder="71020135"
+                  autoFocus
+                  className="w-36 text-lg bg-white"
+                />
+              )}
+            </button>
+          )}
+
+          {form.lumicashNumber && (
+            <button
+              className={
+                selectedMethod === "lumicash"
+                  ? "w-full flex flex-row gap-5 items-center p-3 bg-highlight border border-heading rounded-xl"
+                  : "w-full flex flex-row gap-5 items-center p-[11px] border border-slate-400 rounded-xl"
+              }
+              onClick={(e) => {
+                e.preventDefault();
+                if (selectedMethod !== "lumicash") {
+                  document?.getElementById("lumicash")?.click();
+                } else {
+                  document?.getElementById("lumicash-number")?.focus();
+                }
+              }}
+            >
+              <input
+                type="radio"
+                value="lumicash"
+                id="lumicash"
+                checked={selectedMethod === "lumicash"}
+                className="w-7 h-7"
+                onClick={() => {
+                  setSelectedMethod("lumicash");
+                  setValue("ecocashNumber", undefined);
+                }}
+              />
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (selectedMethod !== "lumicash") {
+                    document?.getElementById("lumicash")?.click();
+                  } else {
+                    document?.getElementById("lumicash-number")?.focus();
+                  }
+                }}
+              >
+                <Image
+                  src={"/lumicash.png"}
+                  width={120}
+                  height={20}
+                  alt="lumicash"
+                  className="object-contain h-fit mx-auto rounded-lg border border-slate-500"
+                />
+              </button>
+              {selectedMethod === "lumicash" && (
+                <Input
+                  type="number"
+                  {...register("lumicashNumber", {
+                    setValueAs: (value) => (value === "" ? undefined : value),
+                  })}
+                  id="lumicash-number"
+                  placeholder="62201233"
+                  autoFocus
+                  className="w-36 text-lg bg-white"
+                />
+              )}
+            </button>
+          )}
+        </div>
+      </div>
+      {selectedMethod && !errors.ecocashNumber && !errors.lumicashNumber && (
+        <Separator />
+      )}
+      {selectedMethod && !errors.ecocashNumber && !errors.lumicashNumber && (
+        <div className="space-y-1">
+          <p className="font-semibold text-lg">
+            How much do you wish to donate?
+          </p>
+          <div className="w-full flex flex-row py-2 items-center gap-3">
+            <p className="text-lg">BIF</p>
+            <Input
+              type="number"
+              className="py-6 text-3xl"
+              {...register("amount", {
+                valueAsNumber: true,
+                setValueAs: (value) => (value === "" ? undefined : value),
+              })}
+              placeholder="0.00"
+            />
+          </div>
+        </div>
+      )}
+      {watch("amount") > 0 &&
+        !errors.amount &&
+        selectedMethod &&
+        !errors.ecocashNumber &&
+        !errors.lumicashNumber && <Separator />}
+      {watch("amount") > 0 &&
+        !errors.amount &&
+        selectedMethod &&
+        !errors.ecocashNumber &&
+        !errors.lumicashNumber && (
+          <div className="space-y-1">
+            <p className="font-semibold text-lg">What is your name?</p>
+            <Input {...register("donorName")} placeholder="Jacques Niyongabo" />
+
+            <div className="flex flex-row gap-2 pt-2">
+              <input
+                {...register("isDonorAnonymous")}
+                type="checkbox"
+                id="hide"
+                className="w-4 h-4 mt-1"
+              />
+              <p
+                className="text-sm"
+                onClick={() => document?.getElementById("hide")?.click()}
+              >
+                Hide my name (only organizers will be able to see your name)
+              </p>
+            </div>
           </div>
         )}
-      </div>
-      <div>
-        <p>Amount</p>
-        <Input
-          type="number"
-          {...register("amount", {
-            valueAsNumber: true,
-            setValueAs: (value) => (value === "" ? undefined : value),
-          })}
-          placeholder="BIF 0"
-        />
-      </div>
-      <div>
-        <p>Full name</p>
-        <Input {...register("donorName")} placeholder="Jacques Niyongabo" />
-        <input {...register("isDonorAnonymous")} type="checkbox" id="hide" />
-        <label htmlFor="hide">
-          Hide my name (only organizers will be able to see your name)
-        </label>
-      </div>
 
       {listOfErrors.length > 0 && (
-        <div className="flex flex-col bg-red-500 text-white p-3 rounded-2xl">
+        <div className="flex flex-col p-3 bg-red-200 text-red-700 border border-red-700 rounded-2xl">
           {listOfErrors.map((error, index) => (
             <li key={index}>{error.message}</li>
           ))}
         </div>
       )}
-      <Button type="submit" disabled={isPending}>
+      <Button
+        type="submit"
+        disabled={
+          isPending ||
+          watch("amount") === 0 ||
+          errors.amount != undefined ||
+          errors.ecocashNumber != undefined ||
+          errors.lumicashNumber != undefined ||
+          !watch("donorName")
+        }
+      >
         {isPending ? "Loading..." : "Donate"}
       </Button>
 

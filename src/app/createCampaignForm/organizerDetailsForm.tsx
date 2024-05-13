@@ -12,6 +12,7 @@ import CampaignFormContext from "./formContext";
 import { CreateCampaign } from "../api/mutations/createCampaign";
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
+import { Separator } from "@/components/ui/separator";
 
 type detailsType = z.infer<typeof OrganizerDetailsSchema>;
 export default function OrganizerDetailsForm() {
@@ -24,6 +25,7 @@ export default function OrganizerDetailsForm() {
     formState: { errors },
   } = useForm<detailsType>({
     resolver: zodResolver(OrganizerDetailsSchema),
+    mode: "onChange",
   });
 
   const listOfErrors = Object.values(errors).map((error) => error);
@@ -80,14 +82,23 @@ export default function OrganizerDetailsForm() {
     <form
       onSubmit={handleSubmit(onSubmit)}
       action={""}
-      className="flex flex-col gap-5"
+      className="flex flex-col gap-5 p-5 mt-3 mb-7 bg-background border border-slate-300 rounded-2xl"
     >
-      <div>
-        <p>What is your name</p>
-        <Input {...register("organizerName")} placeholder="Max Brillant" />
+      <p className="font-semibold text-2xl text-heading">
+        Before we can create your campaign, tell us a little bit about yourself.
+      </p>
+      <div className="space-y-1">
+        <p className="font-semibold text-lg">What is your name?</p>
+        <Input {...register("organizerName")} placeholder="Jean Iradukunda" />
       </div>
-      <div>
-        <p>Write your Whatsapp number</p>
+
+      <Separator />
+      <div className="space-y-1">
+        <p className="font-semibold text-lg">What is your Whatsapp number?</p>
+        <p className="font-medium text-sm text-black/80">
+          This is very important. We will use it to send you notifications and
+          updates on the donations that you will receive.
+        </p>
         <PhoneInput
           defaultCountry={formState.country === "burundi" ? "bi" : "rw"}
           value={watch("organizerWhatsappNumber")}
@@ -96,7 +107,7 @@ export default function OrganizerDetailsForm() {
       </div>
 
       {listOfErrors.length > 0 && (
-        <div className="flex flex-col bg-red-500 text-white p-3 rounded-2xl">
+        <div className="flex flex-col p-3 bg-red-200 text-red-700 border border-red-700 rounded-2xl">
           {listOfErrors.map((error, index) => (
             <li key={index}>{error.message}</li>
           ))}
