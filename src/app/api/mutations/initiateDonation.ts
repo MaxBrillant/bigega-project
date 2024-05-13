@@ -36,6 +36,12 @@ export async function InitiateDonation(formData: props) {
         donor_name: formData.donorName,
         is_donor_anonymous: formData.isDonorAnonymous,
         amount: formData.amount,
+        donor_payment_number:
+          formData.ecocashNumber != undefined
+            ? formData.ecocashNumber
+            : formData.lumicashNumber != undefined
+            ? formData.lumicashNumber
+            : null,
         payment_method:
           formData.ecocashNumber != undefined
             ? "ecocash"
@@ -43,7 +49,6 @@ export async function InitiateDonation(formData: props) {
             ? "lumicash"
             : null,
         currency: "BIF",
-        reference: "No reference",
       })
       .select()
       .limit(1)
@@ -108,7 +113,6 @@ async function initiatePayment(payment: paymentProps) {
     const paymentData = await fetch(origin + "/api/payment/afripay", options);
 
     const jsonData: any = await paymentData.json();
-    console.log(jsonData);
 
     const isPaymentInitiated: boolean = jsonData.includes("success");
 

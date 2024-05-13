@@ -3,7 +3,10 @@ import { z } from "zod";
 import { isValidNumber } from "libphonenumber-js";
 
 export const CampaignSchema = z.object({
-  title: z.string().min(1, { message: "A title is required" }),
+  title: z
+    .string()
+    .min(1, { message: "A title is required" })
+    .max(100, "The title should have less than 100 characters"),
   category: z.enum(
     [
       "wedding",
@@ -37,7 +40,8 @@ export const CampaignSchema = z.object({
       required_error: "Please provide an amount",
       invalid_type_error: "Please provide an amount",
     })
-    .min(10000, "The amount should be more than BIF.10,000"),
+    .min(10000, "The amount should be more than BIF.10,000")
+    .max(10000000, "The amount should be less than BIF.10,000,000"),
   lumicashNumber: z
     .string()
     .refine((data) => isValidNumber("+257" + data), {
@@ -68,7 +72,10 @@ export const CampaignSchema = z.object({
     invalid_type_error: "Select a language of communication",
   }),
 
-  organizerName: z.string().min(1, { message: "Your name is required" }),
+  organizerName: z
+    .string()
+    .min(1, { message: "Your name is required" })
+    .max(70, "Your name should have less than 70 characters"),
   organizerWhatsappNumber: z
     .string()
     .min(1, { message: "Your whatsapp number is required" })

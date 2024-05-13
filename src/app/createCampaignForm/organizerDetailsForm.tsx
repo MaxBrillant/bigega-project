@@ -7,11 +7,12 @@ import { z } from "zod";
 import { OrganizerDetailsSchema } from "../validation/campaignFormValidation";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
-import { useContext } from "react";
+import { useContext, useTransition } from "react";
 import CampaignFormContext from "./formContext";
 import { CreateCampaign } from "../api/mutations/createCampaign";
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
+import { Separator } from "@/components/ui/separator";
 
 type detailsType = z.infer<typeof OrganizerDetailsSchema>;
 export default function OrganizerDetailsForm() {
@@ -24,68 +25,80 @@ export default function OrganizerDetailsForm() {
     formState: { errors },
   } = useForm<detailsType>({
     resolver: zodResolver(OrganizerDetailsSchema),
+    mode: "onChange",
   });
 
   const listOfErrors = Object.values(errors).map((error) => error);
 
   const { toast } = useToast();
+  const [isPending, startTransition] = useTransition();
 
-  const onSubmit = async (data: detailsType) => {
-    try {
-      const response = await CreateCampaign({
-        title: formState.title as string,
-        category:
-          formState.category != undefined ? formState.category : "other",
-        description: formState.description,
-        country: formState.country as "burundi" | "rwanda",
-        targetAmount: formState.targetAmount as number,
-        ecocashNumber: formState.ecocashNumber,
-        lumicashNumber: formState.lumicashNumber,
-        mtnMomoNumber: formState.mtnMomoNumber,
-        whatsappGroupId: formState.whatsappGroupId as string,
-        whatsappGroupLink: formState.whatsappGroupLink as string,
-        languageOfCommunication: formState.languageOfCommunication as
-          | "en"
-          | "fr"
-          | "bi"
-          | "rw",
-        organizerName: data.organizerName,
-        organizerWhatsappNumber: data.organizerWhatsappNumber,
-      });
+  const onSubmit = (data: detailsType) =>
+    startTransition(async () => {
+      try {
+        const response = await CreateCampaign({
+          title: formState.title as string,
+          category:
+            formState.category != undefined ? formState.category : "other",
+          description: formState.description,
+          country: formState.country as "burundi" | "rwanda",
+          targetAmount: formState.targetAmount as number,
+          ecocashNumber: formState.ecocashNumber,
+          lumicashNumber: formState.lumicashNumber,
+          mtnMomoNumber: formState.mtnMomoNumber,
+          whatsappGroupId: formState.whatsappGroupId as string,
+          whatsappGroupLink: formState.whatsappGroupLink as string,
+          languageOfCommunication: formState.languageOfCommunication as
+            | "en"
+            | "fr"
+            | "bi"
+            | "rw",
+          organizerName: data.organizerName,
+          organizerWhatsappNumber: data.organizerWhatsappNumber,
+        });
 
-      if (response) {
+        if (response) {
+          toast({
+            variant: "default",
+            title: `The "${formState.title}" campaign has been successfully created`,
+            duration: 3000,
+          });
+        }
+      } catch (e) {
         toast({
-          variant: "default",
-          title: `The "${formState.title}" campaign has been successfully created`,
-          duration: 3000,
+          variant: "destructive",
+          title: `Something went wrong while creating the "${formState.title}" campaign`,
+          action: (
+            <ToastAction onClick={() => onSubmit(data)} altText="Try again">
+              Try again
+            </ToastAction>
+          ),
+          duration: 7000,
         });
       }
-    } catch (e) {
-      toast({
-        variant: "destructive",
-        title: `Something went wrong while creating the "${formState.title}" campaign`,
-        action: (
-          <ToastAction onClick={() => onSubmit(data)} altText="Try again">
-            Try again
-          </ToastAction>
-        ),
-        duration: 7000,
-      });
-    }
-  };
+    });
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       action={""}
-      className="flex flex-col gap-5"
+      className="flex flex-col gap-5 p-5 mt-3 mb-7 bg-background border border-slate-300 rounded-2xl"
     >
-      <div>
-        <p>What is your name</p>
-        <Input {...register("organizerName")} placeholder="Max Brillant" />
+      <p className="font-semibold text-2xl text-heading">
+        Before we can create your campaign, tell us a little bit about yourself.
+      </p>
+      <div className="space-y-1">
+        <p className="font-semibold text-lg">What is your name?</p>
+        <Input {...register("organizerName")} placeholder="Jean Iradukunda" />
       </div>
-      <div>
-        <p>Write your Whatsapp number</p>
+
+      <Separator />
+      <div className="space-y-1">
+        <p className="font-semibold text-lg">What is your Whatsapp number?</p>
+        <p className="font-medium text-sm text-black/80">
+          This is very important. We will use it to send you notifications and
+          updates on the donations that you will receive.
+        </p>
         <PhoneInput
           defaultCountry={formState.country === "burundi" ? "bi" : "rw"}
           value={watch("organizerWhatsappNumber")}
@@ -94,13 +107,15 @@ export default function OrganizerDetailsForm() {
       </div>
 
       {listOfErrors.length > 0 && (
-        <div className="flex flex-col bg-red-500 text-white p-3 rounded-2xl">
+        <div className="flex flex-col p-3 bg-red-200 text-red-700 border border-red-700 rounded-2xl">
           {listOfErrors.map((error, index) => (
             <li key={index}>{error.message}</li>
           ))}
         </div>
       )}
-      <Button type="submit">Create Campaign</Button>
+      <Button type="submit" disabled={isPending}>
+        {isPending ? "Loading..." : "Create Campaign"}
+      </Button>
     </form>
   );
 }

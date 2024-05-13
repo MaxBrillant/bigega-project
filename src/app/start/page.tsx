@@ -8,6 +8,7 @@ import WhatsappGroupDetailsForm from "../createCampaignForm/whatsappGroupDetails
 import CampaignFormContext, {
   CampaignFormState,
 } from "../createCampaignForm/formContext";
+import Image from "next/image";
 
 export default function Main() {
   const [formState, setFormState] = useState<CampaignFormState>(
@@ -17,26 +18,23 @@ export default function Main() {
 
   return (
     <CampaignFormContext.Provider value={{ formState, setFormState }}>
-      <div className="px-5">
+      <div className="border-b border-highlight">
+        <Image
+          src={"/bigega.png"}
+          width={120}
+          height={20}
+          alt="logo"
+          className="object-contain h-fit m-1"
+        />
+      </div>
+      <div className="mx-3 my-2">
+        <p className="font-semibold text-xl w-fit mx-auto text-heading">
+          Start a fundraising campaign
+        </p>
         <Progress step={step} setStep={setStep}></Progress>
-        {step === 0 && (
-          <div>
-            <p className="pb-3 text-2xl font-semibold">Basic Information</p>
-            <BasicDetailsForm setStep={setStep} />
-          </div>
-        )}
-        {step === 1 && (
-          <div>
-            <p className="pb-3 text-2xl font-semibold">Payment Information</p>
-            <PaymentDetailsForm setStep={setStep} />
-          </div>
-        )}
-        {step === 2 && (
-          <div>
-            <p className="pb-3 text-2xl font-semibold">Whatsapp Group</p>
-            <WhatsappGroupDetailsForm />
-          </div>
-        )}
+        {step === 0 && <BasicDetailsForm setStep={setStep} />}
+        {step === 1 && <PaymentDetailsForm setStep={setStep} />}
+        {step === 2 && <WhatsappGroupDetailsForm />}
       </div>
     </CampaignFormContext.Provider>
   );
