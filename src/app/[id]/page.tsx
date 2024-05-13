@@ -17,11 +17,13 @@ export default async function Main({ params }: { params: { id: string } }) {
         width={500}
         height={250}
         alt="wedding"
-        className="w-full h-32 object-cover rounded-b-2xl"
+        loading="eager"
+        priority
+        className="h-32 object-cover rounded-b-2xl"
       />
       <div className="p-3 space-y-1">
         <p className="text-2xl font-bold">{data.title}</p>
-        <p className="w-fit px-2 py-1 font-semibold bg-highlight text-heading border border-heading rounded-full">
+        <p className="w-fit px-2 py-1 font-semibold text-nowrap bg-highlight text-heading border border-heading rounded-full">
           🎯Target: {data.country === "burundi" ? "BIF" : "RWF"}.
           {data.targetAmount}
         </p>
@@ -66,7 +68,11 @@ export default async function Main({ params }: { params: { id: string } }) {
           <p className="text-xl font-medium text-heading underline underline-offset-8">
             Description
           </p>
-          <p className="font-medium text-slate-700">{data.description}</p>
+          <p className="font-medium text-slate-700">
+            {data.description
+              ? data.description
+              : "No description was provided."}
+          </p>
         </div>
       </div>
     </div>

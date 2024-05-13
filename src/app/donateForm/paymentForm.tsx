@@ -107,7 +107,7 @@ export default function PaymentForm(form: props) {
               className={
                 selectedMethod === "ecocash"
                   ? "w-full flex flex-row gap-5 items-center p-3 bg-highlight border border-heading rounded-xl"
-                  : "w-full flex flex-row gap-5 items-center p-[11px] border border-slate-400 rounded-xl"
+                  : "w-full flex flex-row gap-3 items-center p-[11px] border border-slate-400 rounded-xl"
               }
               onClick={(e) => {
                 e.preventDefault();
@@ -118,12 +118,13 @@ export default function PaymentForm(form: props) {
                 }
               }}
             >
+              {selectedMethod !== "ecocash" && <p>Donate with</p>}
               <input
                 type="radio"
                 value="ecocash"
                 id="ecocash"
                 checked={selectedMethod === "ecocash"}
-                className="w-7 h-7"
+                className="hidden"
                 onClick={() => {
                   setSelectedMethod("ecocash");
                   setValue("lumicashNumber", undefined);
@@ -154,7 +155,7 @@ export default function PaymentForm(form: props) {
                     setValueAs: (value) => (value === "" ? undefined : value),
                   })}
                   id="ecocash-number"
-                  placeholder="71020135"
+                  placeholder="71002024"
                   autoFocus
                   className="w-36 text-lg bg-white"
                 />
@@ -167,7 +168,7 @@ export default function PaymentForm(form: props) {
               className={
                 selectedMethod === "lumicash"
                   ? "w-full flex flex-row gap-5 items-center p-3 bg-highlight border border-heading rounded-xl"
-                  : "w-full flex flex-row gap-5 items-center p-[11px] border border-slate-400 rounded-xl"
+                  : "w-full flex flex-row gap-3 items-center p-[11px] border border-slate-400 rounded-xl"
               }
               onClick={(e) => {
                 e.preventDefault();
@@ -178,12 +179,13 @@ export default function PaymentForm(form: props) {
                 }
               }}
             >
+              {selectedMethod !== "lumicash" && <p>Donate with</p>}
               <input
                 type="radio"
                 value="lumicash"
                 id="lumicash"
                 checked={selectedMethod === "lumicash"}
-                className="w-7 h-7"
+                className="hidden"
                 onClick={() => {
                   setSelectedMethod("lumicash");
                   setValue("ecocashNumber", undefined);
@@ -214,7 +216,7 @@ export default function PaymentForm(form: props) {
                     setValueAs: (value) => (value === "" ? undefined : value),
                   })}
                   id="lumicash-number"
-                  placeholder="62201233"
+                  placeholder="62002024"
                   autoFocus
                   className="w-36 text-lg bg-white"
                 />
