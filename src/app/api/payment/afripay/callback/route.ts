@@ -1,18 +1,10 @@
 // Import necessary types and functions
-import { NextApiRequest, NextApiResponse } from "next";
 import { headers } from "next/headers";
-import NextCors from "nextjs-cors";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: NextApiRequest, response: NextApiResponse) {
-  await NextCors(request, response, {
-    // Options
-    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
-    origin: "*",
-    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-  });
-
+export async function POST(request: NextRequest) {
   console.log("The webhook has been received");
-  const body = await request.body;
+  const body = await request.json();
   console.log(body);
   console.log("The webhook has been used");
   // const status: string = body.status;
@@ -25,5 +17,5 @@ export async function POST(request: NextApiRequest, response: NextApiResponse) {
   const headerList = headers();
   const pathname = headerList.get("x-pathname");
   const origin = new URL(pathname as string).origin.replaceAll("https", "http");
-  return response.redirect(origin);
+  return NextResponse.redirect(origin);
 }
