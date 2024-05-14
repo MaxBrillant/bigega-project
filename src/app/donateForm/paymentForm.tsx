@@ -96,7 +96,7 @@ export default function PaymentForm(form: props) {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-3 mx-3 p-5 mb-7 bg-background border border-slate-300 rounded-2xl"
+      className="flex flex-col gap-5 mx-3 p-5 mt-3 mb-7 bg-background border border-slate-300 rounded-2xl"
     >
       <div className="space-y-1">
         <p className="font-semibold text-lg">Choose a Payment Method</p>
@@ -141,11 +141,11 @@ export default function PaymentForm(form: props) {
                 }}
               >
                 <Image
-                  src={"/ecocash.png"}
-                  width={120}
-                  height={20}
+                  src={"/ecocash.jpg"}
+                  width={250}
+                  height={75}
                   alt="ecocash"
-                  className="object-contain h-fit mx-auto rounded-lg border border-slate-500"
+                  className="w-32 object-contain h-fit mx-auto rounded-lg border border-slate-500"
                 />
               </button>
               {selectedMethod === "ecocash" && (
@@ -202,11 +202,11 @@ export default function PaymentForm(form: props) {
                 }}
               >
                 <Image
-                  src={"/lumicash.png"}
-                  width={120}
-                  height={20}
+                  src={"/lumicash.jpg"}
+                  width={250}
+                  height={75}
                   alt="lumicash"
-                  className="object-contain h-fit mx-auto rounded-lg border border-slate-500"
+                  className="w-32 object-contain h-fit mx-auto rounded-lg border border-slate-500"
                 />
               </button>
               {selectedMethod === "lumicash" && (

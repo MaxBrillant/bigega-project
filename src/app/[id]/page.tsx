@@ -12,11 +12,20 @@ export default async function Main({ params }: { params: { id: string } }) {
 
   return (
     <div>
+      <div className="border-b border-highlight">
+        <Image
+          src={"/bigega.png"}
+          width={120}
+          height={20}
+          alt="logo"
+          className="object-contain h-fit m-1"
+        />
+      </div>
       <Image
-        src={"/medical.jpg"}
+        src={`/${data.category}.jpg`}
         width={500}
         height={250}
-        alt="wedding"
+        alt={data.category}
         loading="eager"
         priority
         className="h-32 object-cover rounded-b-2xl"
