@@ -171,11 +171,11 @@ export default function PaymentDetailsForm(form: props) {
               >
                 <div className="space-y-1">
                   <Image
-                    src={"/ecocash.png"}
-                    width={120}
-                    height={20}
+                    src={"/ecocash.jpg"}
+                    width={250}
+                    height={75}
                     alt="ecocash"
-                    className="object-contain h-fit mx-auto rounded-lg border border-slate-500"
+                    className="w-32 object-contain h-fit mx-auto rounded-lg border border-slate-500"
                   />
                   {!isEcocashSelected && (
                     <p>Click here to add an Ecocash number</p>
@@ -234,11 +234,11 @@ export default function PaymentDetailsForm(form: props) {
               >
                 <div className="space-y-1">
                   <Image
-                    src={"/lumicash.png"}
-                    width={120}
-                    height={20}
+                    src={"/lumicash.jpg"}
+                    width={250}
+                    height={75}
                     alt="lumicash"
-                    className="object-contain h-fit mx-auto rounded-lg border border-slate-500"
+                    className="w-32 object-contain h-fit mx-auto rounded-lg border border-slate-500"
                   />
                   {!isLumicashSelected && (
                     <p>Click here to add a Lumicash number</p>
