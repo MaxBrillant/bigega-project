@@ -12,12 +12,14 @@ import { useToast } from "@/components/ui/use-toast";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
+import ConfirmationPopup from "../components/paymentConfirmation";
 
 type props = {
   id: number;
   title: string;
   lumicashNumber: string | undefined;
   ecocashNumber: string | undefined;
+  whatsappGroupLink: string;
 };
 type formSchemaType = z.infer<typeof DonationSchema>;
 export default function PaymentForm(form: props) {
@@ -37,6 +39,8 @@ export default function PaymentForm(form: props) {
   >();
 
   const [isOtpRequired, setIsOtpRequired] = useState(false);
+  const [isWaitingForConfirmation, setIsWaitingForConfirmation] =
+    useState(false);
 
   const listOfErrors = Object.values(errors).map((error) => error);
 
@@ -75,11 +79,7 @@ export default function PaymentForm(form: props) {
           if (response) {
             setIsOtpRequired(false);
             setValue("otp", undefined);
-            toast({
-              variant: "default",
-              title: `Payment has been sent`,
-              duration: 3000,
-            });
+            setIsWaitingForConfirmation(true);
           }
         } catch (error) {
           toast({
@@ -98,17 +98,37 @@ export default function PaymentForm(form: props) {
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-5 mx-3 p-5 mt-3 mb-7 bg-background border border-slate-300 rounded-2xl"
     >
-      <div className="space-y-1">
+      <div className="space-y-3">
         <p className="font-semibold text-lg">Choose a Payment Method</p>
 
-        <div className="space-y-2 py-2">
-          {form.ecocashNumber && (
-            <button
-              className={
-                selectedMethod === "ecocash"
-                  ? "w-full flex flex-row gap-5 items-center p-3 bg-highlight border border-heading rounded-xl"
-                  : "w-full flex flex-row gap-3 items-center p-[11px] border border-slate-400 rounded-xl"
+        <div className="divide-y divide-heading overflow-hidden border border-heading rounded-2xl">
+          <button
+            className={
+              selectedMethod === "ecocash"
+                ? "w-full flex flex-row gap-5 items-center p-4 bg-highlight"
+                : "w-full flex flex-row gap-3 items-center p-4"
+            }
+            onClick={(e) => {
+              e.preventDefault();
+              if (selectedMethod !== "ecocash") {
+                document?.getElementById("ecocash")?.click();
+              } else {
+                document?.getElementById("ecocash-number")?.focus();
               }
+            }}
+          >
+            <input
+              type="radio"
+              value="ecocash"
+              id="ecocash"
+              checked={selectedMethod === "ecocash"}
+              className="hidden"
+              onClick={() => {
+                setSelectedMethod("ecocash");
+                setValue("lumicashNumber", undefined);
+              }}
+            />
+            <button
               onClick={(e) => {
                 e.preventDefault();
                 if (selectedMethod !== "ecocash") {
@@ -118,58 +138,55 @@ export default function PaymentForm(form: props) {
                 }
               }}
             >
-              {selectedMethod !== "ecocash" && <p>Donate with</p>}
-              <input
-                type="radio"
-                value="ecocash"
-                id="ecocash"
-                checked={selectedMethod === "ecocash"}
-                className="hidden"
-                onClick={() => {
-                  setSelectedMethod("ecocash");
-                  setValue("lumicashNumber", undefined);
-                }}
+              <Image
+                src={"/ecocash.jpg"}
+                width={250}
+                height={75}
+                alt="ecocash"
+                className="w-36 object-contain h-fit mx-auto rounded-lg border border-slate-500"
               />
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (selectedMethod !== "ecocash") {
-                    document?.getElementById("ecocash")?.click();
-                  } else {
-                    document?.getElementById("ecocash-number")?.focus();
-                  }
-                }}
-              >
-                <Image
-                  src={"/ecocash.jpg"}
-                  width={250}
-                  height={75}
-                  alt="ecocash"
-                  className="w-32 object-contain h-fit mx-auto rounded-lg border border-slate-500"
-                />
-              </button>
-              {selectedMethod === "ecocash" && (
-                <Input
-                  type="number"
-                  {...register("ecocashNumber", {
-                    setValueAs: (value) => (value === "" ? undefined : value),
-                  })}
-                  id="ecocash-number"
-                  placeholder="71002024"
-                  autoFocus
-                  className="w-36 text-lg bg-white"
-                />
-              )}
             </button>
-          )}
+            {selectedMethod === "ecocash" && (
+              <Input
+                type="number"
+                {...register("ecocashNumber", {
+                  setValueAs: (value) => (value === "" ? undefined : value),
+                })}
+                id="ecocash-number"
+                placeholder="71002024"
+                autoFocus
+                className="w-36 text-lg bg-white"
+              />
+            )}
+          </button>
 
-          {form.lumicashNumber && (
-            <button
-              className={
-                selectedMethod === "lumicash"
-                  ? "w-full flex flex-row gap-5 items-center p-3 bg-highlight border border-heading rounded-xl"
-                  : "w-full flex flex-row gap-3 items-center p-[11px] border border-slate-400 rounded-xl"
+          <button
+            className={
+              selectedMethod === "lumicash"
+                ? "w-full flex flex-row gap-5 items-center p-4 bg-highlight"
+                : "w-full flex flex-row gap-3 items-center p-4"
+            }
+            onClick={(e) => {
+              e.preventDefault();
+              if (selectedMethod !== "lumicash") {
+                document?.getElementById("lumicash")?.click();
+              } else {
+                document?.getElementById("lumicash-number")?.focus();
               }
+            }}
+          >
+            <input
+              type="radio"
+              value="lumicash"
+              id="lumicash"
+              checked={selectedMethod === "lumicash"}
+              className="hidden"
+              onClick={() => {
+                setSelectedMethod("lumicash");
+                setValue("ecocashNumber", undefined);
+              }}
+            />
+            <button
               onClick={(e) => {
                 e.preventDefault();
                 if (selectedMethod !== "lumicash") {
@@ -179,50 +196,27 @@ export default function PaymentForm(form: props) {
                 }
               }}
             >
-              {selectedMethod !== "lumicash" && <p>Donate with</p>}
-              <input
-                type="radio"
-                value="lumicash"
-                id="lumicash"
-                checked={selectedMethod === "lumicash"}
-                className="hidden"
-                onClick={() => {
-                  setSelectedMethod("lumicash");
-                  setValue("ecocashNumber", undefined);
-                }}
+              <Image
+                src={"/lumicash.jpg"}
+                width={250}
+                height={75}
+                alt="lumicash"
+                className="w-36 object-contain h-fit mx-auto rounded-lg border border-slate-500"
               />
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (selectedMethod !== "lumicash") {
-                    document?.getElementById("lumicash")?.click();
-                  } else {
-                    document?.getElementById("lumicash-number")?.focus();
-                  }
-                }}
-              >
-                <Image
-                  src={"/lumicash.jpg"}
-                  width={250}
-                  height={75}
-                  alt="lumicash"
-                  className="w-32 object-contain h-fit mx-auto rounded-lg border border-slate-500"
-                />
-              </button>
-              {selectedMethod === "lumicash" && (
-                <Input
-                  type="number"
-                  {...register("lumicashNumber", {
-                    setValueAs: (value) => (value === "" ? undefined : value),
-                  })}
-                  id="lumicash-number"
-                  placeholder="62002024"
-                  autoFocus
-                  className="w-36 text-lg bg-white"
-                />
-              )}
             </button>
-          )}
+            {selectedMethod === "lumicash" && (
+              <Input
+                type="number"
+                {...register("lumicashNumber", {
+                  setValueAs: (value) => (value === "" ? undefined : value),
+                })}
+                id="lumicash-number"
+                placeholder="62002024"
+                autoFocus
+                className="w-36 text-lg bg-white"
+              />
+            )}
+          </button>
         </div>
       </div>
       {selectedMethod && !errors.ecocashNumber && !errors.lumicashNumber && (
@@ -299,6 +293,13 @@ export default function PaymentForm(form: props) {
         {isPending ? "Loading..." : "Donate"}
       </Button>
 
+      {isWaitingForConfirmation && (
+        <ConfirmationPopup
+          paymentMethod={selectedMethod as string}
+          whatsappGroupLink={form.whatsappGroupLink}
+        />
+      )}
+
       <Dialog
         open={isOtpRequired}
         onOpenChange={() => {
@@ -310,15 +311,30 @@ export default function PaymentForm(form: props) {
           }
         }}
       >
-        <DialogContent>
-          <p>Write your code here</p>
-          <Input
-            type="number"
-            {...register("otp", {
-              setValueAs: (value) => (value === "" ? undefined : value),
-            })}
-            placeholder="123456"
-          />
+        <DialogContent className="space-y-3">
+          <p className="font-semibold text-2xl text-heading">
+            Lumicash has sent you a verification code via SMS
+          </p>
+          <div>
+            <p className="font-medium text-center mx-auto,">
+              Write the code here
+            </p>
+            <Input
+              type="number"
+              {...register("otp", {
+                setValueAs: (value) => (value === "" ? undefined : value),
+              })}
+              autoFocus
+              className="mx-auto w-48 text-center py-6 text-3xl"
+            />
+          </div>
+          {listOfErrors.length > 0 && (
+            <div className="flex flex-col p-3 bg-red-200 text-red-700 border border-red-700 rounded-2xl">
+              {listOfErrors.map((error, index) => (
+                <li key={index}>{error.message}</li>
+              ))}
+            </div>
+          )}
           <Button
             type="button"
             onClick={() =>

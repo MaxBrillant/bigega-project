@@ -28,6 +28,7 @@ type returnedType = [
     lumicash_number: string | undefined;
     ecocash_number: string | undefined;
     // mtn_momo_number: string | undefined;
+    whatsapp_group_link: string;
     organizers: {
       full_name: string;
     };
@@ -57,6 +58,7 @@ type campaignType = {
   lumicashNumber: string | undefined;
   ecocashNumber: string | undefined;
   //   mtnMomoNumber: string | undefined;
+  whatsappGroupLink: string;
   organizerName: string;
 };
 
@@ -103,6 +105,7 @@ export async function GetCampaignDetails(campaignId: number) {
     numberOfDonations: data[0].number_of_donations,
     lumicashNumber: data[0].lumicash_number,
     ecocashNumber: data[0].ecocash_number,
+    whatsappGroupLink: data[0].whatsapp_group_link,
     organizerName: data[0].organizers.full_name,
   } as campaignType;
 }

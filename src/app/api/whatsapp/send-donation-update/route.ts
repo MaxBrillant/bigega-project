@@ -4,10 +4,20 @@ import fetch from "node-fetch";
 
 const token = process.env.WHAPI_TOKEN;
 export async function POST(request: NextRequest) {
-  const recipientNumber: string = await request
-    .json()
-    .then((data) => data.recipient_number);
+  const body = await request.json();
+  const recipientNumber: string = body.recipient_number.replaceAll("+", "");
+  const language: string = body.language;
+  const name: string = body.name;
+  const donation_number: string = body.donation_number;
+  const title: string = body.title;
+  const amount: number = body.amount;
+  const currency: "BIF" | "RWF" = body.currency;
+  const payment_method: "lumicash" | "ecocash" = body.payment_method;
+  const time: Date = body.time;
+  const reference: string = body.reference;
+  const current_amount: number = body.current_amount;
 
+  const burundiTime = convertToBurundiTime(time);
   const options = {
     method: "POST",
     headers: {
@@ -17,18 +27,22 @@ export async function POST(request: NextRequest) {
     },
     body: JSON.stringify({
       to: recipientNumber,
-      media:
-        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdWRtZGhwazBhZzY2ZTh1dWxuYW5ram83MWJlNjY0MmJqem04NW9iZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/XD9o33QG9BoMis7iM4/giphy.mp4",
-      autoplay: true,
-      caption: "Someone just made a donation to your campaign",
+      body: `You have received a donation of ${currency}.${amount} from ${name} (${donation_number}) to your campaign "${title}".
+Here are the details of the donation:
+- Payment method: ${payment_method}
+- Time: ${burundiTime}
+- Reference: ${reference}
+- Total amount raised: ${current_amount}`,
     }),
   };
 
-  await fetch("https://gate.whapi.cloud/messages/gif", options)
+  await fetch("https://gate.whapi.cloud/messages/text", options)
     .then((response) =>
       response.json().then((data: any) => {
         if (data.error) {
-          console.error("Error trying to send the whatsapp message.");
+          console.error(
+            "Error trying to send the whatsapp donation message to the organizer."
+          );
         }
       })
     )
@@ -37,4 +51,19 @@ export async function POST(request: NextRequest) {
     });
 
   return new NextResponse();
+}
+
+function convertToBurundiTime(date: Date): string {
+  // Create a new Date object to avoid modifying the original date
+  const newDate = new Date(date);
+  const adjustedDate = new Date(
+    newDate.toLocaleString("en-US", { timeZone: "Europe/Berlin" })
+  );
+
+  const day = String(adjustedDate.getDate()).padStart(2, "0");
+  const month = String(adjustedDate.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+  const year = adjustedDate.getFullYear();
+  const hours = String(adjustedDate.getHours()).padStart(2, "0");
+  const minutes = String(adjustedDate.getMinutes()).padStart(2, "0");
+  return `${day}/${month}/${year} ${hours}:${minutes}`;
 }
