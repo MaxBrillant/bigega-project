@@ -27,9 +27,9 @@ export default function ConfirmationPopup(props: {
             CLICK HERE to Open your Phone app
           </a>
           <p className="mt-5 text-sm">
-            After your donation has been successfully received, we will send an
+            {`After your donation has been successfully received, we will send an
             update to the Whatsapp Group that is linked to this campaign. Make
-            sure to join to get updates on this activity's progress.
+            sure to join to get updates on this activity's progress.`}
           </p>
           <a
             href={props.whatsappGroupLink}
