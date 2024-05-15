@@ -63,6 +63,7 @@ export default async function Main({ params }: { params: { id: string } }) {
         title={data.title}
         lumicashNumber={data.lumicashNumber}
         ecocashNumber={data.ecocashNumber}
+        whatsappGroupLink={data.whatsappGroupLink}
       />
       <div className="p-3 space-y-5 my-7">
         <div className="space-y-2">

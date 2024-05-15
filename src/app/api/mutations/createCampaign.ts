@@ -150,7 +150,7 @@ async function isCampaignIdUsed(id: number): Promise<boolean> {
     .limit(1);
 
   if (error) {
-    console.error("Error checking if ID is used:", error);
+    console.error("Error checking if ID is used:", error.message);
     return false;
   }
 
