@@ -4,8 +4,8 @@ import { NextRequest, NextResponse } from "next/server";
 import fetch from "node-fetch";
 
 const token = process.env.WHAPI_TOKEN;
-const supabase = CreateServerClient();
 export async function POST(request: NextRequest) {
+  const supabase = CreateServerClient();
   const body = await request.json();
   const groupId: string = body.group_id;
   const language: string = body.language;
