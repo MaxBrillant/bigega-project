@@ -3,8 +3,8 @@ import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-const supabase = CreateServerClient();
 export async function POST(request: NextRequest) {
+  const supabase = CreateServerClient();
   const data = await request.formData();
   console.log(data);
   const status = data.get("status")?.toString();
@@ -151,6 +151,7 @@ type returnedType = [
 ];
 
 const checkIfPaymentIsPending = async (donationId: string) => {
+  const supabase = CreateServerClient();
   const { data, error } = await supabase
     .from("donations")
     .select(
