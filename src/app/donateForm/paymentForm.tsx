@@ -42,6 +42,8 @@ export default function PaymentForm(form: props) {
   const [isWaitingForConfirmation, setIsWaitingForConfirmation] =
     useState(false);
 
+  const [newDonationId, setNewDonationId] = useState<number | undefined>();
+
   const listOfErrors = Object.values(errors).map((error) => error);
 
   const { toast } = useToast();
@@ -66,7 +68,7 @@ export default function PaymentForm(form: props) {
         }
       } else {
         try {
-          const response = await InitiateDonation({
+          const donationId = await InitiateDonation({
             campaignId: form.id,
             amount: data.amount,
             ecocashNumber: data.ecocashNumber,
@@ -76,9 +78,10 @@ export default function PaymentForm(form: props) {
             otp: data.otp,
           });
 
-          if (response) {
+          if (donationId) {
             setIsOtpRequired(false);
             setValue("otp", undefined);
+            setNewDonationId(donationId);
             setIsWaitingForConfirmation(true);
           }
         } catch (error) {
@@ -99,7 +102,7 @@ export default function PaymentForm(form: props) {
       className="flex flex-col gap-5 mx-3 p-5 mt-3 mb-7 bg-background border border-slate-300 rounded-2xl"
     >
       <div className="space-y-3">
-        <p className="font-semibold text-lg">Choose a Payment Method</p>
+        <p className="font-semibold text-lg">Make a donation with</p>
 
         <div className="divide-y divide-heading overflow-hidden border border-heading rounded-2xl">
           <button
@@ -153,7 +156,7 @@ export default function PaymentForm(form: props) {
                   setValueAs: (value) => (value === "" ? undefined : value),
                 })}
                 id="ecocash-number"
-                placeholder="71002024"
+                placeholder="eg. 71002024"
                 autoFocus
                 className="w-36 text-lg bg-white"
               />
@@ -211,7 +214,7 @@ export default function PaymentForm(form: props) {
                   setValueAs: (value) => (value === "" ? undefined : value),
                 })}
                 id="lumicash-number"
-                placeholder="62002024"
+                placeholder="eg. 62002024"
                 autoFocus
                 className="w-36 text-lg bg-white"
               />
@@ -253,7 +256,10 @@ export default function PaymentForm(form: props) {
         !errors.lumicashNumber && (
           <div className="space-y-1">
             <p className="font-semibold text-lg">What is your name?</p>
-            <Input {...register("donorName")} placeholder="Jacques Niyongabo" />
+            <Input
+              {...register("donorName")}
+              placeholder="eg. Arsene Nduwayo"
+            />
 
             <div className="flex flex-row gap-2 pt-2">
               <input
@@ -295,7 +301,8 @@ export default function PaymentForm(form: props) {
 
       {isWaitingForConfirmation && (
         <ConfirmationPopup
-          paymentMethod={selectedMethod as string}
+          donationId={newDonationId as number}
+          paymentMethod={selectedMethod as "lumicash" | "ecocash"}
           whatsappGroupLink={form.whatsappGroupLink}
         />
       )}
