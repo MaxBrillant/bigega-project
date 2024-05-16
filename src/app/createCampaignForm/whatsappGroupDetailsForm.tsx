@@ -155,7 +155,7 @@ export default function WhatsappGroupDetailsForm(form: props) {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
+        <DialogContent className=" max-h-screen overflow-auto">
           <OrganizerDetailsForm />
         </DialogContent>
       </Dialog>

@@ -1,6 +1,5 @@
 "use server";
 
-import { supabase } from "@/app/supabaseClient";
 import { CreateOrganiser } from "./createOrganiser";
 import {
   CampaignSchema,
@@ -8,6 +7,7 @@ import {
 } from "@/app/validation/campaignFormValidation";
 import { z } from "zod";
 import { headers } from "next/headers";
+import { CreateServerClient } from "@/utils/supabase/serverClient";
 
 type props = {
   title: string;
@@ -42,6 +42,8 @@ type returnedData = [
     id: number;
   }
 ];
+
+const supabase = CreateServerClient();
 export async function CreateCampaign(formData: props) {
   //TODO: Validate this shit
 

@@ -1,7 +1,7 @@
 "use server";
 
-import { supabase } from "@/app/supabaseClient";
 import { DonationSchema } from "@/app/validation/donationFormValidation";
+import { CreateServerClient } from "@/utils/supabase/serverClient";
 import { headers } from "next/headers";
 import fetch from "node-fetch";
 
@@ -29,6 +29,7 @@ export async function InitiateDonation(formData: props) {
       isDonorAnonymous: formData.isDonorAnonymous,
     });
 
+    const supabase = CreateServerClient();
     const { data, error } = await supabase
       .from("donations")
       .insert({

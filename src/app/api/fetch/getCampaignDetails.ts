@@ -1,7 +1,6 @@
 "use server";
 
-import { supabase } from "@/app/supabaseClient";
-import { revalidatePath } from "next/cache";
+import { CreateServerClient } from "@/utils/supabase/serverClient";
 import { notFound } from "next/navigation";
 
 type returnedType = [
@@ -63,6 +62,7 @@ type campaignType = {
 };
 
 export async function GetCampaignDetails(campaignId: number) {
+  const supabase = CreateServerClient();
   const { data, error } = await supabase
     .from("campaigns")
     .select(

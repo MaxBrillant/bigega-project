@@ -3,6 +3,7 @@ import PaymentForm from "../donateForm/paymentForm";
 import { GetCampaignDetails } from "../api/fetch/getCampaignDetails";
 import { notFound } from "next/navigation";
 import { Progress } from "@/components/ui/progress";
+import SharePopup from "../components/sharePopup";
 
 export default async function Main({ params }: { params: { id: string } }) {
   if (Number.isNaN(Number(params.id))) {
@@ -12,7 +13,7 @@ export default async function Main({ params }: { params: { id: string } }) {
 
   return (
     <div>
-      <div className="border-b border-highlight">
+      <div className="flex flex-row items-center justify-between border-b border-highlight">
         <Image
           src={"/bigega.png"}
           width={120}
@@ -20,13 +21,13 @@ export default async function Main({ params }: { params: { id: string } }) {
           alt="logo"
           className="object-contain h-fit m-1"
         />
+        <SharePopup url={"bigega.com/" + data.id} />
       </div>
       <Image
         src={`/${data.category}.jpg`}
         width={500}
         height={250}
         alt={data.category}
-        loading="eager"
         priority
         className="h-32 object-cover rounded-b-2xl"
       />

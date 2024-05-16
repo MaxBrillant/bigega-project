@@ -1,6 +1,6 @@
 "use server";
 
-import { supabase } from "@/app/supabaseClient";
+import { CreateServerClient } from "@/utils/supabase/serverClient";
 
 type props = {
   organizerName: string;
@@ -12,6 +12,7 @@ type returnedData = [
   }
 ];
 export async function CreateOrganiser(formData: props) {
+  const supabase = CreateServerClient();
   const { data, error } = await supabase
     .from("organizers")
     .upsert(

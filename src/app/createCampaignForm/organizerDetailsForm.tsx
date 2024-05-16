@@ -7,12 +7,15 @@ import { z } from "zod";
 import { OrganizerDetailsSchema } from "../validation/campaignFormValidation";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
-import { useContext, useTransition } from "react";
+import { useContext, useState, useTransition } from "react";
 import CampaignFormContext from "./formContext";
 import { CreateCampaign } from "../api/mutations/createCampaign";
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { Separator } from "@/components/ui/separator";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import Share from "../components/share";
+import Confetti from "react-confetti";
 
 type detailsType = z.infer<typeof OrganizerDetailsSchema>;
 export default function OrganizerDetailsForm() {
@@ -27,6 +30,7 @@ export default function OrganizerDetailsForm() {
     resolver: zodResolver(OrganizerDetailsSchema),
     mode: "onChange",
   });
+  const [newCampaignId, setNewCampaignId] = useState<number | undefined>();
 
   const listOfErrors = Object.values(errors).map((error) => error);
 
@@ -36,7 +40,7 @@ export default function OrganizerDetailsForm() {
   const onSubmit = (data: detailsType) =>
     startTransition(async () => {
       try {
-        const response = await CreateCampaign({
+        const campaignId = await CreateCampaign({
           title: formState.title as string,
           category:
             formState.category != undefined ? formState.category : "other",
@@ -57,7 +61,8 @@ export default function OrganizerDetailsForm() {
           organizerWhatsappNumber: data.organizerWhatsappNumber,
         });
 
-        if (response) {
+        if (campaignId) {
+          setNewCampaignId(campaignId);
           toast({
             variant: "default",
             title: `The "${formState.title}" campaign has been successfully created`,
@@ -78,7 +83,7 @@ export default function OrganizerDetailsForm() {
       }
     });
 
-  return (
+  return !newCampaignId ? (
     <form
       onSubmit={handleSubmit(onSubmit)}
       action={""}
@@ -89,7 +94,7 @@ export default function OrganizerDetailsForm() {
       </p>
       <div className="space-y-1">
         <p className="font-semibold text-lg">What is your name?</p>
-        <Input {...register("organizerName")} placeholder="Jean Iradukunda" />
+        <Input {...register("organizerName")} placeholder="Arsene Nduwayo" />
       </div>
 
       <Separator />
@@ -117,5 +122,18 @@ export default function OrganizerDetailsForm() {
         {isPending ? "Loading..." : "Create Campaign"}
       </Button>
     </form>
+  ) : (
+    <div className="space-y-5">
+      <Confetti recycle={false} className="w-full h-full" />
+      <p className="font-semibold text-2xl text-heading">
+        🎉🎊Your campaign has been successfully created
+      </p>
+      <p className="font-medium">
+        We have sent a Welcome message to your Whatsapp number, with details
+        about how to find help and get payouts. We have also sent the link to
+        the group that you provided.
+      </p>
+      <Share url={"bigega.com/" + newCampaignId} />
+    </div>
   );
 }
