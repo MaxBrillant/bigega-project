@@ -67,7 +67,7 @@ export async function GetCampaignDetails(campaignId: number) {
     .from("campaigns")
     .select(
       `id,
-        title,
+      title,
         category,
         description,
         country,

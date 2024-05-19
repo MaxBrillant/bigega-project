@@ -1,6 +1,7 @@
 "use server";
 
 import { DonationSchema } from "@/app/validation/donationFormValidation";
+import { getDictionary } from "@/dictionaries/getDictionary";
 import { CreateServerClient } from "@/utils/supabase/serverClient";
 import { headers } from "next/headers";
 import fetch from "node-fetch";
@@ -21,7 +22,8 @@ type returnedData = [
 ];
 export async function InitiateDonation(formData: props) {
   try {
-    DonationSchema.parse({
+    const dict = await getDictionary();
+    DonationSchema(dict?.donate).parse({
       amount: formData.amount,
       lumicashNumber: formData.lumicashNumber,
       ecocashNumber: formData.ecocashNumber,

@@ -1,0 +1,160 @@
+{
+  "home": {
+    "language": "fr",
+    "screenshot": "/screenshot2.jpg",
+    "whatsapp": "/whatsapp2.jpg",
+    "heading": "Collectez des fonds auprès de vos amis et proches vivant au Burundi",
+    "description": "Qu'il s'agisse d'initiatives personnelles, de projets communautaires ou de besoins urgents, nous sommes là pour vous aider à atteindre vos objectifs financiers",
+    "main_cta": "Lancer la collecte de fonds",
+    "second_cta": "Voir un exemple",
+    "feature_one_heading": "Facile à utiliser et sécurisé",
+    "feature_one_description": "Nous offrons une expérience simple et intuitive qui permet aux utilisateurs de commencer rapidement à collecter des fonds ou à faire un don aux causes et aux projets qui leur tiennent à cœur",
+    "feature_two_heading": "Mises à jour et communication continues",
+    "feature_two_description": "Nous envoyons constamment des mises à jour sur l'avancement des campagnes de collecte de fonds, ainsi que des conseils et des communications utiles pour les organisateurs et les collecteurs de fonds"
+  },
+  "start": {
+    "global": {
+      "loading": "Veuillez patienter...",
+      "continue": "Continuer",
+      "back": "Retour"
+    },
+    "start": {
+      "start": "Lancer une collecte de fonds"
+    },
+    "basic": {
+      "title": "Quel est le titre de votre campagne de collecte de fonds?",
+      "title_placeholder": "Mariage de Jean et Jeanne",
+      "reason": "Pour quelle raison collectez-vous des fonds?",
+      "description": "Parlez-nous de la mission ou de l'objectif de cette campagne (facultatif/optionnel)",
+      "description_placeholder": "Nous recherchons un soutien financier pour couvrir les frais associés à notre mariage et les dépenses associées",
+      "wedding": "💍-Cérémonie de mariage",
+      "gift": "🎁-Acheter un cadeau",
+      "funerals": "🕯️-Funérailles & commémoration",
+      "event": "🥂-Événement",
+      "medical": "💊-Raisons médicales",
+      "emergency": "🚨-Urgence",
+      "business": "💼-Faire du business",
+      "family": "🫂-Famille",
+      "education": "📒-Education",
+      "travel": "✈️-Voyage",
+      "other": "💵-Autre"
+    },
+    "payment": {
+      "amount": "Combien d’argent souhaitez-vous collecter grâce à cette campagne?",
+      "currency": "FBU",
+      "payment_method": "Comment souhaitez-vous recevoir vos fonds?",
+      "add_ecocash": "Cliquez ici pour ajouter un numéro Ecocash",
+      "add_lumicash": "Cliquez ici pour ajouter un numéro Lumicash",
+      "notice": "Si vous avez une urgence (médicale ou de toute autre nature) et souhaitez collecter les fonds très rapidement, nous recommandons strictement que vous choisissiez UNIQUEMENT Ecocash pour recevoir les fonds. Lumicash nous permet seulement d'accéder à vos fonds et de vous les envoyer le 20ème jour de chaque mois ou plus tard"
+    },
+    "whatsapp": {
+      "error": "Oops ! Une erreur s'est produite lors de la tentative de rejoindre le groupe WhatsApp",
+      "link": "Veuillez fournir le lien du groupe WhatsApp de votre campagne de collecte de fonds",
+      "link_placeholder": "Écrivez ici le lien de votre groupe WhatsApp",
+      "guide_title": "Pour obtenir le lien du groupe, procédez comme suit:",
+      "step_one": "1. Ouvrez la discussion du groupe WhatsApp, puis cliquez sur le nom du groupe. Assurez-vous que vous êtes un administrateur (Admin)",
+      "step_two": "2. Allez en bas et cliquez sur « Inviter via un lien »",
+      "step_three": "3. Cliquez sur « Copier le lien »",
+      "language": "Quelle langue devrions-nous utiliser pour communiquer avec vous et les membres du groupe?",
+      "finish": "Terminer"
+    },
+    "organizer": {
+      "success": "La campagne ''$title'' a été créée avec succès",
+      "error": "Une erreur s'est produite lors de la création de la campagne ''$title''",
+      "try": "Essayer à nouveau",
+      "heading": "Avant de pouvoir créer votre campagne, parlez-nous un peu de vous",
+      "name": "Comment vous appelez-vous?",
+      "whatsapp": "Quel est votre numéro WhatsApp?",
+      "notice": "Ceci est très important. Nous l'utiliserons pour vous envoyer des notifications et des mises à jour sur les dons que vous recevrez",
+      "create_campaign": "Créer la campagne",
+      "success_heading": "🎉🎊Votre campagne de collecte de fonds a été créée avec succès",
+      "success_notice": "Nous avons envoyé un message de bienvenue à votre numéro WhatsApp, avec des détails sur la façon de trouver de l'aide et d'obtenir des paiements. Nous avons également envoyé le lien vers le groupe que vous avez fourni"
+    },
+    "share": {
+      "heading": "Partagez cette campagne avec vos amis et proches",
+      "share": "Partager",
+      "copy": "Copier",
+      "copied_message": "Lien copié"
+    },
+    "validation": {
+      "required_title": "Veuillez fournir un titre",
+      "max_title": "Le titre doit contenir moins de 100 caractères",
+      "required_category": "Sélectionnez une raison pour votre collecte de fonds",
+      "max_description": "La description doit contenir moins de 500 caractères",
+      "country": "Choisissez un pays",
+      "amount": "Veuillez indiquer un montant",
+      "min_amount": "Le montant doit être supérieur à 10.000 FBU",
+      "max_amount": "Le montant doit être inférieur à 10.000.000 FBU",
+      "lumicash": "Écrivez un numéro Lumicash valide",
+      "ecocash": "Écrivez un numéro Ecocash valide",
+      "mtn_momo": "Écrivez un numéro MTN Momo valide",
+      "link": "Veuillez fournir un lien de groupe WhatsApp valide",
+      "language": "Sélectionnez une langue de communication",
+      "min_organizer": "Veuillez écrire votre nom",
+      "max_organizer": "Votre nom doit contenir moins de 70 caractères",
+      "valid_whatsapp": "Écrivez un numéro WhatsApp valide et réessayez",
+      "select_method": "Sélectionnez au moins un mode de paiement",
+      "country_method": "Assurez-vous de sélectionner les modes de paiement du pays sélectionné"
+    }
+  },
+  "donate": {
+    "global": {
+      "loading": "Veuillez patienter...",
+      "donate": "Faire un don"
+    },
+    "page": {
+      "target": "🎯Objectif: $amount.FBU",
+      "current": "$amount.FBU",
+      "donations": "ont été collectés à partir de $donations",
+      "singular": "don",
+      "plural": "dons",
+      "no_donations": "Aucun don n'a encore été reçu",
+      "organizer": "Organisateur",
+      "creator": "Cette campagne a été créée par $name",
+      "description": "Description",
+      "no_description": "Aucune description n'a été fournie"
+    },
+    "form": {
+      "otp_error": "Erreur lors de la tentative d'obtention du code de Lumicash, veuillez réessayer",
+      "lumicash_error": "Le paiement n'a pas pu être envoyé. Assurez-vous que le code est valide, que vous avez un solde suffisant ou que votre numéro de téléphone est correct",
+      "other_error": "Le paiement n'a pas pu être envoyé. Assurez-vous d'avoir un solde suffisant ou que votre numéro de téléphone est correct",
+      "heading": "Faites un don avec",
+      "number": "Écrivez votre numéro",
+      "amount": "Combien souhaitez-vous donner?",
+      "currency": "FBU",
+      "name": "Quel est votre nom?",
+      "anonymous": "Masquer mon nom (seuls les organisateurs pourront voir votre nom)",
+      "otp_heading": "Lumicash vous a envoyé un code de vérification par SMS",
+      "otp": "Écrivez le code ici"
+    },
+    "confirmation": {
+      "success_heading": "🎉🎊Votre don a été reçu. 🙏🏾Nous vous remercions pour votre soutien",
+      "confirm_heading": "$method doit confirmer votre paiement avant que nous puissions recevoir votre don",
+      "dial": "Composez",
+      "then": "puis sélectionnez",
+      "select": "Select",
+      "phone_app": "CLIQUEZ ICI pour ouvrir votre application téléphonique",
+      "waiting": "Nous attendons la confirmation de paiement... Nous afficherons un message ici après avoir reçu votre don",
+      "success_notice": "Nous avons envoyé une notification de votre don au groupe WhatsApp qui est lié à cette campagne",
+      "whatsapp_group": "CLIQUEZ ICI pour rejoindre le groupe WhatsApp"
+    },
+    "share": {
+      "heading": "Partagez cette campagne avec vos amis et proches",
+      "share": "Partager",
+      "copy": "Copier",
+      "copied_message": "Lien copié"
+    },
+    "validation": {
+      "required_amount": "Veuillez indiquer un montant",
+      "min_amount": "Le montant doit être supérieur à 500 FBU",
+      "max_amount": "Le montant doit être inférieur à 1.000.000 FBU",
+      "lumicash": "Écrivez un numéro Lumicash valide",
+      "ecocash": "Écrivez un numéro Ecocash valide",
+      "otp": "Écrivez un code valide",
+      "required_name": "Écrivez votre nom complet",
+      "max_name": "Votre nom doit contenir moins de 70 caractères",
+      "select_method": "Choisissez un mode de paiement",
+      "one_method": "Sélectionnez un seul mode de paiement"
+    }
+  }
+}

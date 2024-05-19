@@ -2,19 +2,24 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { PaymentDetailsSchema } from "../validation/campaignFormValidation";
 import CampaignFormContext from "./formContext";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
+import { ImCheckboxChecked } from "react-icons/im";
+import { ImCheckboxUnchecked } from "react-icons/im";
 
 type props = {
-  setStep: Dispatch<SetStateAction<number>>;
+  dictionary: any;
+  goNext: () => void;
+  goPrevious: () => void;
 };
-type detailsType = z.infer<typeof PaymentDetailsSchema>;
 export default function PaymentDetailsForm(form: props) {
+  const schema = PaymentDetailsSchema(form.dictionary);
+  type detailsType = z.infer<typeof schema>;
   const { formState, setFormState } = useContext(CampaignFormContext);
   const {
     register,
@@ -22,7 +27,7 @@ export default function PaymentDetailsForm(form: props) {
     setValue,
     formState: { errors },
   } = useForm<detailsType>({
-    resolver: zodResolver(PaymentDetailsSchema),
+    resolver: zodResolver(PaymentDetailsSchema(form.dictionary)),
     mode: "onChange",
   });
   const [selectedCountry, setSelectedCountry] = useState<
@@ -50,8 +55,10 @@ export default function PaymentDetailsForm(form: props) {
       ecocashNumber: data.ecocashNumber,
       mtnMomoNumber: data.mtnMomoNumber,
     }));
-    form.setStep(2);
+    form.goNext();
   };
+
+  const dict = form.dictionary;
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -114,9 +121,11 @@ export default function PaymentDetailsForm(form: props) {
       </div> 
       <Separator />*/}
       <div className="space-y-1">
-        <p className="font-semibold text-lg">How much do you want to raise?</p>
+        <p className="font-semibold text-lg">{dict.payment.amount}</p>
         <div className="w-full flex flex-row py-2 items-center gap-3">
-          <p className="text-lg">BIF</p>
+          {dict.payment.currency === "BIF" && (
+            <p className="text-lg">{dict.payment.currency}</p>
+          )}
           <Input
             type="number"
             className="py-6 text-3xl"
@@ -127,13 +136,14 @@ export default function PaymentDetailsForm(form: props) {
             defaultValue={formState.targetAmount}
             placeholder="0.00"
           />
+          {dict.payment.currency !== "BIF" && (
+            <p className="text-lg">{dict.payment.currency}</p>
+          )}
         </div>
       </div>
       <Separator />
       <div className="space-y-1">
-        <p className="font-semibold text-lg">
-          How do you want to receive your funds?
-        </p>
+        <p className="font-semibold text-lg">{dict.payment.payment_method}</p>
         <div className="space-y-3 py-2">
           {selectedCountry === "burundi" && (
             <div
@@ -147,7 +157,7 @@ export default function PaymentDetailsForm(form: props) {
                 type="checkbox"
                 value={"ecocash"}
                 id={"ecocash"}
-                className="w-6 h-6"
+                className="hidden"
                 defaultChecked={isEcocashSelected}
                 onChange={(e) => {
                   setIsEcocashSelected(e.target.checked);
@@ -159,6 +169,17 @@ export default function PaymentDetailsForm(form: props) {
                   }
                 }}
               />
+              {isEcocashSelected ? (
+                <ImCheckboxChecked
+                  onClick={() => document?.getElementById("ecocash")?.click()}
+                  className="w-6 h-6 fill-heading"
+                />
+              ) : (
+                <ImCheckboxUnchecked
+                  onClick={() => document?.getElementById("ecocash")?.click()}
+                  className="w-6 h-6 fill-heading/40"
+                />
+              )}
               <button
                 onClick={(e) => {
                   e.preventDefault();
@@ -171,15 +192,13 @@ export default function PaymentDetailsForm(form: props) {
               >
                 <div className="space-y-1">
                   <Image
-                    src={"/ecocash.jpg"}
-                    width={250}
-                    height={75}
+                    src={"/ecocash.png"}
+                    width={500}
+                    height={150}
                     alt="ecocash"
                     className="w-32 object-contain h-fit mx-auto rounded-lg border border-slate-500"
                   />
-                  {!isEcocashSelected && (
-                    <p>Click here to add an Ecocash number</p>
-                  )}
+                  {!isEcocashSelected && <p>{dict.payment.add_ecocash}</p>}
                 </div>
               </button>
               {isEcocashSelected && (
@@ -210,7 +229,7 @@ export default function PaymentDetailsForm(form: props) {
                 type="checkbox"
                 value={"lumicash"}
                 id={"lumicash"}
-                className="w-6 h-6 border border-slate-400 checked:bg-heading fill-white rounded-md"
+                className="hidden"
                 defaultChecked={isLumicashSelected}
                 onChange={(e) => {
                   setIsLumicashSelected(e.target.checked);
@@ -222,6 +241,17 @@ export default function PaymentDetailsForm(form: props) {
                   }
                 }}
               />
+              {isLumicashSelected ? (
+                <ImCheckboxChecked
+                  onClick={() => document?.getElementById("lumicash")?.click()}
+                  className="w-6 h-6 fill-heading"
+                />
+              ) : (
+                <ImCheckboxUnchecked
+                  onClick={() => document?.getElementById("lumicash")?.click()}
+                  className="w-6 h-6 fill-heading/40"
+                />
+              )}
               <button
                 onClick={(e) => {
                   e.preventDefault();
@@ -234,15 +264,13 @@ export default function PaymentDetailsForm(form: props) {
               >
                 <div className="space-y-1">
                   <Image
-                    src={"/lumicash.jpg"}
-                    width={250}
-                    height={75}
+                    src={"/lumicash.png"}
+                    width={500}
+                    height={150}
                     alt="lumicash"
                     className="w-32 object-contain h-fit mx-auto rounded-lg border border-slate-500"
                   />
-                  {!isLumicashSelected && (
-                    <p>Click here to add a Lumicash number</p>
-                  )}
+                  {!isLumicashSelected && <p>{dict.payment.add_lumicash}</p>}
                 </div>
               </button>
               {isLumicashSelected && (
@@ -322,9 +350,7 @@ export default function PaymentDetailsForm(form: props) {
 
       {isLumicashSelected && (
         <p className="font-medium text-sm bg-yellow-100 border border-yellow-700 p-3 rounded-lg">
-          If you have an emergency (medical or of any sort), and wish to collect
-          the funds very soon, we strictly recommend that you only choose
-          Ecocash to receive funds.
+          {dict.payment.notice}
         </p>
       )}
       {listOfErrors.length > 0 && (
@@ -335,9 +361,17 @@ export default function PaymentDetailsForm(form: props) {
         </div>
       )}
       <div className="flex flex-row items-center ml-auto mt-5 gap-3">
-        <Button variant={"secondary"}>Back</Button>
+        <Button
+          variant={"secondary"}
+          onClick={(e) => {
+            e.preventDefault();
+            form.goPrevious();
+          }}
+        >
+          {dict.global.back}
+        </Button>
         <Button type="submit" size={"lg"} className="w-fit">
-          Continue
+          {dict.global.continue}
         </Button>
       </div>
     </form>

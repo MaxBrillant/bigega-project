@@ -12,16 +12,20 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import OrganizerDetailsForm from "./organizerDetailsForm";
 import { Separator } from "@/components/ui/separator";
 
-type props = {};
-type detailsType = z.infer<typeof WhatsappGroupDetailsSchema>;
+type props = {
+  goPrevious: () => void;
+  dictionary: any;
+};
 export default function WhatsappGroupDetailsForm(form: props) {
+  const schema = WhatsappGroupDetailsSchema(form.dictionary);
+  type detailsType = z.infer<typeof schema>;
   const { formState, setFormState } = useContext(CampaignFormContext);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<detailsType>({
-    resolver: zodResolver(WhatsappGroupDetailsSchema),
+    resolver: zodResolver(WhatsappGroupDetailsSchema(form.dictionary)),
     mode: "onChange",
   });
   const [selectedLanguageOfCommunication, setSelectedLanguageOfCommunication] =
@@ -35,6 +39,7 @@ export default function WhatsappGroupDetailsForm(form: props) {
 
   const listOfErrors = Object.values(errors).map((error) => error);
 
+  const dict = form.dictionary;
   const onSubmit = (data: detailsType) =>
     startTransition(async () => {
       setFormState((prevState) => ({
@@ -54,8 +59,7 @@ export default function WhatsappGroupDetailsForm(form: props) {
         if (response.status !== 200) {
           toast({
             variant: "destructive",
-            title:
-              "Uh oh! Something went wrong while trying to join the Whatsapp group.",
+            title: dict.whatsapp.error,
           });
         } else {
           const groupId: string = await response
@@ -77,31 +81,28 @@ export default function WhatsappGroupDetailsForm(form: props) {
       className="flex flex-col gap-5 p-5 mb-7 bg-background border border-slate-300 rounded-2xl"
     >
       <div className="space-y-1">
-        <p className="font-semibold text-lg">Whatsapp Group Link</p>
+        <p className="font-semibold text-lg">{dict.whatsapp.link}</p>
         <Input
           defaultValue={formState.whatsappGroupLink}
           {...register("whatsappGroupLink")}
-          placeholder="Paste your Whatsapp group link here"
+          placeholder={dict.whatsapp.link_placeholder}
         />
         <p className="font-medium text-sm text-black/80">
-          To get the group link, do this:
+          {dict.whatsapp.guide_title}
           <br />
-          1. Open the WhatsApp group chat, then tap the group name. Make sure
-          you are an Admin.
+          {dict.whatsapp.step_one}
           <br />
-          {`2. Go at the bottom, and Tap "Invite via link".`}
+          {dict.whatsapp.step_two}
           <br />
-          {`3. Tap on "Copy link".`}
+          {dict.whatsapp.step_three}
         </p>
       </div>
 
       <Separator />
       <div className="space-y-1">
-        <p className="font-semibold text-lg">
-          What language should we use to communicate with you and group members?
-        </p>
+        <p className="font-semibold text-lg">{dict.whatsapp.language}</p>
         <div className="w-full flex flex-wrap gap-2">
-          {["en", "fr", "bi"].map((language) => {
+          {["en", "fr"].map((language) => {
             return (
               <div key={language}>
                 <input
@@ -129,7 +130,7 @@ export default function WhatsappGroupDetailsForm(form: props) {
                   {language === "en"
                     ? "English"
                     : language === "fr"
-                    ? "Francais"
+                    ? "Français"
                     : language === "bi"
                     ? "Kirundi"
                     : "Kinyarwanda"}
@@ -148,15 +149,23 @@ export default function WhatsappGroupDetailsForm(form: props) {
         </div>
       )}
       <div className="flex flex-row items-center ml-auto mt-5 gap-3">
-        <Button variant={"secondary"}>Back</Button>
+        <Button
+          variant={"secondary"}
+          onClick={(e) => {
+            e.preventDefault();
+            form.goPrevious();
+          }}
+        >
+          {dict.global.back}
+        </Button>
         <Button type="submit" size={"lg"} disabled={isPending}>
-          {isPending ? "Loading..." : "Finish"}
+          {isPending ? dict.global.loading : dict.whatsapp.finish}
         </Button>
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className=" max-h-screen overflow-auto">
-          <OrganizerDetailsForm />
+          <OrganizerDetailsForm dictionary={dict} />
         </DialogContent>
       </Dialog>
     </form>

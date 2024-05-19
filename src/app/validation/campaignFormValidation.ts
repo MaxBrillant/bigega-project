@@ -2,138 +2,146 @@ import { z } from "zod";
 
 import { isValidNumber } from "libphonenumber-js";
 
-export const CampaignSchema = z.object({
-  title: z
-    .string()
-    .min(1, { message: "A title is required" })
-    .max(100, "The title should have less than 100 characters"),
-  category: z.enum(
-    [
-      "wedding",
-      "funerals",
-      "gift",
-      "event",
-      "medical",
-      "emergency",
-      "business",
-      "family",
-      "education",
-      "travel",
-      "other",
-    ],
-    {
-      required_error: "Select a category",
-      invalid_type_error: "Select a category",
-    }
-  ),
-  description: z
-    .string()
-    .max(500, "The description should be less than 500 words")
-    .optional(),
-
-  country: z.enum(["burundi", "rwanda"], {
-    required_error: "Select a country",
-    invalid_type_error: "Select a country",
-  }),
-  targetAmount: z
-    .number({
-      required_error: "Please provide an amount",
-      invalid_type_error: "Please provide an amount",
-    })
-    .min(10000, "The amount should be more than BIF.10,000")
-    .max(10000000, "The amount should be less than BIF.10,000,000"),
-  lumicashNumber: z
-    .string()
-    .refine((data) => isValidNumber("+257" + data), {
-      message: "Write a valid Lumicash number",
-    })
-    .optional(),
-  ecocashNumber: z
-    .string()
-    .refine((data) => isValidNumber("+257" + data), {
-      message: "Write a valid Ecocash number",
-    })
-    .optional(),
-  mtnMomoNumber: z
-    .string()
-    .refine((data) => isValidNumber("+250" + data), {
-      message: "Write a valid MTN Momo number",
-    })
-    .optional(),
-
-  whatsappGroupLink: z
-    .string()
-    .regex(
-      /^https:\/\/chat\.whatsapp\.com\/[a-zA-Z0-9]{22}$/,
-      "Please provide a valid Whatsapp group link"
+export const CampaignSchema = (dict: any) =>
+  z.object({
+    title: z
+      .string()
+      .min(1, { message: dict?.validation?.required_title })
+      .max(100, { message: dict?.validation?.max_title }),
+    category: z.enum(
+      [
+        "wedding",
+        "funerals",
+        "gift",
+        "event",
+        "medical",
+        "emergency",
+        "business",
+        "family",
+        "education",
+        "travel",
+        "other",
+      ],
+      {
+        required_error: dict?.validation?.required_category,
+        invalid_type_error: dict?.validation?.required_category,
+      }
     ),
-  languageOfCommunication: z.enum(["en", "fr", "bi", "rw"], {
-    required_error: "Select a language of communication",
-    invalid_type_error: "Select a language of communication",
-  }),
+    description: z
+      .string()
+      .max(500, dict?.validation?.max_description)
+      .optional(),
 
-  organizerName: z
-    .string()
-    .min(1, { message: "Your name is required" })
-    .max(70, "Your name should have less than 70 characters"),
-  organizerWhatsappNumber: z
-    .string()
-    .min(1, { message: "Your whatsapp number is required" })
-    .refine((data) => isValidNumber(data), {
-      message: "Write a valid phone number",
+    country: z.enum(["burundi", "rwanda"], {
+      required_error: dict?.validation?.country,
+      invalid_type_error: dict?.validation?.country,
     }),
-});
+    targetAmount: z
+      .number({
+        required_error: dict?.validation?.amount,
+        invalid_type_error: dict?.validation?.amount,
+      })
+      .min(10000, dict?.validation?.min_amount)
+      .max(10000000, dict?.validation?.max_amount),
+    lumicashNumber: z
+      .string()
+      .refine((data) => isValidNumber("+257" + data), {
+        message: dict?.validation?.lumicash,
+      })
+      .optional(),
+    ecocashNumber: z
+      .string()
+      .refine((data) => isValidNumber("+257" + data), {
+        message: dict?.validation?.ecocash,
+      })
+      .optional(),
+    mtnMomoNumber: z
+      .string()
+      .refine((data) => isValidNumber("+250" + data), {
+        message: dict?.validation?.mtn_momo,
+      })
+      .optional(),
 
-export const BasicDetailsSchema = CampaignSchema.pick({
-  title: true,
-  category: true,
-  description: true,
-});
+    whatsappGroupLink: z
+      .string()
+      .regex(
+        /^https:\/\/chat\.whatsapp\.com\/[a-zA-Z0-9]{22}$/,
+        dict?.validation?.link
+      ),
+    languageOfCommunication: z.enum(["en", "fr", "bi", "rw"], {
+      required_error: dict?.validation?.language,
+      invalid_type_error: dict?.validation?.language,
+    }),
 
-export const PaymentDetailsSchema = CampaignSchema.pick({
-  country: true,
-  targetAmount: true,
-  lumicashNumber: true,
-  ecocashNumber: true,
-  mtnMomoNumber: true,
-})
-  .refine(
-    (data) => {
-      if (!data.lumicashNumber && !data.ecocashNumber && !data.mtnMomoNumber) {
-        return false;
+    organizerName: z
+      .string()
+      .min(1, { message: dict?.validation?.min_organizer })
+      .max(70, dict?.validation?.max_organizer),
+
+    organizerWhatsappNumber: z.string().refine((data) => isValidNumber(data), {
+      message: dict?.validation?.valid_whatsapp,
+    }),
+  });
+
+export const BasicDetailsSchema = (dict: any) => {
+  return CampaignSchema(dict).pick({
+    title: true,
+    category: true,
+    description: true,
+  });
+};
+
+export const PaymentDetailsSchema = (dict: any) =>
+  CampaignSchema(dict)
+    .pick({
+      country: true,
+      targetAmount: true,
+      lumicashNumber: true,
+      ecocashNumber: true,
+      mtnMomoNumber: true,
+    })
+    .refine(
+      (data) => {
+        if (
+          !data.lumicashNumber &&
+          !data.ecocashNumber &&
+          !data.mtnMomoNumber
+        ) {
+          return false;
+        }
+        return true;
+      },
+      {
+        message: dict?.validation?.select_method,
       }
-      return true;
-    },
-    {
-      message: "Select at least one payment method",
-    }
-  )
-  .refine(
-    (data) => {
-      if (
-        data.country === "rwanda" &&
-        (data.lumicashNumber || data.ecocashNumber)
-      ) {
-        return false;
+    )
+    .refine(
+      (data) => {
+        if (
+          data.country === "rwanda" &&
+          (data.lumicashNumber || data.ecocashNumber)
+        ) {
+          return false;
+        }
+        if (data.country === "burundi" && data.mtnMomoNumber) {
+          return false;
+        }
+        return true;
+      },
+      {
+        message: dict?.validation?.country_method,
+        path: ["country"],
       }
-      if (data.country === "burundi" && data.mtnMomoNumber) {
-        return false;
-      }
-      return true;
-    },
-    {
-      message:
-        "Make sure you select the payment methods from the selected country",
-      path: ["country"],
-    }
-  );
+    );
 
-export const WhatsappGroupDetailsSchema = CampaignSchema.pick({
-  whatsappGroupLink: true,
-  languageOfCommunication: true,
-});
+export const WhatsappGroupDetailsSchema = (dict: any) =>
+  CampaignSchema(dict).pick({
+    whatsappGroupLink: true,
+    languageOfCommunication: true,
+  });
 
-export const OrganizerDetailsSchema = CampaignSchema.pick({
-  organizerName: true,
-  organizerWhatsappNumber: true,
-});
+export const OrganizerDetailsSchema = (dict: any) =>
+  CampaignSchema(dict).pick({
+    organizerName: true,
+    organizerWhatsappNumber: true,
+  });
