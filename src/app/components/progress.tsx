@@ -1,10 +1,11 @@
+import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react";
 
 type progressProps = {
   step: number;
-  setStep: Dispatch<SetStateAction<number>>;
 };
 export default function Progress(props: progressProps) {
+  const { push } = useRouter();
   return (
     <div className="w-fit py-3 px-7 mx-auto flex flex-row items-center">
       <button
@@ -15,7 +16,7 @@ export default function Progress(props: progressProps) {
         }
         onClick={() => {
           if (props.step > 0) {
-            props.setStep(0);
+            push(`/start`);
           }
         }}
       >
@@ -34,7 +35,7 @@ export default function Progress(props: progressProps) {
         }
         onClick={() => {
           if (props.step > 1) {
-            props.setStep(1);
+            push(`/start?step=1`);
           }
         }}
       >
@@ -53,7 +54,7 @@ export default function Progress(props: progressProps) {
         }
         onClick={() => {
           if (props.step > 2) {
-            props.setStep(2);
+            push(`/start?step=2`);
           }
         }}
       >

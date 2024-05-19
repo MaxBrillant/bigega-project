@@ -1,0 +1,160 @@
+{
+  "home": {
+    "language": "en",
+    "screenshot": "/screenshot1.jpg",
+    "whatsapp": "/whatsapp1.jpg",
+    "heading": "Raise funds from friends and family in Burundi",
+    "description": "From personal initiatives, community projects, or urgent needs, we are here to help you reach your financial and fundraising goals",
+    "main_cta": "Start Fundraising",
+    "second_cta": "See an example",
+    "feature_one_heading": "Easy to use and secure",
+    "feature_one_description": "We provide a simple and intuitive experience that allows users to quickly start collecting funds or donate to the causes and projects they care about",
+    "feature_two_heading": "Continuous updates and communication",
+    "feature_two_description": "We constantly send updates on the progress of fundraising campaigns, along with helpful tips and communications for organizers and fundraisers"
+  },
+  "start": {
+    "global": {
+      "loading": "Loading...",
+      "continue": "Continue",
+      "back": "Back"
+    },
+    "start": {
+      "start": "Start a fundraising campaign"
+    },
+    "basic": {
+      "title": "What is the title of your fundraising campaign?",
+      "title_placeholder": "John and Jane's wedding",
+      "reason": "What are you raising funds for?",
+      "description": "Tell us about the mission or goal of this campaign (optional)",
+      "description_placeholder": "We are seeking financial support to cover the costs associated with our upcoming wedding and related expenses",
+      "wedding": "💍-Wedding Ceremony",
+      "gift": "🎁-Buy a Gift",
+      "funerals": "🕯️-Funerals & Memorials",
+      "event": "🥂-Event",
+      "medical": "💊-Medical",
+      "emergency": "🚨-Emergency",
+      "business": "💼-Business",
+      "family": "🫂-Family",
+      "education": "📒-Education",
+      "travel": "✈️-Travel",
+      "other": "💵-Other"
+    },
+    "payment": {
+      "amount": "How much do you want to raise?",
+      "currency": "BIF",
+      "payment_method": "How do you want to receive your funds?",
+      "add_ecocash": "Click here to add an Ecocash number",
+      "add_lumicash": "Click here to add a Lumicash number",
+      "notice": "If you have an emergency (medical or of any sort), and wish to collect the funds very soon, we strictly recommend that you ONLY choose Ecocash to receive funds. Lumicash only allows us to access your funds and send them to you on the 20th day of every month or later"
+    },
+    "whatsapp": {
+      "error": "Uh oh! Something went wrong while trying to join the WhatsApp group",
+      "link": "Provide your fundraising campaign WhatsApp Group Link",
+      "link_placeholder": "Paste your WhatsApp group link here",
+      "guide_title": "To get the group link, do this:",
+      "step_one": "1. Open the WhatsApp group chat, then tap the group name. Make sure you are an Admin",
+      "step_two": "2. Go at the bottom, and Tap ''Invite via link''",
+      "step_three": "3. Tap on ''Copy link''",
+      "language": "What language should we use to communicate with you and group members?",
+      "finish": "Finish"
+    },
+    "organizer": {
+      "success": "The ''$title'' campaign has been successfully created",
+      "error": "Something went wrong while creating the ''$title'' campaign",
+      "try": "Try again",
+      "heading": "Before we can create your campaign, tell us a little bit about yourself",
+      "name": "What is your name?",
+      "whatsapp": "What is your WhatsApp number?",
+      "notice": "This is very important. We will use it to send you notifications and updates on the donations that you will receive",
+      "create_campaign": "Create Campaign",
+      "success_heading": "🎉🎊Your fundraising campaign has been successfully created",
+      "success_notice": "We have sent a Welcome message to your WhatsApp number, with details about how to find help and get payouts. We have also sent the link to the group that you provided"
+    },
+    "share": {
+      "heading": "Help this campaign reach friends and family",
+      "share": "Share",
+      "copy": "Copy",
+      "copied_message": "Link copied"
+    },
+    "validation": {
+      "required_title": "Please provide a title",
+      "max_title": "The title should have less than 100 characters",
+      "required_category": "Select a reason for your fundraising",
+      "max_description": "The description should have less than 500 characters",
+      "country": "Select a country",
+      "amount": "Please provide an amount",
+      "min_amount": "The amount should be more than BIF.10,000",
+      "max_amount": "The amount should be less than BIF.10,000,000",
+      "lumicash": "Write a valid Lumicash number",
+      "ecocash": "Write a valid Ecocash number",
+      "mtn_momo": "Write a valid MTN Momo number",
+      "link": "Please provide a valid WhatsApp group link",
+      "language": "Select a language of communication",
+      "min_organizer": "Please write your name",
+      "max_organizer": "Your name should have less than 70 characters",
+      "valid_whatsapp": "Write a valid phone number and try again",
+      "select_method": "Select at least one payment method",
+      "country_method": "Make sure you select the payment methods from the selected country"
+    }
+  },
+  "donate": {
+    "global": {
+      "loading": "Loading...",
+      "donate": "Donate"
+    },
+    "page": {
+      "target": "🎯Target: BIF.$amount",
+      "current": "BIF.$amount",
+      "donations": "raised from $donations",
+      "singular": "donation",
+      "plural": "donations",
+      "no_donations": "No donations have been received yet",
+      "organizer": "Organizer",
+      "creator": "This campaign was created by $name",
+      "description": "Description",
+      "no_description": "No description was provided"
+    },
+    "form": {
+      "otp_error": "Error while trying to get the code from Lumicash, please try again",
+      "lumicash_error": "The payment could not be sent. Make sure that the code is valid, that you have enough balance or that your phone number is correct",
+      "other_error": "The payment could not be sent. Make sure you have enough balance or that your phone number is correct",
+      "heading": "Make a donation with",
+      "number": "Write your number",
+      "amount": "How much do you wish to donate?",
+      "currency": "BIF",
+      "name": "What is your name?",
+      "anonymous": "Hide my name (only organizers will be able to see your name)",
+      "otp_heading": "Lumicash has sent you a verification code via SMS",
+      "otp": "Write the code here"
+    },
+    "confirmation": {
+      "success_heading": "🎉🎊Your donation has been received. 🙏🏾Thank you for your support",
+      "confirm_heading": "$method needs to confirm your payment before we can receive your donation",
+      "dial": "Dial",
+      "then": "then select",
+      "select": "Select",
+      "phone_app": "CLICK HERE to Open your Phone App",
+      "waiting": "Waiting for payment confirmation... We will show a message here after receiving your donation",
+      "success_notice": "We have sent a notification of your donation to the WhatsApp Group that is linked to this campaign",
+      "whatsapp_group": "CLICK HERE to Join the WhatsApp Group"
+    },
+    "share": {
+      "heading": "Help this campaign reach friends and family",
+      "share": "Share",
+      "copy": "Copy",
+      "copied_message": "Link copied"
+    },
+    "validation": {
+      "required_amount": "Please provide an amount",
+      "min_amount": "The amount should be more than BIF.500",
+      "max_amount": "The amount should be less than BIF.1,000,000",
+      "lumicash": "Write a valid Lumicash number",
+      "ecocash": "Write a valid Ecocash number",
+      "otp": "Write a valid code",
+      "required_name": "Write your full name",
+      "max_name": "Your name should have less than 70 characters",
+      "select_method": "Select a payment method",
+      "one_method": "Select only one payment method"
+    }
+  }
+}

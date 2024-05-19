@@ -42,23 +42,27 @@ export async function POST(request: NextRequest) {
     let currentDate: string;
     let formattedData = "";
 
-    data.slice(0, 25).forEach((donation, index) => {
+    const anonymous =
+      language === "en" ? "Anonymous Donor" : "Donateur Anonyme";
+    data.slice(0, 25).forEach((donation) => {
+      const formatedAmount =
+        language === "en"
+          ? donation.currency + "." + donation.amount
+          : donation.amount + "." + donation.currency.replace("BIF", "FBU");
+
       const formattedDate = formatDate(donation.transaction_date_and_time);
       if (currentDate !== formattedDate) {
         currentDate = formattedDate;
-        formattedData += `${currentDate}\n`;
+        formattedData += `\n${currentDate}\n`;
       }
       formattedData +=
-        data.length -
-        index +
-        ". " +
+        "- " +
         formatTime(donation.transaction_date_and_time) +
         " - " +
-        (donation.is_donor_anonymous ? "Anonymous" : donation.donor_name) +
+        (donation.is_donor_anonymous ? anonymous : donation.donor_name) +
         " - " +
-        donation.currency +
-        "." +
-        donation.amount +
+        formatedAmount +
+        " ✅" +
         "\n";
     });
 
@@ -71,25 +75,51 @@ export async function POST(request: NextRequest) {
       },
       body: JSON.stringify({
         to: groupId,
-        media:
-          "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdWRtZGhwazBhZzY2ZTh1dWxuYW5ram83MWJlNjY0MmJqem04NW9iZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/XD9o33QG9BoMis7iM4/giphy.mp4",
-        autoplay: true,
-        caption: `New donation of ${currency}.${amount} received from ${
-          isDonorAnonymous ? "an Anonymous Donor" : name
-        } to the campaign "${title}". The total amount raised so far is ${currentAmount}, from the target of ${targetAmount}.
-Donate now by going to bigega.com/${campaignId}
-      
-Here are the latest donations: 
+        body:
+          language === "en"
+            ? `🎉 🎁 ${
+                isDonorAnonymous ? "An Anonymous Donor" : name
+              } has donated ${currency}.${amount} to "${title}". We are now at ${currency}.${currentAmount}, on our way to reaching our target of ${currency}.${targetAmount}
+
+Want to help us reach our target? Donate now at  bigega.com/${campaignId}.
+    
+Here's the latest update:
 ${formattedData}
 ${
   data.length > 25
     ? data.length - 25 + " other people donated."
-    : "End of the list"
-}`,
+    : "End of the list."
+}
+
+If you have any problems or would wish to give us feedback, please tell us in private message.`
+            : `🎉 🎁 ${
+                isDonorAnonymous ? "Un Donateur Anonyme" : name
+              } a fait un don de ${amount}.${currency.replace(
+                "BIF",
+                "FBU"
+              )} pour la campagne "${title}". Nous sommes maintenant à ${currentAmount}.${currency.replace(
+                "BIF",
+                "FBU"
+              )}, en route vers notre objectif de ${targetAmount}.${currency.replace(
+                "BIF",
+                "FBU"
+              )}.
+
+Aidez nous à atteindre notre objectif en faisant un don maintenant sur bigega.com/${campaignId}.
+
+Voici la dernière mise à jour:
+${formattedData}
+${
+  data.length > 25
+    ? data.length - 25 + " autre(s) personne(s) ont(a) contribué(s)."
+    : "Fin de la liste."
+}
+
+Si vous avez des problèmes ou si vous souhaitez nous donner des retours, veuillez nous écrire en privé.`,
       }),
     };
 
-    await fetch("https://gate.whapi.cloud/messages/gif", options)
+    await fetch("https://gate.whapi.cloud/messages/text", options)
       .then((response) =>
         response.json().then((data: any) => {
           if (data.error) {

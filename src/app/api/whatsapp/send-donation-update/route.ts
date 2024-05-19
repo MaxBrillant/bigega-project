@@ -27,12 +27,25 @@ export async function POST(request: NextRequest) {
     },
     body: JSON.stringify({
       to: recipientNumber,
-      body: `You have received a donation of ${currency}.${amount} from ${name} (${donation_number}) to your campaign "${title}".
+      body:
+        language === "en"
+          ? `💸💵You have received a donation of ${currency}.${amount} from ${name} (${donation_number}) to your campaign "${title}".
 Here are the details of the donation:
+
 - Payment method: ${payment_method}
 - Time: ${burundiTime}
 - Reference: ${reference}
-- Total amount raised: ${current_amount}`,
+- Total amount raised: ${currency}.${current_amount}`
+          : `💸💵Vous avez reçu un don de ${amount}.${currency.replace(
+              "BIF",
+              "FBU"
+            )} de la part de ${name} (${donation_number}) pour votre campagne "${title}".
+Voici les détails du don :
+
+Mode de paiement : ${payment_method}
+Heure : ${burundiTime}
+Référence : ${reference}
+Montant total collecté : ${current_amount}.${currency.replace("BIF", "FBU")}`,
     }),
   };
 

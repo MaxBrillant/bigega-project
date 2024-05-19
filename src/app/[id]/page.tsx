@@ -4,24 +4,31 @@ import { GetCampaignDetails } from "../api/fetch/getCampaignDetails";
 import { notFound } from "next/navigation";
 import { Progress } from "@/components/ui/progress";
 import SharePopup from "../components/sharePopup";
+import { getDictionary } from "@/dictionaries/getDictionary";
+import Link from "next/link";
 
 export default async function Main({ params }: { params: { id: string } }) {
   if (Number.isNaN(Number(params.id))) {
     notFound();
   }
+
   const data = await GetCampaignDetails(Number(params.id));
+  const dictionary = await getDictionary();
+  const dict = dictionary?.donate;
 
   return (
     <div>
       <div className="flex flex-row items-center justify-between border-b border-highlight">
-        <Image
-          src={"/bigega.png"}
-          width={120}
-          height={20}
-          alt="logo"
-          className="object-contain h-fit m-1"
-        />
-        <SharePopup url={"bigega.com/" + data.id} />
+        <Link href={"/"}>
+          <Image
+            src={"/bigega.svg"}
+            width={120}
+            height={20}
+            alt="logo"
+            className="object-contain p-1 h-fit m-1"
+          />
+        </Link>
+        <SharePopup url={"bigega.com/" + data.id} dictionary={dict} />
       </div>
       <Image
         src={`/${data.category}.jpg`}
@@ -34,19 +41,23 @@ export default async function Main({ params }: { params: { id: string } }) {
       <div className="p-3 space-y-1">
         <p className="text-2xl font-bold">{data.title}</p>
         <p className="w-fit px-2 py-1 font-semibold text-nowrap bg-highlight text-heading border border-heading rounded-full">
-          🎯Target: {data.country === "burundi" ? "BIF" : "RWF"}.
-          {data.targetAmount}
+          {dict.page.target.replace("$amount", "" + data.targetAmount)}
         </p>
         {data.numberOfDonations > 0 && data.currentAmount > 0 ? (
           <p className="font-medium">
             <span className="text-heading font-semibold underline underline-offset-2">
-              {data.country === "burundi" ? "BIF" : "RWF"}.{data.currentAmount}
+              {dict.page.current.replace("$amount", "" + data.currentAmount)}
             </span>{" "}
-            raised from {data.numberOfDonations}{" "}
-            {data.numberOfDonations === 1 ? "donation" : "donations"}
+            {dict.page.donations.replace(
+              "$donations",
+              "" + data.numberOfDonations
+            )}{" "}
+            {data.numberOfDonations === 1
+              ? dict.page.singular
+              : dict.page.plural}
           </p>
         ) : (
-          <p className="font-medium">No donations have been received yet.</p>
+          <p className="font-medium">{dict.page.no_donations}</p>
         )}
         {data.currentAmount > 0 && (
           <div className="flex flex-row gap-2 items-center">
@@ -54,7 +65,7 @@ export default async function Main({ params }: { params: { id: string } }) {
               value={Math.round((data.currentAmount * 100) / data.targetAmount)}
             />
             <p className="font-medium">
-              {Math.round((data.currentAmount * 100) / data.targetAmount)}%
+              {((data.currentAmount * 100) / data.targetAmount).toFixed(1)}%
             </p>
           </div>
         )}
@@ -65,24 +76,23 @@ export default async function Main({ params }: { params: { id: string } }) {
         lumicashNumber={data.lumicashNumber}
         ecocashNumber={data.ecocashNumber}
         whatsappGroupLink={data.whatsappGroupLink}
+        dictionary={dict}
       />
       <div className="p-3 space-y-5 my-7">
         <div className="space-y-2">
           <p className="text-xl font-medium text-heading underline underline-offset-8">
-            Organizer
+            {dict.page.organizer}
           </p>
           <p className="font-medium text-slate-700">
-            This campaign was created by {data.organizerName}
+            {dict.page.creator.replace("$name", data.organizerName)}
           </p>
         </div>
         <div className="space-y-2">
           <p className="text-xl font-medium text-heading underline underline-offset-8">
-            Description
+            {dict.page.description}
           </p>
           <p className="font-medium text-slate-700">
-            {data.description
-              ? data.description
-              : "No description was provided."}
+            {data.description ? data.description : dict.page.no_description}
           </p>
         </div>
       </div>

@@ -1,7 +1,8 @@
-export default function NotFound() {
+import { CgSpinner } from "react-icons/cg";
+export default function Loading() {
   return (
-    <main className="flex h-screen flex-col items-center justify-center gap-2">
-      <h2 className="text-xl font-semibold">Loading</h2>
-    </main>
+    <div className="flex h-screen flex-col items-center justify-center gap-2">
+      <CgSpinner className="w-20 h-20 animate-spin fill-heading duration-500" />
+    </div>
   );
 }

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BasicDetailsSchema } from "../validation/campaignFormValidation";
 import { z } from "zod";
@@ -11,17 +11,19 @@ import CampaignFormContext from "./formContext";
 import { Separator } from "@/components/ui/separator";
 
 type props = {
-  setStep: Dispatch<SetStateAction<number>>;
+  dictionary: any;
+  goNext: () => void;
 };
-type detailsType = z.infer<typeof BasicDetailsSchema>;
 export default function BasicDetailsForm(form: props) {
+  const schema = BasicDetailsSchema(form.dictionary);
+  type detailsType = z.infer<typeof schema>;
   const { formState, setFormState } = useContext(CampaignFormContext);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<detailsType>({
-    resolver: zodResolver(BasicDetailsSchema),
+    resolver: zodResolver(BasicDetailsSchema(form.dictionary)),
     mode: "onChange",
   });
 
@@ -38,8 +40,57 @@ export default function BasicDetailsForm(form: props) {
       category: data.category,
       description: data.description,
     }));
-    form.setStep(1);
+    form.goNext();
   };
+
+  const dict = form.dictionary;
+
+  const categories = [
+    {
+      id: "wedding",
+      value: dict.basic.wedding,
+    },
+    {
+      id: "gift",
+      value: dict.basic.gift,
+    },
+    {
+      id: "funerals",
+      value: dict.basic.funerals,
+    },
+    {
+      id: "event",
+      value: dict.basic.event,
+    },
+    {
+      id: "medical",
+      value: dict.basic.medical,
+    },
+    {
+      id: "emergency",
+      value: dict.basic.emergency,
+    },
+    {
+      id: "business",
+      value: dict.basic.business,
+    },
+    {
+      id: "family",
+      value: dict.basic.family,
+    },
+    {
+      id: "education",
+      value: dict.basic.education,
+    },
+    {
+      id: "travel",
+      value: dict.basic.travel,
+    },
+    {
+      id: "other",
+      value: dict.basic.other,
+    },
+  ];
 
   return (
     <form
@@ -47,18 +98,16 @@ export default function BasicDetailsForm(form: props) {
       className="flex flex-col gap-5 p-5 mb-7 bg-background border border-slate-300 rounded-2xl"
     >
       <div className="space-y-1">
-        <p className="font-semibold text-lg">
-          What is the title of your fundraising campaign?
-        </p>
+        <p className="font-semibold text-lg">{dict.basic.title}</p>
         <Input
           {...register("title")}
           defaultValue={formState.title}
-          placeholder="John and Jane's wedding"
+          placeholder={dict.basic.title_placeholder}
         />
       </div>
       <Separator />
       <div className="space-y-1">
-        <p className="font-semibold text-lg">What are you raising funds for?</p>
+        <p className="font-semibold text-lg">{dict.basic.reason}</p>
         <div className="w-full flex flex-wrap gap-2">
           {categories.map((category) => {
             return (
@@ -97,14 +146,12 @@ export default function BasicDetailsForm(form: props) {
       </div>
       <Separator />
       <div className="space-y-1">
-        <p className="font-semibold text-lg">
-          Tell us about the mission or goal of this campaign (optional)
-        </p>
+        <p className="font-semibold text-lg">{dict.basic.description}</p>
         <Textarea
           {...register("description", {
             setValueAs: (value) => (value === "" ? undefined : value),
           })}
-          placeholder="We are raising money to help pay for our wedding and various expenses"
+          placeholder={dict.basic.description_placeholder}
         />
       </div>
 
@@ -116,55 +163,8 @@ export default function BasicDetailsForm(form: props) {
         </div>
       )}
       <Button type="submit" size={"lg"} className="w-fit ml-auto mt-5">
-        Continue
+        {dict.global.continue}
       </Button>
     </form>
   );
 }
-
-const categories = [
-  {
-    id: "wedding",
-    value: "💍-Wedding Ceremony",
-  },
-  {
-    id: "gift",
-    value: "🎁-Buy a Gift",
-  },
-  {
-    id: "funerals",
-    value: "🕯️-Funerals & Memorials",
-  },
-  {
-    id: "event",
-    value: "🥂-Event",
-  },
-  {
-    id: "medical",
-    value: "💊-Medical",
-  },
-  {
-    id: "emergency",
-    value: "🚨-Emergency",
-  },
-  {
-    id: "business",
-    value: "💼-Business",
-  },
-  {
-    id: "family",
-    value: "🫂-Family",
-  },
-  {
-    id: "education",
-    value: "📒-Education",
-  },
-  {
-    id: "travel",
-    value: "✈️-Travel",
-  },
-  {
-    id: "other",
-    value: "💵-Other",
-  },
-];

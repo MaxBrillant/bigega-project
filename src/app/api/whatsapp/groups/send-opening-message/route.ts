@@ -9,6 +9,7 @@ export async function POST(request: NextRequest) {
   const campaignLink: string = body.link;
   const organizerWhatsappNumber: string = body.organizer_whatsapp_number;
   const groupId: string = body.group_id;
+  const language: string = body.language;
 
   const options = {
     method: "POST",
@@ -19,16 +20,24 @@ export async function POST(request: NextRequest) {
     },
     body: JSON.stringify({
       to: groupId,
-      media:
-        "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdWRtZGhwazBhZzY2ZTh1dWxuYW5ram83MWJlNjY0MmJqem04NW9iZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/XD9o33QG9BoMis7iM4/giphy.mp4",
-      autoplay: true,
-      caption: `Hello everyone, @${organizerWhatsappNumber}  has just created a new campaign named "${campaignTitle}".
+      body:
+        language === "en"
+          ? `👋😃 Hello everyone, 
+@${organizerWhatsappNumber}  has just created a new fundraising campaign titled "${campaignTitle}".
+
 Make a donation here: ${campaignLink} and support the cause.
-We will be sending continuous updates and notifications here when donations are received.`,
+
+We will be sending continuous updates and notifications here when donations are received.`
+          : `👋😃 Bonjour à tous, 
+@${organizerWhatsappNumber} vient de créer une nouvelle campagne de collecte de fonds intitulée "${campaignTitle}".
+
+Faites un don ici : ${campaignLink} et soutenez la cause.
+
+Nous enverrons des mises à jour et des notifications continues ici lorsque des dons seront reçus.`,
     }),
   };
 
-  await fetch("https://gate.whapi.cloud/messages/gif", options)
+  await fetch("https://gate.whapi.cloud/messages/text", options)
     .then((response) =>
       response.json().then((data: any) => {
         if (data.error) {

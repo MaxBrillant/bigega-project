@@ -8,6 +8,7 @@ import {
 import { z } from "zod";
 import { headers } from "next/headers";
 import { CreateServerClient } from "@/utils/supabase/serverClient";
+import { getDictionary } from "@/dictionaries/getDictionary";
 
 type props = {
   title: string;
@@ -47,16 +48,10 @@ const supabase = CreateServerClient();
 export async function CreateCampaign(formData: props) {
   //TODO: Validate this shit
 
-  const campaignSchema = z.union([
-    CampaignSchema.omit({
-      country: true,
-      targetAmount: true,
-      ecocashNumber: true,
-      lumicashNumber: true,
-      mtnMomoNumber: true,
-    }),
-    PaymentDetailsSchema,
-  ]);
+  const dict = await getDictionary();
+  const campaignSchema = CampaignSchema(dict?.start).and(
+    PaymentDetailsSchema(dict)
+  );
 
   try {
     campaignSchema.parse(formData);
@@ -172,7 +167,7 @@ async function sendCampaignCreationMessages(message: messageProps) {
   const pathname = headerList.get("x-pathname");
   const origin = new URL(pathname as string).origin.replaceAll("https", "http");
   const id = message.campaignId;
-  const link = "https://www.bigega.com/" + id;
+  const link = "bigega.com/" + id;
 
   await fetch(origin + "/api/whatsapp/send-welcome-message", {
     method: "POST",
@@ -182,6 +177,7 @@ async function sendCampaignCreationMessages(message: messageProps) {
       link: link,
       name: message.organizerName,
       recipient_number: message.organizerWhatsappNumber,
+      language: message.languageOfCommunication,
     }),
   });
 
@@ -193,6 +189,7 @@ async function sendCampaignCreationMessages(message: messageProps) {
       link: link,
       organizer_whatsapp_number: message.organizerWhatsappNumber,
       group_id: message.whatsappGroupId,
+      language: message.languageOfCommunication,
     }),
   });
 }
