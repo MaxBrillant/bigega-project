@@ -152,6 +152,7 @@ export default function BasicDetailsForm(form: props) {
             setValueAs: (value) => (value === "" ? undefined : value),
           })}
           placeholder={dict.basic.description_placeholder}
+          defaultValue={formState.description}
         />
       </div>
 
