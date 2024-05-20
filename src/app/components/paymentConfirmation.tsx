@@ -43,15 +43,30 @@ export default function ConfirmationPopup(props: {
 
           {!isPaymentConfirmed &&
             (props.paymentMethod === "lumicash" ? (
-              <p className="mx-auto text-center bg-highlight p-3 px-5 rounded-full border border-heading shadow-2xl">
-                {dict.confirmation.dial}{" "}
-                <span className="font-semibold text-3xl text-heading">
-                  *163#
-                </span>{" "}
-                {dict.confirmation.then}
-                {"  "}
-                <span className="font-semibold text-3xl text-heading">4</span>
-              </p>
+              <div className="mx-auto space-y-1 bg-highlight p-3 px-5 rounded-2xl border border-heading shadow-2xl">
+                <p>
+                  1. {dict.confirmation.dial}{" "}
+                  <span className="font-semibold text-3xl text-heading">
+                    *163#
+                  </span>
+                </p>
+                <p>
+                  2. {dict.confirmation.select}
+                  {"  "}
+                  <span className="font-semibold text-3xl text-heading">4</span>
+                </p>
+                <p>
+                  3. {dict.confirmation.select}
+                  {"  "}
+                  <span className="font-semibold text-3xl text-heading">2</span>
+                </p>
+                <p>
+                  4. {dict.confirmation.select}
+                  {"  "}
+                  <span className="font-semibold text-3xl text-heading">1</span>
+                  {"  "}-AFRIPAY
+                </p>
+              </div>
             ) : (
               <div className="mx-auto space-y-1 bg-highlight p-3 px-5 rounded-2xl border border-heading shadow-2xl">
                 <p>
@@ -89,6 +104,11 @@ export default function ConfirmationPopup(props: {
                 {dict.confirmation.waiting}
               </p>
             </div>
+          )}
+          {!isPaymentConfirmed && props.paymentMethod === "lumicash" && (
+            <p className="mx-auto p-3 text-slate-500">
+              {dict.confirmation.excuse}
+            </p>
           )}
           {isPaymentConfirmed && (
             <div className="flex flex-col gap-3 text-center">
