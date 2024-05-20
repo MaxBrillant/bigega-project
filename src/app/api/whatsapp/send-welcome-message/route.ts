@@ -30,6 +30,9 @@ We will send updates and notifications of future donations here.
 You can see your donation page at ${campaignLink} and share it with friends.
 
 My name is Max from the Bigega team, and you can report any issues or or give feedback here, we will be happy to work on them.
+
+The collected funds will be sent to your Ecocash number twice a week, on Tuesday and Friday. For Lumicash, the money will be sent on the 20th or shortly after, depending on when Lumitel releases the funds. We are continuously requesting for faster and earlier payouts.
+
 Thank you for your trust, 
 The Bigega team.`
           : `👋Bonjour ${organizerName},
@@ -40,6 +43,9 @@ Nous enverrons des mises à jour et des notifications des futurs dons ici.
 Vous pouvez voir votre page de dons à ${campaignLink} et la partager avec vos amis.
 
 Je m'appelle Max de l'équipe Bigega, et vous pouvez signaler tout problème ou donner votre avis ici, nous serons heureux de les traiter.
+
+Les fonds collectés seront envoyés à votre numéro Ecocash deux fois par semaine, le mardi et le vendredi. Pour Lumicash, l'argent sera envoyé le 20 ou peu après, en fonction de la date de libération des fonds par Lumitel. Nous demandons continuellement des paiements plus rapides de la part de Lumitel.
+
 Nous vous remercions pour votre confiance,
 L'équipe Bigega.`,
     }),

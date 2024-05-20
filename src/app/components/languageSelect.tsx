@@ -6,13 +6,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useRouter } from "next/navigation";
 
 export function LanguageSelect(props: { language: "en" | "fr" }) {
-  const { refresh } = useRouter();
-  const setLanguage = (language: "en" | "fr") => {
+  const setLanguage = async (language: "en" | "fr") => {
     document.cookie = "language=" + (language || "") + "; path=/";
-    refresh();
+    window.location.reload();
   };
   return (
     <Select
@@ -20,7 +18,7 @@ export function LanguageSelect(props: { language: "en" | "fr" }) {
       onValueChange={(value) => setLanguage(value as "en" | "fr")}
     >
       <SelectTrigger className="w-32">
-        <SelectValue />
+        <SelectValue placeholder="Language" />
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="fr">Français</SelectItem>

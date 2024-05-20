@@ -1,8 +1,8 @@
 {
   "home": {
     "language": "en",
-    "screenshot": "/screenshot1.jpg",
-    "whatsapp": "/whatsapp1.jpg",
+    "screenshot": "/screenshot1.webp",
+    "whatsapp": "/whatsapp1.webp",
     "heading": "Raise funds from friends and family in Burundi",
     "description": "From personal initiatives, community projects, or urgent needs, we are here to help you reach your financial and fundraising goals",
     "main_cta": "Start Fundraising",
@@ -26,7 +26,7 @@
       "title_placeholder": "John and Jane's wedding",
       "reason": "What are you raising funds for?",
       "description": "Tell us about the mission or goal of this campaign (optional)",
-      "description_placeholder": "We are seeking financial support to cover the costs associated with our upcoming wedding and related expenses",
+      "description_placeholder": "We are seeking financial support to cover the costs associated with our upcoming wedding",
       "wedding": "💍-Wedding Ceremony",
       "gift": "🎁-Buy a Gift",
       "funerals": "🕯️-Funerals & Memorials",

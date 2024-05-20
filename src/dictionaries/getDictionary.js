@@ -8,7 +8,7 @@ const dictionaries = {
   kir: () => import("./kir.json").then((module) => module.default),
 };
 
-export const getDictionary = () => {
+export const getDictionary = async () => {
   let language;
   const cookieStore = cookies();
   if (cookieStore.get("language")) {
@@ -18,5 +18,5 @@ export const getDictionary = () => {
     language = headerList.get("language");
   }
 
-  return dictionaries[language]();
+  return await dictionaries[language]();
 };

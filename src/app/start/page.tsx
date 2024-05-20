@@ -65,10 +65,12 @@ export default function Main() {
             width={120}
             height={20}
             alt="logo"
-            className="object-contain p-1 h-fit m-1"
+            className="p-1 m-1"
           />
         </Link>
-        <LanguageSelect language={dict?.home?.language} />
+        {location.href.endsWith("/start") && (
+          <LanguageSelect language={dict?.home?.language} />
+        )}
       </div>
       <div className="mx-3 my-2">
         <p className="font-semibold text-xl w-fit mx-auto text-heading">

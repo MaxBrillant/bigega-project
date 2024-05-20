@@ -16,7 +16,7 @@ export default async function Main() {
           width={120}
           height={20}
           alt="logo"
-          className="object-contain p-1 h-fit m-1"
+          className="p-1 m-1"
         />
         <LanguageSelect language={dict.home.language} />
       </div>
@@ -24,17 +24,19 @@ export default async function Main() {
         <div className="flex flex-row bg-background py-3 items-center justify-center">
           <Image
             src={dict.home.screenshot}
-            width={375}
-            height={667}
+            width={500}
+            height={912}
             alt="landing"
+            priority
             className="h-[40vh] m-5 w-auto rounded-3xl border-[6px] bg-slate-50 border-slate-50 drop-shadow-2xl"
           />
           <Image
             src={dict.home.whatsapp}
-            width={375}
-            height={667}
+            width={500}
+            height={912}
             alt="landing"
-            className="h-[45vh] ml-[-70px] w-auto rounded-3xl border-8 bg-slate-50 border-slate-50 drop-shadow-2xl"
+            priority
+            className="h-[45vh] ml-[-70px] w-auto rounded-3xl border-[6px] bg-slate-50 border-slate-50 drop-shadow-2xl"
           />
         </div>
         <div className="p-5 space-y-2 sm:w-3/5 sm:mx-auto">
