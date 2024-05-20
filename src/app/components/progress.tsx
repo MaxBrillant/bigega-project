@@ -16,7 +16,7 @@ export default function Progress(props: progressProps) {
         }
         onClick={() => {
           if (props.step > 0) {
-            push(`/start`);
+            push(`/start?step=0`);
           }
         }}
       >

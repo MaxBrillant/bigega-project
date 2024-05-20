@@ -25,7 +25,7 @@ export default async function Main({ params }: { params: { id: string } }) {
             width={120}
             height={20}
             alt="logo"
-            className="object-contain p-1 h-fit m-1"
+            className="p-1 m-1"
           />
         </Link>
         <SharePopup url={"bigega.com/" + data.id} dictionary={dict} />
