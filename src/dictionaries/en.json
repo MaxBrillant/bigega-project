@@ -16,7 +16,8 @@
     "global": {
       "loading": "Loading...",
       "continue": "Continue",
-      "back": "Back"
+      "back": "Back",
+      "language": "en"
     },
     "start": {
       "start": "Start a fundraising campaign"
@@ -100,7 +101,8 @@
   "donate": {
     "global": {
       "loading": "Loading...",
-      "donate": "Donate"
+      "donate": "Donate",
+      "language": "en"
     },
     "page": {
       "target": "🎯Target: BIF.$amount",

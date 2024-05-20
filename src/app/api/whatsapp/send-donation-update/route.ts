@@ -1,4 +1,5 @@
 // Import necessary types and functions
+import { formatAmount } from "@/utils/formatCurrency";
 import { NextRequest, NextResponse } from "next/server";
 import fetch from "node-fetch";
 
@@ -29,14 +30,20 @@ export async function POST(request: NextRequest) {
       to: recipientNumber,
       body:
         language === "en"
-          ? `💸💵You have received a donation of ${currency}.${amount} from ${name} (${donation_number}) to your campaign "${title}".
+          ? `💸💵You have received a donation of ${currency}.${formatAmount(
+              amount,
+              "en"
+            )} from ${name} (${donation_number}) to your campaign "${title}".
 Here are the details of the donation:
 
 - Payment method: ${payment_method}
 - Time: ${burundiTime}
 - Reference: ${reference}
-- Total amount raised: ${currency}.${current_amount}`
-          : `💸💵Vous avez reçu un don de ${amount}.${currency.replace(
+- Total amount raised: ${currency}.${formatAmount(current_amount, "en")}`
+          : `💸💵Vous avez reçu un don de ${formatAmount(
+              amount,
+              "fr"
+            )}.${currency.replace(
               "BIF",
               "FBU"
             )} de la part de ${name} (${donation_number}) pour votre campagne "${title}".
@@ -45,7 +52,10 @@ Voici les détails du don :
 Mode de paiement : ${payment_method}
 Heure : ${burundiTime}
 Référence : ${reference}
-Montant total collecté : ${current_amount}.${currency.replace("BIF", "FBU")}`,
+Montant total collecté : ${formatAmount(
+              current_amount,
+              "fr"
+            )}.${currency.replace("BIF", "FBU")}`,
     }),
   };
 

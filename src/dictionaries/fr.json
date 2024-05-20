@@ -16,7 +16,8 @@
     "global": {
       "loading": "Veuillez patienter...",
       "continue": "Continuer",
-      "back": "Retour"
+      "back": "Retour",
+      "language": "fr"
     },
     "start": {
       "start": "Lancer une collecte de fonds"
@@ -100,7 +101,8 @@
   "donate": {
     "global": {
       "loading": "Veuillez patienter...",
-      "donate": "Faire un don"
+      "donate": "Faire un don",
+      "language": "fr"
     },
     "page": {
       "target": "🎯Objectif: $amount.FBU",
