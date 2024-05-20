@@ -64,7 +64,7 @@ export default function ConfirmationPopup(props: {
                   4. {dict.confirmation.select}
                   {"  "}
                   <span className="font-semibold text-3xl text-heading">1</span>
-                  {"  "}-AFRIPAY
+                  {"  "}- AFRIREGISTER
                 </p>
               </div>
             ) : (
