@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import SharePopup from "../components/sharePopup";
 import { getDictionary } from "@/dictionaries/getDictionary";
 import Link from "next/link";
+import { formatAmount } from "@/utils/formatCurrency";
 
 export default async function Main({ params }: { params: { id: string } }) {
   if (Number.isNaN(Number(params.id))) {
@@ -41,12 +42,18 @@ export default async function Main({ params }: { params: { id: string } }) {
       <div className="p-3 space-y-1">
         <p className="text-2xl font-bold">{data.title}</p>
         <p className="w-fit px-2 py-1 font-semibold text-nowrap bg-highlight text-heading border border-heading rounded-full">
-          {dict.page.target.replace("$amount", "" + data.targetAmount)}
+          {dict.page.target.replace(
+            "$amount",
+            "" + formatAmount(data.targetAmount, dict.global.language)
+          )}
         </p>
         {data.numberOfDonations > 0 && data.currentAmount > 0 ? (
           <p className="font-medium">
             <span className="text-heading font-semibold underline underline-offset-2">
-              {dict.page.current.replace("$amount", "" + data.currentAmount)}
+              {dict.page.current.replace(
+                "$amount",
+                "" + formatAmount(data.currentAmount, dict.global.language)
+              )}
             </span>{" "}
             {dict.page.donations.replace(
               "$donations",

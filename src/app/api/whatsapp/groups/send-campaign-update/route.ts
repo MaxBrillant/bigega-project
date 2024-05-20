@@ -1,4 +1,5 @@
 // Import necessary types and functions
+import { formatAmount } from "@/utils/formatCurrency";
 import { CreateServerClient } from "@/utils/supabase/serverClient";
 import { NextRequest, NextResponse } from "next/server";
 import fetch from "node-fetch";
@@ -47,8 +48,10 @@ export async function POST(request: NextRequest) {
     data.slice(0, 25).forEach((donation) => {
       const formatedAmount =
         language === "en"
-          ? donation.currency + "." + donation.amount
-          : donation.amount + "." + donation.currency.replace("BIF", "FBU");
+          ? donation.currency + "." + formatAmount(donation.amount, "en")
+          : formatAmount(donation.amount, "fr") +
+            "." +
+            donation.currency.replace("BIF", "FBU");
 
       const formattedDate = formatDate(donation.transaction_date_and_time);
       if (currentDate !== formattedDate) {
@@ -79,7 +82,16 @@ export async function POST(request: NextRequest) {
           language === "en"
             ? `🎉 🎁 ${
                 isDonorAnonymous ? "An Anonymous Donor" : name
-              } has donated ${currency}.${amount} to "${title}". We are now at ${currency}.${currentAmount}, on our way to reaching our target of ${currency}.${targetAmount}
+              } has donated ${currency}.${formatAmount(
+                amount,
+                "en"
+              )} to "${title}". We are now at ${currency}.${formatAmount(
+                currentAmount,
+                "en"
+              )}, on our way to reaching our target of ${currency}.${formatAmount(
+                targetAmount,
+                "en"
+              )}
 
 Want to help us reach our target? Donate now at  bigega.com/${campaignId}.
     
@@ -94,16 +106,22 @@ ${
 If you have any problems or would wish to give us feedback, please tell us in private message.`
             : `🎉 🎁 ${
                 isDonorAnonymous ? "Un Donateur Anonyme" : name
-              } a fait un don de ${amount}.${currency.replace(
+              } a fait un don de ${formatAmount(
+                amount,
+                "fr"
+              )}.${currency.replace(
                 "BIF",
                 "FBU"
-              )} pour la campagne "${title}". Nous sommes maintenant à ${currentAmount}.${currency.replace(
+              )} pour la campagne "${title}". Nous sommes maintenant à ${formatAmount(
+                currentAmount,
+                "fr"
+              )}.${currency.replace(
                 "BIF",
                 "FBU"
-              )}, en route vers notre objectif de ${targetAmount}.${currency.replace(
-                "BIF",
-                "FBU"
-              )}.
+              )}, en route vers notre objectif de ${formatAmount(
+                targetAmount,
+                "fr"
+              )}.${currency.replace("BIF", "FBU")}.
 
 Aidez nous à atteindre notre objectif en faisant un don maintenant sur bigega.com/${campaignId}.
 
