@@ -39,7 +39,7 @@ export default function PaymentForm(form: props) {
   });
 
   const [selectedMethod, setSelectedMethod] = useState<
-    "lumicash" | "ecocash" | undefined
+    "lumicash" | "ecocash" | "card" | "mpesa" | undefined
   >();
 
   const [isOtpRequired, setIsOtpRequired] = useState(false);
@@ -57,9 +57,12 @@ export default function PaymentForm(form: props) {
 
   const onSubmit = (data: formSchemaType) =>
     startTransition(async () => {
-      if (data.lumicashNumber != undefined && data.otp == undefined) {
+      if (data.paymentMethod === "lumicash" && data.otp == undefined) {
         try {
-          const response = await getOTP(data.amount, data.lumicashNumber);
+          const response = await getOTP(
+            data.amount,
+            data.paymentNumber as string
+          );
           if (response) {
             setIsOtpRequired(true);
           }
@@ -77,8 +80,14 @@ export default function PaymentForm(form: props) {
           const donationId = await InitiateDonation({
             campaignId: form.id,
             amount: data.amount,
-            ecocashNumber: data.ecocashNumber,
-            lumicashNumber: data.lumicashNumber,
+            paymentMethod: data.paymentMethod,
+            currency:
+              data.paymentMethod === "card"
+                ? "USD"
+                : data.paymentMethod === "mpesa"
+                ? "KSH"
+                : "BIF",
+            paymentNumber: data.paymentNumber,
             donorName: data.donorName,
             isDonorAnonymous: data.isDonorAnonymous,
             otp: data.otp,
@@ -93,9 +102,7 @@ export default function PaymentForm(form: props) {
         } catch (error) {
           toast({
             variant: "destructive",
-            title: data.lumicashNumber
-              ? dict.form.lumicash_error
-              : dict.form.other_error,
+            title: dict.form.other_error,
             duration: 7000,
           });
         }
@@ -133,8 +140,9 @@ export default function PaymentForm(form: props) {
               checked={selectedMethod === "ecocash"}
               className="hidden"
               onClick={() => {
+                setValue("paymentNumber", undefined);
                 setSelectedMethod("ecocash");
-                setValue("lumicashNumber", undefined);
+                setValue("paymentMethod", "ecocash");
               }}
             />
             {selectedMethod === "ecocash" ? (
@@ -160,7 +168,7 @@ export default function PaymentForm(form: props) {
                 <p className="font-medium">{dict.form.number}</p>
                 <Input
                   type="number"
-                  {...register("ecocashNumber", {
+                  {...register("paymentNumber", {
                     setValueAs: (value) => (value === "" ? undefined : value),
                   })}
                   id="ecocash-number"
@@ -195,8 +203,9 @@ export default function PaymentForm(form: props) {
                 checked={selectedMethod === "lumicash"}
                 className="hidden"
                 onClick={() => {
+                  setValue("paymentNumber", undefined);
                   setSelectedMethod("lumicash");
-                  setValue("ecocashNumber", undefined);
+                  setValue("paymentMethod", "lumicash");
                 }}
               />
               {selectedMethod === "lumicash" ? (
@@ -222,7 +231,7 @@ export default function PaymentForm(form: props) {
                   <p className="font-medium">{dict.form.number}</p>
                   <Input
                     type="number"
-                    {...register("lumicashNumber", {
+                    {...register("paymentNumber", {
                       setValueAs: (value) => (value === "" ? undefined : value),
                     })}
                     id="lumicash-number"
@@ -236,10 +245,8 @@ export default function PaymentForm(form: props) {
           )}
         </div>
       </div>
-      {selectedMethod && !errors.ecocashNumber && !errors.lumicashNumber && (
-        <Separator />
-      )}
-      {selectedMethod && !errors.ecocashNumber && !errors.lumicashNumber && (
+      {selectedMethod && !errors.paymentNumber && <Separator />}
+      {selectedMethod && !errors.paymentNumber && (
         <div className="space-y-1">
           <p className="font-semibold text-lg">{dict.form.amount}</p>
           <div className="w-full flex flex-row py-2 items-center gap-3">
@@ -264,13 +271,11 @@ export default function PaymentForm(form: props) {
       {watch("amount") > 0 &&
         !errors.amount &&
         selectedMethod &&
-        !errors.ecocashNumber &&
-        !errors.lumicashNumber && <Separator />}
+        !errors.paymentNumber && <Separator />}
       {watch("amount") > 0 &&
         !errors.amount &&
         selectedMethod &&
-        !errors.ecocashNumber &&
-        !errors.lumicashNumber && (
+        !errors.paymentNumber && (
           <div className="space-y-1">
             <p className="font-semibold text-lg">{dict.form.name}</p>
             <Input {...register("donorName")} placeholder="Arsene Nduwayo" />
@@ -305,8 +310,7 @@ export default function PaymentForm(form: props) {
           isPending ||
           watch("amount") === 0 ||
           errors.amount != undefined ||
-          errors.ecocashNumber != undefined ||
-          errors.lumicashNumber != undefined ||
+          errors.paymentNumber != undefined ||
           !watch("donorName")
         }
       >
@@ -360,8 +364,8 @@ export default function PaymentForm(form: props) {
             onClick={() =>
               onSubmit({
                 amount: watch("amount"),
-                ecocashNumber: watch("ecocashNumber"),
-                lumicashNumber: watch("lumicashNumber"),
+                paymentNumber: watch("paymentNumber"),
+                paymentMethod: watch("paymentMethod"),
                 donorName: watch("donorName"),
                 isDonorAnonymous: watch("isDonorAnonymous"),
                 otp: watch("otp"),

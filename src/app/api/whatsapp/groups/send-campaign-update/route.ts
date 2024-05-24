@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
   const isDonorAnonymous: boolean = body.is_donor_anonymous;
   const title: string = body.title;
   const amount: number = body.amount;
-  const currency: "BIF" | "RWF" = body.currency;
+  const currency: "BIF" | "RWF" | "USD" | "KSH" = body.currency;
   const currentAmount: number = body.current_amount;
   const targetAmount: number = body.target_amount;
 

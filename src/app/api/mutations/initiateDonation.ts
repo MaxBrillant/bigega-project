@@ -9,8 +9,9 @@ import fetch from "node-fetch";
 type props = {
   campaignId: number;
   amount: number;
-  lumicashNumber: string | undefined;
-  ecocashNumber: string | undefined;
+  paymentNumber: string | undefined;
+  paymentMethod: "ecocash" | "lumicash" | "card" | "mpesa";
+  currency: "BIF" | "RWF" | "USD" | "KSH";
   otp: string | undefined;
   donorName: string;
   isDonorAnonymous: boolean;
@@ -25,8 +26,9 @@ export async function InitiateDonation(formData: props) {
     const dict = await getDictionary();
     DonationSchema(dict?.donate).parse({
       amount: formData.amount,
-      lumicashNumber: formData.lumicashNumber,
-      ecocashNumber: formData.ecocashNumber,
+      paymentNumber: formData.paymentNumber,
+      paymentMethod: formData.paymentMethod,
+      otp: formData.otp,
       donorName: formData.donorName,
       isDonorAnonymous: formData.isDonorAnonymous,
     });
@@ -39,19 +41,11 @@ export async function InitiateDonation(formData: props) {
         donor_name: formData.donorName,
         is_donor_anonymous: formData.isDonorAnonymous,
         amount: formData.amount,
-        donor_payment_number:
-          formData.ecocashNumber != undefined
-            ? formData.ecocashNumber
-            : formData.lumicashNumber != undefined
-            ? formData.lumicashNumber
-            : null,
-        payment_method:
-          formData.ecocashNumber != undefined
-            ? "ecocash"
-            : formData.lumicashNumber != undefined
-            ? "lumicash"
-            : null,
-        currency: "BIF",
+        donor_payment_number: formData.paymentNumber
+          ? formData.paymentNumber
+          : null,
+        payment_method: formData.paymentMethod,
+        currency: formData.currency,
       })
       .select()
       .limit(1)
@@ -66,17 +60,20 @@ export async function InitiateDonation(formData: props) {
       `A new donation of ID: "${data[0].id}" from donor: "${formData.donorName}" has been successfully initiated`
     );
 
-    await initiatePayment({
-      donationId: String(data[0].id),
-      amount: formData.amount,
-      paymentMethod:
-        formData.ecocashNumber != undefined ? "ECOCASH" : "LUMICASH",
-      phoneNumber:
-        formData.ecocashNumber != undefined
-          ? (formData.ecocashNumber as string)
-          : (formData.lumicashNumber as string),
-      otp: formData.otp,
-    });
+    if (
+      formData.paymentMethod === "ecocash" ||
+      formData.paymentMethod === "lumicash"
+    ) {
+      await initiatePayment({
+        donationId: String(data[0].id),
+        amount: formData.amount,
+        paymentMethod: formData.paymentMethod.toUpperCase() as
+          | "ECOCASH"
+          | "LUMICASH",
+        phoneNumber: formData.paymentNumber as string,
+        otp: formData.otp,
+      });
+    }
     return data[0].id;
   } catch (error) {
     throw new Error(
