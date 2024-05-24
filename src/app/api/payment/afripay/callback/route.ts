@@ -130,9 +130,9 @@ type returnedType = [
     donor_name: string;
     is_donor_anonymous: boolean;
     amount: number;
-    currency: "BIF" | "RWF";
+    currency: "BIF" | "RWF" | "USD" | "KSH";
     donor_payment_number: string;
-    payment_method: "ecocash" | "lumicash";
+    payment_method: "ecocash" | "lumicash" | "card" | "mpesa";
     reference: string;
     transaction_date_and_time: Date;
     campaigns: {
@@ -165,6 +165,11 @@ const checkIfPaymentIsPending = async (donationId: string) => {
   if (error) {
     throw new Error(
       `Error while checking if payment is pending. The error is: ${error.message}`
+    );
+  }
+  if (data.length === 0) {
+    throw new Error(
+      `Error while checking if payment is pending. The donation was never initiated`
     );
   }
   return data.length > 0;

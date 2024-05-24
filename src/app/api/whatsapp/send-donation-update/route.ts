@@ -12,8 +12,9 @@ export async function POST(request: NextRequest) {
   const donation_number: string = body.donation_number;
   const title: string = body.title;
   const amount: number = body.amount;
-  const currency: "BIF" | "RWF" = body.currency;
-  const payment_method: "lumicash" | "ecocash" = body.payment_method;
+  const currency: "BIF" | "RWF" | "USD" | "KSH" = body.currency;
+  const payment_method: "lumicash" | "ecocash" | "card" | "mpesa" =
+    body.payment_method;
   const time: Date = body.time;
   const reference: string = body.reference;
   const current_amount: number = body.current_amount;
