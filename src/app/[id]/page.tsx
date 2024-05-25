@@ -72,7 +72,7 @@ export default async function Main({ params }: { params: { id: string } }) {
               value={Math.round((data.currentAmount * 100) / data.targetAmount)}
             />
             <p className="font-medium">
-              {((data.currentAmount * 100) / data.targetAmount).toFixed(1)}%
+              {parseFloat(((data.currentAmount * 100) / data.targetAmount).toFixed(1))}%
             </p>
           </div>
         )}
