@@ -43,51 +43,51 @@ export default function ConfirmationPopup(props: {
                 props.paymentMethod.toUpperCase()
               )}
             </p>
-            (props.paymentMethod === "lumicash" ? (
-            <div className="mx-auto space-y-1 bg-highlight p-3 px-5 rounded-2xl border border-heading shadow-2xl">
-              <p>
-                1. {dict.confirmation.dial}{" "}
-                <span className="font-semibold text-3xl text-heading">
-                  *163#
-                </span>
-              </p>
-              <p>
-                2. {dict.confirmation.select}
-                {"  "}
-                <span className="font-semibold text-3xl text-heading">4</span>
-              </p>
-              <p>
-                3. {dict.confirmation.select}
-                {"  "}
-                <span className="font-semibold text-3xl text-heading">2</span>
-              </p>
-              <p>
-                4. {dict.confirmation.select}
-                {"  "}
-                <span className="font-semibold text-3xl text-heading">1</span>
-                {"  "}- AFRIREGISTER
-              </p>
-            </div>
+            {props.paymentMethod === "lumicash" ? (
+              <div className="mx-auto space-y-1 bg-highlight p-3 px-5 rounded-2xl border border-heading shadow-2xl">
+                <p>
+                  1. {dict.confirmation.dial}{" "}
+                  <span className="font-semibold text-3xl text-heading">
+                    *163#
+                  </span>
+                </p>
+                <p>
+                  2. {dict.confirmation.select}
+                  {"  "}
+                  <span className="font-semibold text-3xl text-heading">4</span>
+                </p>
+                <p>
+                  3. {dict.confirmation.select}
+                  {"  "}
+                  <span className="font-semibold text-3xl text-heading">2</span>
+                </p>
+                <p>
+                  4. {dict.confirmation.select}
+                  {"  "}
+                  <span className="font-semibold text-3xl text-heading">1</span>
+                  {"  "}- AFRIREGISTER
+                </p>
+              </div>
             ) : (
-            <div className="mx-auto space-y-1 bg-highlight p-3 px-5 rounded-2xl border border-heading shadow-2xl">
-              <p>
-                1. {dict.confirmation.dial}{" "}
-                <span className="font-semibold text-3xl text-heading">
-                  *444#
-                </span>
-              </p>
-              <p>
-                2. {dict.confirmation.select}
-                {"  "}
-                <span className="font-semibold text-3xl text-heading">5</span>
-              </p>
-              <p>
-                3. {dict.confirmation.select}
-                {"  "}
-                <span className="font-semibold text-3xl text-heading">3</span>
-              </p>
-            </div>
-            ))
+              <div className="mx-auto space-y-1 bg-highlight p-3 px-5 rounded-2xl border border-heading shadow-2xl">
+                <p>
+                  1. {dict.confirmation.dial}{" "}
+                  <span className="font-semibold text-3xl text-heading">
+                    *444#
+                  </span>
+                </p>
+                <p>
+                  2. {dict.confirmation.select}
+                  {"  "}
+                  <span className="font-semibold text-3xl text-heading">5</span>
+                </p>
+                <p>
+                  3. {dict.confirmation.select}
+                  {"  "}
+                  <span className="font-semibold text-3xl text-heading">3</span>
+                </p>
+              </div>
+            )}
             <div className="space-y-5 text-center">
               <a
                 href={
