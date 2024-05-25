@@ -22,6 +22,13 @@ type returnedData = [
   }
 ];
 export async function InitiateDonation(formData: props) {
+  let exchangeRate = 1;
+  if (formData.paymentMethod === "card") {
+    exchangeRate = 2901.7094;
+  }
+  if (formData.paymentMethod === "mpesa") {
+    exchangeRate = 21.8585;
+  }
   try {
     const dict = await getDictionary();
     DonationSchema(dict?.donate).parse({
@@ -40,12 +47,12 @@ export async function InitiateDonation(formData: props) {
         campaign_id: formData.campaignId,
         donor_name: formData.donorName,
         is_donor_anonymous: formData.isDonorAnonymous,
-        amount: formData.amount,
+        amount: Number((formData.amount * exchangeRate).toFixed(4)),
         donor_payment_number: formData.paymentNumber
           ? formData.paymentNumber
-          : null,
+          : "000",
         payment_method: formData.paymentMethod,
-        currency: formData.currency,
+        currency: "BIF",
       })
       .select()
       .limit(1)
