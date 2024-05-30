@@ -15,6 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import ConfirmationPopup from "../components/paymentConfirmation";
 import { ImRadioUnchecked } from "react-icons/im";
 import { FaCheckCircle } from "react-icons/fa";
+import { notFound, useSearchParams } from "next/navigation";
 
 type props = {
   id: number;
@@ -47,6 +48,30 @@ export default function PaymentForm(form: props) {
   const [isOtpRequired, setIsOtpRequired] = useState(false);
 
   const [newDonationId, setNewDonationId] = useState<number | undefined>();
+
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.size > 0) {
+      if (
+        Number.isNaN(Number(searchParams.get("donation"))) ||
+        searchParams.get("method") !== "ibbm+" ||
+        Number.isNaN(Number(searchParams.get("amount"))) ||
+        !searchParams.get("donation") ||
+        !searchParams.get("method") ||
+        !searchParams.get("amount")
+      ) {
+        notFound();
+      } else {
+        setNewDonationId(Number(searchParams.get("donation")));
+        setValue("amount", Number(searchParams.get("amount")));
+        setSelectedMethod(
+          searchParams.get("method") as "lumicash" | "ecocash" | "ibbm+"
+        );
+        setIsWaitingForConfirmation(true);
+      }
+    }
+  }, [searchParams]);
 
   const listOfErrors = Object.values(errors).map((error) => error);
 
