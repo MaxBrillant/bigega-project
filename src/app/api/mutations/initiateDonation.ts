@@ -4,6 +4,7 @@ import { DonationSchema } from "@/app/validation/donationFormValidation";
 import { getDictionary } from "@/dictionaries/getDictionary";
 import { CreateServerClient } from "@/utils/supabase/serverClient";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import fetch from "node-fetch";
 
 type props = {
@@ -126,6 +127,18 @@ async function initiatePayment(payment: paymentProps) {
       );
     }
 
+    if (payment.paymentMethod === "IBB Mobile Plus") {
+      jsonData.map((value: string) => {
+        if (value.includes("https://www.afripay.africa")) {
+          const href = new URL(pathname as string).pathname.split("/").pop();
+          const redi = async()=>redirect(
+            `/${href}?donation=${payment.donationId}&method=ibbm+&amount=${payment.amount}`
+          );
+          redi();
+          setTimeout(() => redirect(value.replaceAll(`"`, "")), 2000);
+        }
+      });
+    }
     return "success";
   } catch (error) {
     throw new Error("Error trying to initiate payment. The error is: " + error);

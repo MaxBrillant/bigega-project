@@ -69,27 +69,33 @@ export default function ConfirmationPopup(props: {
                 </p>
               </div>
             ) : (
-              <div className="mx-auto space-y-1 bg-highlight p-3 px-5 rounded-2xl border border-heading shadow-2xl">
-                <p>
-                  1. {dict.confirmation.dial}{" "}
-                  <span className="font-semibold text-3xl text-heading">
-                    *444#
-                  </span>
-                </p>
-                <p>
-                  2. {dict.confirmation.select}
-                  {"  "}
-                  <span className="font-semibold text-3xl text-heading">5</span>
-                </p>
-                <p>
-                  3. {dict.confirmation.select}
-                  {"  "}
-                  <span className="font-semibold text-3xl text-heading">3</span>
-                </p>
-              </div>
+              props.paymentMethod === "ecocash" && (
+                <div className="mx-auto space-y-1 bg-highlight p-3 px-5 rounded-2xl border border-heading shadow-2xl">
+                  <p>
+                    1. {dict.confirmation.dial}{" "}
+                    <span className="font-semibold text-3xl text-heading">
+                      *444#
+                    </span>
+                  </p>
+                  <p>
+                    2. {dict.confirmation.select}
+                    {"  "}
+                    <span className="font-semibold text-3xl text-heading">
+                      5
+                    </span>
+                  </p>
+                  <p>
+                    3. {dict.confirmation.select}
+                    {"  "}
+                    <span className="font-semibold text-3xl text-heading">
+                      3
+                    </span>
+                  </p>
+                </div>
+              )
             )}
             <div className="space-y-5 text-center">
-              <a
+              {(props.paymentMethod==="lumicash" || props.paymentMethod==="ecocash") && <a
                 href={
                   props.paymentMethod === "lumicash"
                     ? "tel:*163%23"
@@ -98,7 +104,7 @@ export default function ConfirmationPopup(props: {
                 className="mx-auto text-center font-medium text-heading underline underline-offset-4"
               >
                 {dict.confirmation.phone_app}
-              </a>
+              </a>}
 
               <p className="w-full fit px-5 py-10 text-center animate-pulse bg-background border border-highlight">
                 {dict.confirmation.waiting}
