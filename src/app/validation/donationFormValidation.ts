@@ -10,7 +10,7 @@ export const DonationSchema = (dict: any) =>
         invalid_type_error: dict?.validation?.required_amount,
       }),
 
-      paymentMethod: z.enum(["lumicash", "ecocash", "card", "mpesa"], {
+      paymentMethod: z.enum(["lumicash", "ecocash", "ibbm+"], {
         required_error: dict?.validation?.select_method,
         invalid_type_error: dict?.validation?.select_method,
       }),
@@ -63,7 +63,7 @@ export const DonationSchema = (dict: any) =>
     )
     .refine(
       (data) => {
-        if (data.paymentMethod === "card" && data.amount < 5) {
+        if (data.paymentMethod === "ibbm+" && data.amount < 1000) {
           return false;
         }
         return true;
@@ -74,29 +74,7 @@ export const DonationSchema = (dict: any) =>
     )
     .refine(
       (data) => {
-        if (data.paymentMethod === "card" && data.amount > 1000) {
-          return false;
-        }
-        return true;
-      },
-      {
-        message: dict?.validation?.max_amount,
-      }
-    )
-    .refine(
-      (data) => {
-        if (data.paymentMethod === "mpesa" && data.amount < 5) {
-          return false;
-        }
-        return true;
-      },
-      {
-        message: dict?.validation?.min_amount,
-      }
-    )
-    .refine(
-      (data) => {
-        if (data.paymentMethod === "mpesa" && data.amount > 30000) {
+        if (data.paymentMethod === "ibbm+" && data.amount > 1000000) {
           return false;
         }
         return true;

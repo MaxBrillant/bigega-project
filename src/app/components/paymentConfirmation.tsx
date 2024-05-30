@@ -2,13 +2,12 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { CreateBrowserClient } from "@/utils/supabase/browserClient";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Confetti from "react-confetti";
-import AfripayButton from "./afripayButton";
 import Image from "next/image";
 
 export default function ConfirmationPopup(props: {
   donationId: number;
   amount: number;
-  paymentMethod: "lumicash" | "ecocash" | "card" | "mpesa";
+  paymentMethod: "lumicash" | "ecocash" | "ibbm+";
   whatsappGroupLink: string;
   dictionary: any;
 }) {
@@ -34,8 +33,9 @@ export default function ConfirmationPopup(props: {
       }
     >
       {!isPaymentConfirmed ? (
-        props.paymentMethod === "ecocash" ||
-        props.paymentMethod === "lumicash" ? (
+        (props.paymentMethod === "ecocash" ||
+          props.paymentMethod === "lumicash" ||
+          props.paymentMethod === "ibbm+") && (
           <DialogContent className="mb-7 max-h-screen overflow-auto">
             <p className="font-semibold text-2xl text-heading">
               {dict.confirmation.confirm_heading.replace(
@@ -109,47 +109,6 @@ export default function ConfirmationPopup(props: {
                 {dict.confirmation.excuse}
               </p>
             )}
-          </DialogContent>
-        ) : (
-          <DialogContent className="mb-7 max-h-screen overflow-auto">
-            <p className="font-semibold text-2xl text-heading">
-              {dict.confirmation.guide_heading}
-            </p>
-            <p className="font-medium">
-              {props.paymentMethod === "card"
-                ? dict.confirmation.card_guide
-                : dict.confirmation.mpesa_guide}
-            </p>
-            <AfripayButton
-              donationId={props.donationId}
-              amount={props.amount}
-              currency={props.paymentMethod === "card" ? "USD" : "KSH"}
-              label={dict.confirmation.guide_cta}
-            ></AfripayButton>
-            <div className="grid grid-cols-2 gap-2 pt-3 drop-shadow-2xl">
-              <Image
-                src={
-                  props.paymentMethod === "card"
-                    ? "/card_payment1.jpg"
-                    : "/mpesa_payment1.jpg"
-                }
-                width={500}
-                height={500}
-                alt="screenshot1"
-                className="h-fit aspect-square object-contain rounded-lg"
-              />
-              <Image
-                src={
-                  props.paymentMethod === "card"
-                    ? "/card_payment2.jpg"
-                    : "/mpesa_payment2.jpg"
-                }
-                width={500}
-                height={500}
-                alt="screenshot2"
-                className="h-fit aspect-square object-contain rounded-lg"
-              />
-            </div>
           </DialogContent>
         )
       ) : (

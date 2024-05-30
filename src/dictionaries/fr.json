@@ -114,7 +114,9 @@
       "organizer": "Organisateur",
       "creator": "Cette campagne a été créée par $name",
       "description": "Description",
-      "no_description": "Aucune description n'a été fournie"
+      "no_description": "Aucune description n'a été fournie",
+      "start_fundraising": "Avez-vous envie de collecter des fonds pour vos futurs événements, projets, ou simplement pour obtenir de l'aide?",
+      "start_fundraising_cta": "Lancer une collecte de fonds"
     },
     "form": {
       "otp_error": "Erreur lors de la tentative d'obtention du code de Lumicash, veuillez réessayer",
@@ -124,11 +126,7 @@
       "number": "Écrivez votre numéro",
       "amount": "Combien souhaitez-vous donner?",
       "bif_currency": "FBU",
-      "usd_currency": "Dollars US",
-      "ksh_currency": "KSH",
       "bif_threshold": "Minimum: 500 $currency - Maximum: 1.000.000 $currency",
-      "usd_threshold": "Minimum: 5 $currency - Maximum: 1.000 $currency",
-      "ksh_threshold": "Minimum: 5 $currency - Maximum: 30.000 $currency",
       "name": "Quel est votre nom?",
       "anonymous": "Masquer mon nom (seuls les organisateurs pourront voir votre nom)",
       "otp_heading": "Lumicash vous a envoyé un code de vérification par SMS",
@@ -143,10 +141,6 @@
       "excuse": "Nous comprenons que le processus peut être long, mais nous recherchons des moyens plus simples et efficaces de vous permettre de faire un don à cette campagne",
       "phone_app": "CLIQUEZ ICI pour ouvrir votre application téléphonique",
       "waiting": "Nous attendons la confirmation de paiement... Nous afficherons un message ici après avoir reçu votre don",
-      "guide_heading": "Voici un guide rapide sur la façon de payer",
-      "card_guide": "Vous serez redirigé vers la page de paiement Afripay pour finaliser votre paiement. Sélectionnez ''VISA'' ou ''MASTERCARD'' en fonction de votre carte, puis fournissez les détails de votre carte. L'argent sera converti en Francs Burundais au taux officiel de la Banque Nationale (BRB) de 1 USD = 2.901,7094 FBU",
-      "mpesa_guide": "Vous serez redirigé vers la page de paiement Afripay pour finaliser votre paiement. Assurez-vous de sélectionner ''MPESA KENYA'' et de continuer. Vous recevrez une demande sur votre téléphone vous demandant de valider la transaction. Entrez votre code PIN et le paiement sera effectué avec succès. L'argent sera converti en Francs Burundais en utilisant le taux officiel de la Banque Nationale (BRB) de 1 KSH = 21,8585 FBU",
-      "guide_cta": "Aller à la page de paiement",
       "success_notice": "Nous avons envoyé une notification de votre don au groupe WhatsApp qui est lié à cette campagne",
       "whatsapp_group": "CLIQUEZ ICI pour rejoindre le groupe WhatsApp"
     },

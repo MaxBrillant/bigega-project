@@ -10,8 +10,8 @@ type props = {
   campaignId: number;
   amount: number;
   paymentNumber: string | undefined;
-  paymentMethod: "ecocash" | "lumicash" | "card" | "mpesa";
-  currency: "BIF" | "RWF" | "USD" | "KSH";
+  paymentMethod: "ecocash" | "lumicash" | "ibbm+";
+  currency: "BIF" | "RWF";
   otp: string | undefined;
   donorName: string;
   isDonorAnonymous: boolean;
@@ -22,13 +22,6 @@ type returnedData = [
   }
 ];
 export async function InitiateDonation(formData: props) {
-  let exchangeRate = 1;
-  if (formData.paymentMethod === "card") {
-    exchangeRate = 2901.7094;
-  }
-  if (formData.paymentMethod === "mpesa") {
-    exchangeRate = 21.8585;
-  }
   try {
     const dict = await getDictionary();
     DonationSchema(dict?.donate).parse({
@@ -47,7 +40,7 @@ export async function InitiateDonation(formData: props) {
         campaign_id: formData.campaignId,
         donor_name: formData.donorName,
         is_donor_anonymous: formData.isDonorAnonymous,
-        amount: Number((formData.amount * exchangeRate).toFixed(4)),
+        amount: formData.amount,
         donor_payment_number: formData.paymentNumber
           ? formData.paymentNumber
           : "000",
@@ -69,14 +62,18 @@ export async function InitiateDonation(formData: props) {
 
     if (
       formData.paymentMethod === "ecocash" ||
-      formData.paymentMethod === "lumicash"
+      formData.paymentMethod === "lumicash" ||
+      formData.paymentMethod === "ibbm+"
     ) {
       await initiatePayment({
         donationId: String(data[0].id),
         amount: formData.amount,
-        paymentMethod: formData.paymentMethod.toUpperCase() as
+        paymentMethod: formData.paymentMethod
+          .toUpperCase()
+          .replaceAll("IBBM+", "IBB Mobile Plus") as
           | "ECOCASH"
-          | "LUMICASH",
+          | "LUMICASH"
+          | "IBB Mobile Plus",
         phoneNumber: formData.paymentNumber as string,
         otp: formData.otp,
       });
@@ -92,7 +89,7 @@ export async function InitiateDonation(formData: props) {
 type paymentProps = {
   donationId: string;
   amount: number;
-  paymentMethod: "ECOCASH" | "LUMICASH";
+  paymentMethod: "ECOCASH" | "LUMICASH" | "IBB Mobile Plus";
   phoneNumber: string;
   otp: string | undefined;
 };

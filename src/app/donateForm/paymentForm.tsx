@@ -15,7 +15,6 @@ import { Separator } from "@/components/ui/separator";
 import ConfirmationPopup from "../components/paymentConfirmation";
 import { ImRadioUnchecked } from "react-icons/im";
 import { FaCheckCircle } from "react-icons/fa";
-import { notFound, useSearchParams } from "next/navigation";
 
 type props = {
   id: number;
@@ -40,7 +39,7 @@ export default function PaymentForm(form: props) {
   });
 
   const [selectedMethod, setSelectedMethod] = useState<
-    "lumicash" | "ecocash" | "card" | "mpesa" | undefined
+    "lumicash" | "ecocash" | "ibbm+" | undefined
   >();
 
   const [isWaitingForConfirmation, setIsWaitingForConfirmation] =
@@ -48,35 +47,6 @@ export default function PaymentForm(form: props) {
   const [isOtpRequired, setIsOtpRequired] = useState(false);
 
   const [newDonationId, setNewDonationId] = useState<number | undefined>();
-
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    if (searchParams.size > 0) {
-      if (
-        Number.isNaN(Number(searchParams.get("donation"))) ||
-        (searchParams.get("method") !== "card" &&
-          searchParams.get("method") !== "mpesa") ||
-        Number.isNaN(Number(searchParams.get("amount"))) ||
-        !searchParams.get("donation") ||
-        !searchParams.get("method") ||
-        !searchParams.get("amount")
-      ) {
-        notFound();
-      } else {
-        setNewDonationId(Number(searchParams.get("donation")));
-        setValue("amount", Number(searchParams.get("amount")));
-        setSelectedMethod(
-          searchParams.get("method") as
-            | "lumicash"
-            | "ecocash"
-            | "card"
-            | "mpesa"
-        );
-        setIsWaitingForConfirmation(true);
-      }
-    }
-  }, [searchParams]);
 
   const listOfErrors = Object.values(errors).map((error) => error);
 
@@ -111,12 +81,7 @@ export default function PaymentForm(form: props) {
             campaignId: form.id,
             amount: data.amount,
             paymentMethod: data.paymentMethod,
-            currency:
-              data.paymentMethod === "card"
-                ? "USD"
-                : data.paymentMethod === "mpesa"
-                ? "KSH"
-                : "BIF",
+            currency: "BIF",
             paymentNumber: data.paymentNumber,
             donorName: data.donorName,
             isDonorAnonymous: data.isDonorAnonymous,
@@ -148,7 +113,7 @@ export default function PaymentForm(form: props) {
         <div className="space-y-3">
           <p className="font-semibold text-lg">{dict.form.heading}</p>
 
-          <div className="divide-y divide-heading overflow-hidden border border-heading rounded-2xl">
+          <div className="divide-y divide-heading/20 bg-white/30 border border-heading/40 overflow-hidden rounded-2xl shadow-xl">
             <button
               className={
                 selectedMethod === "ecocash"
@@ -282,101 +247,68 @@ export default function PaymentForm(form: props) {
 
             <button
               className={
-                selectedMethod === "card"
+                selectedMethod === "ibbm+"
                   ? "w-full flex flex-wrap gap-3 items-center p-4 bg-highlight"
                   : "w-full flex flex-wrap gap-3 items-center p-4"
               }
               onClick={(e) => {
                 e.preventDefault();
-                if (selectedMethod !== "card") {
-                  document?.getElementById("card")?.click();
-                  document?.getElementById("amount")?.focus();
+                if (selectedMethod !== "ibbm+") {
+                  document?.getElementById("ibbm+")?.click();
                 } else {
-                  document?.getElementById("amount")?.focus();
+                  document?.getElementById("ibbm+-number")?.focus();
                 }
               }}
             >
               <input
                 type="radio"
-                value="card"
-                id="card"
-                checked={selectedMethod === "card"}
+                value="ibbm+"
+                id="ibbm+"
+                checked={selectedMethod === "ibbm+"}
                 className="hidden"
                 onClick={() => {
                   setValue("paymentNumber", undefined);
-                  setSelectedMethod("card");
-                  setValue("paymentMethod", "card");
+                  setSelectedMethod("ibbm+");
+                  setValue("paymentMethod", "ibbm+");
                 }}
               />
-              {selectedMethod === "card" ? (
+              {selectedMethod === "ibbm+" ? (
                 <FaCheckCircle
-                  onClick={() => document?.getElementById("card")?.click()}
+                  onClick={() => document?.getElementById("ibbm+")?.click()}
                   className="w-7 h-7 fill-heading"
                 />
               ) : (
                 <ImRadioUnchecked
-                  onClick={() => document?.getElementById("card")?.click()}
+                  onClick={() => document?.getElementById("ibbm+")?.click()}
                   className="w-6 h-6 fill-heading/40"
                 />
               )}
               <Image
-                src={"/card.png"}
+                src={"/ibbm+.png"}
                 width={500}
                 height={150}
-                alt="card"
+                alt="ibbm+"
                 className="w-36 object-contain h-fit rounded-lg border border-slate-500"
               />
-            </button>
-
-            <button
-              className={
-                selectedMethod === "mpesa"
-                  ? "w-full flex flex-wrap gap-3 items-center p-4 bg-highlight"
-                  : "w-full flex flex-wrap gap-3 items-center p-4"
-              }
-              onClick={(e) => {
-                e.preventDefault();
-                if (selectedMethod !== "mpesa") {
-                  document?.getElementById("mpesa")?.click();
-                  document?.getElementById("amount")?.focus();
-                } else {
-                  document?.getElementById("amount")?.focus();
-                }
-              }}
-            >
-              <input
-                type="radio"
-                value="mpesa"
-                id="mpesa"
-                checked={selectedMethod === "mpesa"}
-                className="hidden"
-                onClick={() => {
-                  setValue("paymentNumber", undefined);
-                  setSelectedMethod("mpesa");
-                  setValue("paymentMethod", "mpesa");
-                }}
-              />
-              {selectedMethod === "mpesa" ? (
-                <FaCheckCircle
-                  onClick={() => document?.getElementById("mpesa")?.click()}
-                  className="w-7 h-7 fill-heading"
-                />
-              ) : (
-                <ImRadioUnchecked
-                  onClick={() => document?.getElementById("mpesa")?.click()}
-                  className="w-6 h-6 fill-heading/40"
-                />
+              {selectedMethod === "ibbm+" && (
+                <div className="w-full flex flex-row items-center gap-1 justify-evenly">
+                  <p className="font-medium">{dict.form.number}</p>
+                  <Input
+                    type="number"
+                    {...register("paymentNumber", {
+                      setValueAs: (value) => (value === "" ? undefined : value),
+                    })}
+                    id="ibbm+-number"
+                    placeholder="62002024"
+                    autoFocus
+                    className="w-36 text-lg bg-white"
+                  />
+                </div>
               )}
-              <Image
-                src={"/mpesa.png"}
-                width={500}
-                height={150}
-                alt="mpesa"
-                className="w-36 object-contain h-fit rounded-lg border border-slate-500"
-              />
             </button>
           </div>
         </div>
+
         {selectedMethod && !errors.paymentNumber && <Separator />}
         {selectedMethod && !errors.paymentNumber && (
           <div className="space-y-1">
@@ -384,11 +316,7 @@ export default function PaymentForm(form: props) {
             <div className="w-full flex flex-row py-2 items-center gap-3">
               {dict.form.bif_currency === "BIF" && (
                 <p className="text-lg font-semibold text-nowrap">
-                  {selectedMethod === "card"
-                    ? dict.form.usd_currency
-                    : selectedMethod === "mpesa"
-                    ? dict.form.ksh_currency
-                    : dict.form.bif_currency}
+                  {dict.form.bif_currency}
                 </p>
               )}
               <Input
@@ -403,25 +331,15 @@ export default function PaymentForm(form: props) {
               />
               {dict.form.bif_currency !== "BIF" && (
                 <p className="text-lg font-semibold text-nowrap">
-                  {selectedMethod === "card"
-                    ? dict.form.usd_currency
-                    : selectedMethod === "mpesa"
-                    ? dict.form.ksh_currency
-                    : dict.form.bif_currency}
+                  {dict.form.bif_currency}
                 </p>
               )}
             </div>
             <p>
-              {selectedMethod === "card"
-                ? dict.form.usd_threshold.replaceAll(
-                    "$currency",
-                    dict.form.usd_currency
-                  )
-                : selectedMethod === "mpesa"
-                ? dict.form.ksh_threshold.replaceAll(
-                    "$currency",
-                    dict.form.ksh_currency
-                  )
+              {selectedMethod === "ibbm+"
+                ? dict.form.bif_threshold
+                    .replaceAll("$currency", dict.form.bif_currency)
+                    .replace("500", "1000")
                 : dict.form.bif_threshold.replaceAll(
                     "$currency",
                     dict.form.bif_currency
@@ -536,9 +454,7 @@ export default function PaymentForm(form: props) {
         <ConfirmationPopup
           donationId={newDonationId as number}
           amount={watch("amount")}
-          paymentMethod={
-            selectedMethod as "lumicash" | "ecocash" | "card" | "mpesa"
-          }
+          paymentMethod={selectedMethod as "lumicash" | "ecocash" | "ibbm+"}
           whatsappGroupLink={form.whatsappGroupLink}
           dictionary={dict}
         />

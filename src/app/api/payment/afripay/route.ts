@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   const donationId: string = body.donation_id;
   const phoneNumber: string = body.phone_number;
-  const paymentMethod: "ECOCASH" | "LUMICASH" = body.payment_method;
+  const paymentMethod: "ECOCASH" | "LUMICASH"|"IBB Mobile Plus" = body.payment_method;
   const amount: string = body.amount;
   const otp: string | undefined = body.otp;
 
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
   } else {
     formData.append(
       "initiator",
-      paymentMethod === "LUMICASH" ? `257${phoneNumber}` : phoneNumber
+      paymentMethod === "LUMICASH"||"IBB Mobile Plus" ? `257${phoneNumber}` : phoneNumber
     );
   }
   if (otp) {

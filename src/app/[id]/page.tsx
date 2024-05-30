@@ -7,6 +7,7 @@ import SharePopup from "../components/sharePopup";
 import { getDictionary } from "@/dictionaries/getDictionary";
 import Link from "next/link";
 import { formatAmount } from "@/utils/formatCurrency";
+import { Button } from "@/components/ui/button";
 
 export default async function Main({ params }: { params: { id: string } }) {
   if (Number.isNaN(Number(params.id))) {
@@ -72,7 +73,10 @@ export default async function Main({ params }: { params: { id: string } }) {
               value={Math.round((data.currentAmount * 100) / data.targetAmount)}
             />
             <p className="font-medium">
-              {parseFloat(((data.currentAmount * 100) / data.targetAmount).toFixed(1))}%
+              {parseFloat(
+                ((data.currentAmount * 100) / data.targetAmount).toFixed(1)
+              )}
+              %
             </p>
           </div>
         )}
@@ -102,6 +106,12 @@ export default async function Main({ params }: { params: { id: string } }) {
             {data.description ? data.description : dict.page.no_description}
           </p>
         </div>
+      </div>
+      <div className="w-fit mx-auto flex flex-col gap-3 mb-7 text-center items-center p-5 bg-background border border-heading rounded-2xl">
+        <p className="text-lg font-medium">{dict.page.start_fundraising}</p>
+        <Link href="/start">
+          <Button>{dict.page.start_fundraising_cta}</Button>
+        </Link>
       </div>
     </div>
   );
