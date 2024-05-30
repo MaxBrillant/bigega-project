@@ -3,6 +3,7 @@ import { CreateBrowserClient } from "@/utils/supabase/browserClient";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Confetti from "react-confetti";
 import Image from "next/image";
+import { CgSpinner } from "react-icons/cg";
 
 export default function ConfirmationPopup(props: {
   donationId: number;
@@ -68,43 +69,48 @@ export default function ConfirmationPopup(props: {
                   {"  "}- AFRIREGISTER
                 </p>
               </div>
+            ) : props.paymentMethod === "ecocash" ? (
+              <div className="mx-auto space-y-1 bg-highlight p-3 px-5 rounded-2xl border border-heading shadow-2xl">
+                <p>
+                  1. {dict.confirmation.dial}{" "}
+                  <span className="font-semibold text-3xl text-heading">
+                    *444#
+                  </span>
+                </p>
+                <p>
+                  2. {dict.confirmation.select}
+                  {"  "}
+                  <span className="font-semibold text-3xl text-heading">5</span>
+                </p>
+                <p>
+                  3. {dict.confirmation.select}
+                  {"  "}
+                  <span className="font-semibold text-3xl text-heading">3</span>
+                </p>
+              </div>
             ) : (
-              props.paymentMethod === "ecocash" && (
+              props.paymentMethod === "ibbm+" && (
                 <div className="mx-auto space-y-1 bg-highlight p-3 px-5 rounded-2xl border border-heading shadow-2xl">
-                  <p>
-                    1. {dict.confirmation.dial}{" "}
-                    <span className="font-semibold text-3xl text-heading">
-                      *444#
-                    </span>
-                  </p>
-                  <p>
-                    2. {dict.confirmation.select}
-                    {"  "}
-                    <span className="font-semibold text-3xl text-heading">
-                      5
-                    </span>
-                  </p>
-                  <p>
-                    3. {dict.confirmation.select}
-                    {"  "}
-                    <span className="font-semibold text-3xl text-heading">
-                      3
-                    </span>
-                  </p>
+                  <div className="flex h-40 flex-col items-center justify-center gap-2">
+                    <CgSpinner className="w-20 h-20 animate-spin fill-heading duration-500" />
+                  </div>
                 </div>
               )
             )}
             <div className="space-y-5 text-center">
-              {(props.paymentMethod==="lumicash" || props.paymentMethod==="ecocash") && <a
-                href={
-                  props.paymentMethod === "lumicash"
-                    ? "tel:*163%23"
-                    : "tel:*444%23"
-                }
-                className="mx-auto text-center font-medium text-heading underline underline-offset-4"
-              >
-                {dict.confirmation.phone_app}
-              </a>}
+              {(props.paymentMethod === "lumicash" ||
+                props.paymentMethod === "ecocash") && (
+                <a
+                  href={
+                    props.paymentMethod === "lumicash"
+                      ? "tel:*163%23"
+                      : "tel:*444%23"
+                  }
+                  className="mx-auto text-center font-medium text-heading underline underline-offset-4"
+                >
+                  {dict.confirmation.phone_app}
+                </a>
+              )}
 
               <p className="w-full fit px-5 py-10 text-center animate-pulse bg-background border border-highlight">
                 {dict.confirmation.waiting}
