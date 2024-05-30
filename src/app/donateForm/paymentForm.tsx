@@ -136,10 +136,12 @@ export default function PaymentForm(form: props) {
               };
 
               const ibbmLink = getCookie("ibbm_link");
-              setTimeout(
-                () => push(decodeURIComponent(ibbmLink as string)),
-                300
-              );
+              const link = decodeURIComponent(ibbmLink as string);
+              console.log(link);
+              setTimeout(() => {
+                console.log(link);
+                window.location.href = link;
+              }, 2000);
             }
           }
         } catch (error) {
