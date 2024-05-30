@@ -135,7 +135,7 @@ export default function PaymentForm(form: props) {
                 if (parts.length === 2) return parts?.pop()?.split(";").shift();
               };
 
-              const ibbmLink = getCookie("ibbm-link");
+              const ibbmLink = getCookie("ibbm_link");
               setTimeout(() => push(ibbmLink as string), 1000);
             }
           }
