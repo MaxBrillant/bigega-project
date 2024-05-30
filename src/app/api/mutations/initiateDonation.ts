@@ -131,8 +131,7 @@ async function initiatePayment(payment: paymentProps) {
       jsonData.map((value: string) => {
         if (String(value).includes("https://www.afripay.africa")) {
           const cookieStore = cookies();
-          cookieStore.set("ibbm_link", value.replaceAll(`"`, ""), {
-            path: "/",
+          cookieStore.set("ibbm", value.replaceAll(`"`, ""), {
             httpOnly: true,
           });
         }

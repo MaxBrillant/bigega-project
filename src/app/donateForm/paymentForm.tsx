@@ -124,23 +124,26 @@ export default function PaymentForm(form: props) {
               const href = location.pathname.split("/").pop();
 
               const redi = async () =>
-                push(
-                  `/${href}?donation=${donationId}&method=ibbm%2B&amount=${data.amount}`
+                location.replace(
+                  `${location.origin}/${href}?donation=${donationId}&method=ibbm%2B&amount=${data.amount}`
                 );
               redi();
 
-              const getCookie = (name: string) => {
-                const value = `; ${document.cookie}`;
-                const parts = value.split(`; ${name}=`);
-                if (parts.length === 2) return parts?.pop()?.split(";").shift();
+              const getLinkCookie = (name: string) => {
+                let cookieArray = document.cookie.split("; ");
+                for (let i = 0; i < cookieArray.length; i++) {
+                  let cookiePair = cookieArray[i].split("=");
+                  if (name == cookiePair[0].trim()) {
+                    return decodeURIComponent(cookiePair[1]);
+                  }
+                }
+                return undefined;
               };
 
-              const ibbmLink = getCookie("ibbm_link");
-              const link = decodeURIComponent(ibbmLink as string);
-              console.log(link);
+              const ibbmLink = getLinkCookie("ibbm");
               setTimeout(() => {
-                console.log(link);
-                window.location.href = link;
+                console.log(ibbmLink);
+                window.location.href = ibbmLink as string;
               }, 2000);
             }
           }
