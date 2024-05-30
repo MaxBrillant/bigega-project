@@ -15,7 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import ConfirmationPopup from "../components/paymentConfirmation";
 import { ImRadioUnchecked } from "react-icons/im";
 import { FaCheckCircle } from "react-icons/fa";
-import { notFound, useSearchParams } from "next/navigation";
+import { notFound, useRouter, useSearchParams } from "next/navigation";
 
 type props = {
   id: number;
@@ -50,6 +50,8 @@ export default function PaymentForm(form: props) {
   const [newDonationId, setNewDonationId] = useState<number | undefined>();
 
   const searchParams = useSearchParams();
+
+  const { push } = useRouter();
 
   useEffect(() => {
     if (searchParams.size > 0) {
@@ -118,6 +120,24 @@ export default function PaymentForm(form: props) {
             setValue("otp", undefined);
             setNewDonationId(donationId);
             setIsWaitingForConfirmation(true);
+            if (data.paymentMethod === "ibbm+") {
+              const href = location.pathname.split("/").pop();
+
+              const redi = async () =>
+                push(
+                  `/${href}?donation=${donationId}&method=ibbm%2B&amount=${data.amount}`
+                );
+              redi();
+
+              const getCookie = (name: string) => {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts?.pop()?.split(";").shift();
+              };
+
+              const ibbmLink = getCookie("ibbm-link");
+              setTimeout(() => push(ibbmLink as string), 1000);
+            }
           }
         } catch (error) {
           toast({
