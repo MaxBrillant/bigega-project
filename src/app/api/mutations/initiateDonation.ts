@@ -131,9 +131,9 @@ async function initiatePayment(payment: paymentProps) {
       jsonData.map((value: string) => {
         if (String(value).includes("https://www.afripay.africa")) {
           const href = new URL(pathname as string).pathname.split("/").pop();
-          const redi = async () =>
+          const redi = () =>
             redirect(
-              `/${href}?donation=${payment.donationId}&method=ibbm+&amount=${payment.amount}`
+              `/${href}?donation=${payment.donationId}&method=ibbm%2B&amount=${payment.amount}`
             );
           redi();
           setTimeout(() => redirect(value.replaceAll(`"`, "")), 2000);
