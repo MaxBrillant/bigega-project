@@ -91,9 +91,7 @@ export default function ConfirmationPopup(props: {
             ) : (
               props.paymentMethod === "ibbm+" && (
                 <div className="mx-auto space-y-1 bg-highlight p-3 px-5 rounded-2xl border border-heading shadow-2xl">
-                  <div className="flex h-40 flex-col items-center justify-center gap-2">
-                    <CgSpinner className="w-20 h-20 animate-spin fill-heading duration-500" />
-                  </div>
+                  <p>{dict.global.loading}</p>
                 </div>
               )
             )}
