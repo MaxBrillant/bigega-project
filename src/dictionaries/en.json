@@ -114,7 +114,9 @@
       "organizer": "Organizer",
       "creator": "This campaign was created by $name",
       "description": "Description",
-      "no_description": "No description was provided"
+      "no_description": "No description was provided",
+      "start_fundraising": "Want to start collecting funds for your future events, projects, or simply for getting help?",
+      "start_fundraising_cta": "Start a Fundraising Campaign"
     },
     "form": {
       "otp_error": "Error while trying to get the code from Lumicash, please try again",
@@ -124,11 +126,7 @@
       "number": "Write your number",
       "amount": "How much do you wish to donate?",
       "bif_currency": "BIF",
-      "usd_currency": "US Dollars",
-      "ksh_currency": "KSH",
       "bif_threshold": "Minimum: $currency 500 - Maximum: $currency 1000,000",
-      "usd_threshold": "Minimum: $currency 5 - Maximum: $currency 1,000",
-      "ksh_threshold": "Minimum: $currency 5 - Maximum: $currency 30,000",
       "name": "What is your name?",
       "anonymous": "Hide my name (only organizers will be able to see your name)",
       "otp_heading": "Lumicash has sent you a verification code via SMS",
@@ -143,10 +141,6 @@
       "excuse": "We understand that the process might be long, but we are seeking better and simpler ways to let you donate to this campaign",
       "phone_app": "CLICK HERE to Open your Phone App",
       "waiting": "Waiting for payment confirmation... We will show a message here after receiving your donation",
-      "guide_heading": "Here is a quick guide",
-      "card_guide": "You will be redirected to the Afripay checkout page to complete your payment. Select ''VISA'' or ''MASTERCARD'' depending on your card and then proceed to providing your card details. The money will be converted in Burundian Francs using the official National Bank (BRB) rate of USD 1 = BIF 2,901.7094",
-      "mpesa_guide": "You will be redirected to the Afripay checkout page to complete your payment. Make sure to select ''MPESA KENYA'' and proceed. You will receive a prompt on your phone requesting you to validate the transaction. Enter your PIN and the payment will be successful. The money will be converted in Burundian Francs using the official National Bank (BRB) rate of KSH 1 = BIF 21.8585",
-      "guide_cta": "Go to Checkout Page",
       "success_notice": "We have sent a notification of your donation to the WhatsApp Group that is linked to this campaign",
       "whatsapp_group": "CLICK HERE to Join the WhatsApp Group"
     },
