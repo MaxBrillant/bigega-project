@@ -81,9 +81,10 @@ export async function InitiateDonation(formData: props) {
       console.log(response);
       if (String(response).includes("https://www.afripay.africa")) {
         return { id: data[0].id, link: response };
+      } else {
+        return { id: data[0].id };
       }
     }
-    return { id: data[0].id };
   } catch (error) {
     throw new Error(
       `Error while initiating a donation from "${formData.donorName}": The error is: "${error}"`
@@ -132,11 +133,12 @@ async function initiatePayment(payment: paymentProps) {
     }
 
     if (payment.paymentMethod === "IBB Mobile Plus") {
-      await jsonData.map((value: string) => {
+      const link = await jsonData.map((value: string) => {
         if (String(value).includes("https://www.afripay.africa")) {
           return decodeURIComponent(value).replaceAll(`"`, "");
         }
       });
+      return link as string;
     }
     return "success";
   } catch (error) {
