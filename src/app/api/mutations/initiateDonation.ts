@@ -66,7 +66,7 @@ export async function InitiateDonation(formData: props) {
       formData.paymentMethod === "lumicash" ||
       formData.paymentMethod === "ibbm+"
     ) {
-      await initiatePayment({
+      const response = await initiatePayment({
         donationId: String(data[0].id),
         amount: formData.amount,
         paymentMethod: formData.paymentMethod
@@ -78,8 +78,11 @@ export async function InitiateDonation(formData: props) {
         phoneNumber: formData.paymentNumber as string,
         otp: formData.otp,
       });
+      if (String(response).includes("https://www.afripay.africa")) {
+        return { id: data[0].id, link: response };
+      }
     }
-    return data[0].id;
+    return { id: data[0].id };
   } catch (error) {
     throw new Error(
       `Error while initiating a donation from "${formData.donorName}": The error is: "${error}"`
@@ -130,20 +133,7 @@ async function initiatePayment(payment: paymentProps) {
     if (payment.paymentMethod === "IBB Mobile Plus") {
       jsonData.map((value: string) => {
         if (String(value).includes("https://www.afripay.africa")) {
-          const href = new URL(pathname as string).pathname.split("/").pop();
-          // const redi = () =>
-          //   redirect(
-          //     `/${href}?donation=${payment.donationId}&method=ibbm%2B&amount=${payment.amount}`
-          //   );
-          // redi();
-          console.log(
-            `/${href}?donation=${payment.donationId}&method=ibbm%2B&amount=${payment.amount}`
-          );
-          console.log(decodeURIComponent(value).replaceAll(`"`, ""));
-          setTimeout(
-            () => redirect(decodeURIComponent(value).replaceAll(`"`, "")),
-            2000
-          );
+          return decodeURIComponent(value).replaceAll(`"`, "");
         }
       });
     }
