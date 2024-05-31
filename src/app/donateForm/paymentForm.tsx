@@ -124,8 +124,8 @@ export default function PaymentForm(form: props) {
               const href = location.pathname.split("/").pop();
 
               const redi = async () =>
-                location.replace(
-                  `${location.origin}/${href}?donation=${donationId}&method=ibbm%2B&amount=${data.amount}`
+                push(
+                  `/${href}?donation=${donationId}&method=ibbm%2B&amount=${data.amount}`
                 );
               redi();
 
