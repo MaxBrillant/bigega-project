@@ -104,7 +104,7 @@ export default function PaymentForm(form: props) {
         }
       } else {
         try {
-          const donationId = await InitiateDonation({
+          const donation = await InitiateDonation({
             campaignId: form.id,
             amount: data.amount,
             paymentMethod: data.paymentMethod,
@@ -115,11 +115,25 @@ export default function PaymentForm(form: props) {
             otp: data.otp,
           });
 
-          if (donationId) {
+          if (donation) {
             setIsOtpRequired(false);
             setValue("otp", undefined);
-            setNewDonationId(donationId);
+            setNewDonationId(donation.id);
             setIsWaitingForConfirmation(true);
+          }
+          if (donation.link) {
+            const href = location.pathname.split("/").pop();
+
+            const redi = async () =>
+              push(
+                `/${href}?donation=${donation.id}&method=ibbm%2B&amount=${data.amount}`
+              );
+            redi();
+
+            setTimeout(() => {
+              console.log(donation.link);
+              window.location.href = donation.link;
+            }, 2000);
           }
         } catch (error) {
           toast({
