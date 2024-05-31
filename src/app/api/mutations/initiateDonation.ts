@@ -131,8 +131,9 @@ async function initiatePayment(payment: paymentProps) {
     }
 
     if (payment.paymentMethod === "IBB Mobile Plus") {
-      jsonData.map((value: string) => {
+      await jsonData.map((value: string) => {
         if (String(value).includes("https://www.afripay.africa")) {
+          console.log(decodeURIComponent(value).replaceAll(`"`, ""));
           return decodeURIComponent(value).replaceAll(`"`, "");
         }
       });
