@@ -120,20 +120,21 @@ export default function PaymentForm(form: props) {
             setValue("otp", undefined);
             setNewDonationId(donation.id);
             setIsWaitingForConfirmation(true);
-          }
-          if (donation.link) {
-            const href = location.pathname.split("/").pop();
 
-            const redi = async () =>
-              push(
-                `/${href}?donation=${donation.id}&method=ibbm%2B&amount=${data.amount}`
-              );
-            redi();
+            if (donation.link) {
+              const href = location.pathname.split("/").pop();
 
-            setTimeout(() => {
-              console.log(donation.link);
-              window.location.href = donation.link;
-            }, 2000);
+              const redi = async () =>
+                push(
+                  `/${href}?donation=${donation.id}&method=ibbm%2B&amount=${data.amount}`
+                );
+              redi();
+
+              setTimeout(() => {
+                console.log(donation.link);
+                window.location.href = donation.link;
+              }, 2000);
+            }
           }
         } catch (error) {
           toast({
