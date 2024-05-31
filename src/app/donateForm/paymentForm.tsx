@@ -120,32 +120,6 @@ export default function PaymentForm(form: props) {
             setValue("otp", undefined);
             setNewDonationId(donationId);
             setIsWaitingForConfirmation(true);
-            if (data.paymentMethod === "ibbm+") {
-              const href = location.pathname.split("/").pop();
-
-              const redi = async () =>
-                push(
-                  `/${href}?donation=${donationId}&method=ibbm%2B&amount=${data.amount}`
-                );
-              redi();
-
-              const getLinkCookie = (name: string) => {
-                let cookieArray = document.cookie.split("; ");
-                for (let i = 0; i < cookieArray.length; i++) {
-                  let cookiePair = cookieArray[i].split("=");
-                  if (name == cookiePair[0].trim()) {
-                    return decodeURIComponent(cookiePair[1]);
-                  }
-                }
-                return undefined;
-              };
-
-              const ibbmLink = getLinkCookie("ibbm");
-              setTimeout(() => {
-                console.log(ibbmLink);
-                window.location.href = ibbmLink as string;
-              }, 2000);
-            }
           }
         } catch (error) {
           toast({

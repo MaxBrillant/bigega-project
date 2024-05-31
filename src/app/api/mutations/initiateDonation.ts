@@ -3,7 +3,7 @@
 import { DonationSchema } from "@/app/validation/donationFormValidation";
 import { getDictionary } from "@/dictionaries/getDictionary";
 import { CreateServerClient } from "@/utils/supabase/serverClient";
-import { cookies, headers } from "next/headers";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import fetch from "node-fetch";
 
@@ -130,10 +130,20 @@ async function initiatePayment(payment: paymentProps) {
     if (payment.paymentMethod === "IBB Mobile Plus") {
       jsonData.map((value: string) => {
         if (String(value).includes("https://www.afripay.africa")) {
-          const cookieStore = cookies();
-          cookieStore.set("ibbm", value.replaceAll(`"`, ""), {
-            httpOnly: true,
-          });
+          const href = new URL(pathname as string).pathname.split("/").pop();
+          // const redi = () =>
+          //   redirect(
+          //     `/${href}?donation=${payment.donationId}&method=ibbm%2B&amount=${payment.amount}`
+          //   );
+          // redi();
+          console.log(
+            `/${href}?donation=${payment.donationId}&method=ibbm%2B&amount=${payment.amount}`
+          );
+          console.log(decodeURIComponent(value).replaceAll(`"`, ""));
+          setTimeout(
+            () => redirect(decodeURIComponent(value).replaceAll(`"`, "")),
+            2000
+          );
         }
       });
     }
