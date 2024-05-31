@@ -78,6 +78,7 @@ export async function InitiateDonation(formData: props) {
         phoneNumber: formData.paymentNumber as string,
         otp: formData.otp,
       });
+      console.log(response);
       if (String(response).includes("https://www.afripay.africa")) {
         return { id: data[0].id, link: response };
       }
@@ -133,7 +134,6 @@ async function initiatePayment(payment: paymentProps) {
     if (payment.paymentMethod === "IBB Mobile Plus") {
       await jsonData.map((value: string) => {
         if (String(value).includes("https://www.afripay.africa")) {
-          console.log(decodeURIComponent(value).replaceAll(`"`, ""));
           return decodeURIComponent(value).replaceAll(`"`, "");
         }
       });
