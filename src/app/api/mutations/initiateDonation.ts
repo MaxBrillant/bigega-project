@@ -136,7 +136,7 @@ async function initiatePayment(payment: paymentProps) {
         String(value).includes("https://www.afripay.africa")
       );
 
-      return decodeURIComponent(link[0] as string).replaceAll(`"`, "");
+      return link[0] as string;
     } else {
       return "success";
     }
