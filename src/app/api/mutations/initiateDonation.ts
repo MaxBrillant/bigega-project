@@ -132,14 +132,14 @@ async function initiatePayment(payment: paymentProps) {
     }
 
     if (payment.paymentMethod === "IBB Mobile Plus") {
-      const link = await jsonData.map((value: string) => {
-        if (String(value).includes("https://www.afripay.africa")) {
-          return value;
-        }
-      });
-      return link as string;
+      const link = await jsonData.filter((value: string) =>
+        String(value).includes("https://www.afripay.africa")
+      );
+
+      return decodeURIComponent(link[0] as string).replaceAll(`"`, "");
+    } else {
+      return "success";
     }
-    return "success";
   } catch (error) {
     throw new Error("Error trying to initiate payment. The error is: " + error);
   }

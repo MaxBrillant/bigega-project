@@ -132,7 +132,7 @@ export default function PaymentForm(form: props) {
 
               setTimeout(() => {
                 console.log(donation.link);
-                window.location.href = donation.link;
+                window.location.pathname = donation.link;
               }, 2000);
             }
           }
