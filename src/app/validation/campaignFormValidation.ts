@@ -32,7 +32,6 @@ export const CampaignSchema = (dict: any) =>
       .max(500, dict?.validation?.max_description)
       .optional(),
 
-    coverPhoto: z.string().optional(),
     country: z.enum(["burundi", "rwanda"], {
       required_error: dict?.validation?.country,
       invalid_type_error: dict?.validation?.country,
@@ -62,6 +61,13 @@ export const CampaignSchema = (dict: any) =>
         message: dict?.validation?.mtn_momo,
       })
       .optional(),
+
+    whatsappGroupLink: z
+      .string()
+      .regex(
+        /^https:\/\/chat\.whatsapp\.com\/[a-zA-Z0-9]{22}$/,
+        dict?.validation?.link
+      ),
     languageOfCommunication: z.enum(["en", "fr", "bi", "rw"], {
       required_error: dict?.validation?.language,
       invalid_type_error: dict?.validation?.language,
@@ -82,7 +88,6 @@ export const BasicDetailsSchema = (dict: any) => {
     title: true,
     category: true,
     description: true,
-    coverPhoto: true,
   });
 };
 
@@ -129,9 +134,14 @@ export const PaymentDetailsSchema = (dict: any) =>
       }
     );
 
+export const WhatsappGroupDetailsSchema = (dict: any) =>
+  CampaignSchema(dict).pick({
+    whatsappGroupLink: true,
+    languageOfCommunication: true,
+  });
+
 export const OrganizerDetailsSchema = (dict: any) =>
   CampaignSchema(dict).pick({
     organizerName: true,
     organizerWhatsappNumber: true,
-    languageOfCommunication: true,
   });

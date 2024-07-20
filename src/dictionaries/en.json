@@ -48,14 +48,25 @@
       "add_lumicash": "Click here to add a Lumicash number",
       "notice": "If you have an emergency (medical or of any sort), and wish to collect the funds very soon, we strictly recommend that you ONLY choose Ecocash to receive funds. Lumicash only allows us to access your funds and send them to you on the 20th day of every month or later"
     },
+    "whatsapp": {
+      "error": "Uh oh! Something went wrong while trying to join the WhatsApp group",
+      "link": "Provide your fundraising campaign WhatsApp Group Link",
+      "link_placeholder": "Paste your WhatsApp group link here",
+      "guide_title": "To get the group link, do this:",
+      "step_one": "1. Open the WhatsApp group chat, then tap the group name. Make sure you are an Admin",
+      "step_two": "2. Go at the bottom, and Tap ''Invite via link''",
+      "step_three": "3. Tap on ''Copy link''",
+      "language": "What language should we use to communicate with you and group members?",
+      "finish": "Finish"
+    },
     "organizer": {
       "success": "The ''$title'' campaign has been successfully created",
       "error": "Something went wrong while creating the ''$title'' campaign",
       "try": "Try again",
+      "heading": "Before we can create your campaign, tell us a little bit about yourself",
       "name": "What is your name?",
       "whatsapp": "What is your WhatsApp number?",
       "notice": "This is very important. We will use it to send you notifications and updates on the donations that you will receive",
-      "language": "What language should we use to communicate with you and group members?",
       "create_campaign": "Create Campaign",
       "success_heading": "🎉🎊Your fundraising campaign has been successfully created",
       "success_notice": "We have sent a Welcome message to your WhatsApp number, with details about how to find help and get payouts. We have also sent the link to the group that you provided"
@@ -78,6 +89,7 @@
       "lumicash": "Write a valid Lumicash number",
       "ecocash": "Write a valid Ecocash number",
       "mtn_momo": "Write a valid MTN Momo number",
+      "link": "Please provide a valid WhatsApp group link",
       "language": "Select a language of communication",
       "min_organizer": "Please write your name",
       "max_organizer": "Your name should have less than 70 characters",
