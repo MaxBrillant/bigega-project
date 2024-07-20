@@ -48,25 +48,14 @@
       "add_lumicash": "Cliquez ici pour ajouter un numéro Lumicash",
       "notice": "Si vous avez une urgence (médicale ou de toute autre nature) et souhaitez collecter les fonds très rapidement, nous recommandons strictement que vous choisissiez UNIQUEMENT Ecocash pour recevoir les fonds. Lumicash nous permet seulement d'accéder à vos fonds et de vous les envoyer le 20ème jour de chaque mois ou plus tard"
     },
-    "whatsapp": {
-      "error": "Oops ! Une erreur s'est produite lors de la tentative de rejoindre le groupe WhatsApp",
-      "link": "Veuillez fournir le lien du groupe WhatsApp de votre campagne de collecte de fonds",
-      "link_placeholder": "Écrivez ici le lien de votre groupe WhatsApp",
-      "guide_title": "Pour obtenir le lien du groupe, procédez comme suit:",
-      "step_one": "1. Ouvrez la discussion du groupe WhatsApp, puis cliquez sur le nom du groupe. Assurez-vous que vous êtes un administrateur (Admin)",
-      "step_two": "2. Allez en bas et cliquez sur « Inviter via un lien »",
-      "step_three": "3. Cliquez sur « Copier le lien »",
-      "language": "Quelle langue devrions-nous utiliser pour communiquer avec vous et les membres du groupe?",
-      "finish": "Terminer"
-    },
     "organizer": {
       "success": "La campagne ''$title'' a été créée avec succès",
       "error": "Une erreur s'est produite lors de la création de la campagne ''$title''",
       "try": "Essayer à nouveau",
-      "heading": "Avant de pouvoir créer votre campagne, parlez-nous un peu de vous",
       "name": "Comment vous appelez-vous?",
       "whatsapp": "Quel est votre numéro WhatsApp?",
       "notice": "Ceci est très important. Nous l'utiliserons pour vous envoyer des notifications et des mises à jour sur les dons que vous recevrez",
+      "language": "Quelle langue devrions-nous utiliser pour communiquer avec vous et les membres du groupe?",
       "create_campaign": "Créer la campagne",
       "success_heading": "🎉🎊Votre campagne de collecte de fonds a été créée avec succès",
       "success_notice": "Nous avons envoyé un message de bienvenue à votre numéro WhatsApp, avec des détails sur la façon de trouver de l'aide et d'obtenir des paiements. Nous avons également envoyé le lien vers le groupe que vous avez fourni"
@@ -89,7 +78,6 @@
       "lumicash": "Écrivez un numéro Lumicash valide",
       "ecocash": "Écrivez un numéro Ecocash valide",
       "mtn_momo": "Écrivez un numéro MTN Momo valide",
-      "link": "Veuillez fournir un lien de groupe WhatsApp valide",
       "language": "Sélectionnez une langue de communication",
       "min_organizer": "Veuillez écrire votre nom",
       "max_organizer": "Votre nom doit contenir moins de 70 caractères",

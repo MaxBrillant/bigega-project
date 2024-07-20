@@ -5,10 +5,10 @@ import {
   CampaignSchema,
   PaymentDetailsSchema,
 } from "@/app/validation/campaignFormValidation";
-import { z } from "zod";
 import { headers } from "next/headers";
 import { CreateServerClient } from "@/utils/supabase/serverClient";
 import { getDictionary } from "@/dictionaries/getDictionary";
+import { randomUUID } from "crypto";
 
 type props = {
   title: string;
@@ -25,13 +25,12 @@ type props = {
     | "travel"
     | "other";
   description: string | undefined;
+  coverPhoto: FormData | undefined;
   country: "burundi" | "rwanda";
   targetAmount: number;
   lumicashNumber: string | undefined;
   ecocashNumber: string | undefined;
   mtnMomoNumber: string | undefined;
-  whatsappGroupId: string;
-  whatsappGroupLink: string;
   languageOfCommunication: "en" | "fr" | "bi" | "rw";
 
   organizerName: string;
@@ -49,13 +48,40 @@ export async function CreateCampaign(formData: props) {
   //TODO: Validate this shit
 
   const dict = await getDictionary();
-  const campaignSchema = CampaignSchema(dict?.start).and(
-    PaymentDetailsSchema(dict)
-  );
+  const campaignSchema = CampaignSchema(dict?.start)
+    .omit({ coverPhoto: true })
+    .and(PaymentDetailsSchema(dict));
 
   try {
     campaignSchema.parse(formData);
 
+    let filePath: string | undefined;
+    if (formData.coverPhoto) {
+      const coverPhoto = formData.coverPhoto.getAll("cover")[0] as Blob;
+      const fileName = randomUUID();
+
+      const { data: fileData, error: fileError } = await supabase.storage
+        .from("bigega-resources")
+        .upload(
+          `cover-photos/${fileName}.${coverPhoto.type
+            .split("/")[1]
+            .toLowerCase()}`,
+          coverPhoto,
+          {
+            cacheControl: "3600",
+            upsert: false,
+          }
+        );
+
+      if (fileError) {
+        throw new Error(
+          `Error while uploading cover photo of the campaign of title: "${formData.title}": The error is: "${fileError.message}"`
+        );
+      }
+      filePath =
+        "https://vsxvyxxqacrabqatnddx.supabase.co/storage/v1/object/public/bigega-resources/" +
+        fileData?.path;
+    }
     const organizerId = await CreateOrganiser({
       organizerName: formData.organizerName,
       organizerWhatsappNumber: formData.organizerWhatsappNumber,
@@ -82,6 +108,7 @@ export async function CreateCampaign(formData: props) {
         category: formData.category,
         description:
           formData.description != undefined ? formData.description : null,
+        cover_photo_url: filePath,
         country: formData.country,
         target_amount: formData.targetAmount,
         ecocash_number:
@@ -90,8 +117,6 @@ export async function CreateCampaign(formData: props) {
           formData.lumicashNumber != undefined ? formData.lumicashNumber : null,
         mtn_momo_number:
           formData.mtnMomoNumber != undefined ? formData.mtnMomoNumber : null,
-        whatsapp_group_id: formData.whatsappGroupId,
-        whatsapp_group_link: formData.whatsappGroupLink,
         language_of_communication: formData.languageOfCommunication,
       })
       .select()
@@ -110,7 +135,6 @@ export async function CreateCampaign(formData: props) {
     await sendCampaignCreationMessages({
       campaignId: data[0].id,
       campaignTitle: formData.title,
-      whatsappGroupId: formData.whatsappGroupId,
       organizerName: formData.organizerName,
       organizerWhatsappNumber: formData.organizerWhatsappNumber,
       languageOfCommunication: formData.languageOfCommunication,
@@ -157,7 +181,6 @@ async function isCampaignIdUsed(id: number): Promise<boolean> {
 type messageProps = {
   campaignId: number;
   campaignTitle: string;
-  whatsappGroupId: string;
   organizerName: string;
   organizerWhatsappNumber: string;
   languageOfCommunication: "en" | "fr" | "bi" | "rw";
@@ -177,18 +200,6 @@ async function sendCampaignCreationMessages(message: messageProps) {
       link: link,
       name: message.organizerName,
       recipient_number: message.organizerWhatsappNumber,
-      language: message.languageOfCommunication,
-    }),
-  });
-
-  await fetch(origin + "/api/whatsapp/groups/send-opening-message", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      title: message.campaignTitle,
-      link: link,
-      organizer_whatsapp_number: message.organizerWhatsappNumber,
-      group_id: message.whatsappGroupId,
       language: message.languageOfCommunication,
     }),
   });

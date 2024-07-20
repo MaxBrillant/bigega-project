@@ -16,13 +16,12 @@ export type CampaignFormState = {
     | "other"
     | undefined;
   description: string | undefined;
+  coverPhotoUrl: string | undefined;
   country: "burundi" | "rwanda" | undefined;
   targetAmount: number | undefined;
   lumicashNumber: string | undefined;
   ecocashNumber: string | undefined;
   mtnMomoNumber: string | undefined;
-  whatsappGroupId: string | undefined;
-  whatsappGroupLink: string | undefined;
   languageOfCommunication: "en" | "fr" | "bi" | "rw" | undefined;
 };
 

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Progress from "../components/progress";
 import BasicDetailsForm from "../createCampaignForm/basicDetailsForm";
 import PaymentDetailsForm from "../createCampaignForm/paymentDetailsForm";
-import WhatsappGroupDetailsForm from "../createCampaignForm/whatsappGroupDetailsForm";
 import CampaignFormContext, {
   CampaignFormState,
 } from "../createCampaignForm/formContext";
@@ -15,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { LanguageSelect } from "../components/languageSelect";
+import OrganizerDetailsForm from "../createCampaignForm/organizerDetailsForm";
 
 export default function Main() {
   const [formState, setFormState] = useState<CampaignFormState>(
@@ -88,7 +88,7 @@ export default function Main() {
           />
         )}
         {step === 2 && (
-          <WhatsappGroupDetailsForm
+          <OrganizerDetailsForm
             goPrevious={goToPrevStep}
             dictionary={dict?.start}
           />

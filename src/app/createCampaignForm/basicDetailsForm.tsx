@@ -9,6 +9,15 @@ import { BasicDetailsSchema } from "../validation/campaignFormValidation";
 import { z } from "zod";
 import CampaignFormContext from "./formContext";
 import { Separator } from "@/components/ui/separator";
+import ReactCrop, {
+  centerCrop,
+  makeAspectCrop,
+  type Crop,
+} from "react-image-crop";
+import "react-image-crop/dist/ReactCrop.css";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import NextImage from "next/image";
+import Compressor from "compressorjs";
 
 type props = {
   dictionary: any;
@@ -21,6 +30,8 @@ export default function BasicDetailsForm(form: props) {
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<detailsType>({
     resolver: zodResolver(BasicDetailsSchema(form.dictionary)),
@@ -30,6 +41,33 @@ export default function BasicDetailsForm(form: props) {
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
     formState.category
   );
+  const [imageTobeAdjusted, setImageTobeAdjusted] = useState<
+    string | undefined
+  >();
+
+  const [crop, setCrop] = useState<Crop>();
+
+  function onImageLoad(e: any) {
+    const { naturalWidth: width, naturalHeight: height } = e.currentTarget;
+
+    const crop = centerCrop(
+      makeAspectCrop(
+        {
+          // You don't need to pass a complete crop into
+          // makeAspectCrop or centerCrop.
+          unit: "%",
+          width: 100,
+        },
+        2 / 1,
+        width,
+        height
+      ),
+      width,
+      height
+    );
+
+    setCrop(crop);
+  }
 
   const listOfErrors = Object.values(errors).map((error) => error);
 
@@ -39,6 +77,7 @@ export default function BasicDetailsForm(form: props) {
       title: data.title,
       category: data.category,
       description: data.description,
+      coverPhotoUrl: data.coverPhoto,
     }));
     form.goNext();
   };
@@ -156,6 +195,101 @@ export default function BasicDetailsForm(form: props) {
         />
       </div>
 
+      {selectedCategory && <Separator />}
+      {selectedCategory && (
+        <div className="space-y-1">
+          <p className="font-semibold text-lg">
+            Do you have a cover photo for your campaign? (optional)
+          </p>
+          <p>This will be your cover photo</p>
+          <Input
+            type="file"
+            accept="image/*"
+            id="cover"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              const url = URL.createObjectURL(file);
+              setImageTobeAdjusted(url);
+            }}
+          />
+          <div className="relative w-full bg-slate-300 rounded-2xl border border-slate-500 overflow-clip">
+            <NextImage
+              src={
+                watch("coverPhoto")
+                  ? (watch("coverPhoto") as string)
+                  : "/" + selectedCategory + ".jpg"
+              }
+              width={500}
+              height={250}
+              alt="cover"
+              className="w-full aspect-[2/1] object-cover"
+            />
+            <Button
+              variant={"outline"}
+              size={"lg"}
+              className="w-full"
+              onClick={(e) => {
+                e.preventDefault();
+                document?.getElementById("cover")?.click();
+              }}
+            >
+              Change cover photo
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {imageTobeAdjusted && (
+        <Dialog
+          open={true}
+          onOpenChange={() => setImageTobeAdjusted(undefined)}
+        >
+          <DialogContent className="flex flex-col max-h-full">
+            <p>Adjust your cover photo</p>
+            <ReactCrop
+              crop={crop}
+              aspect={2 / 1}
+              locked
+              ruleOfThirds
+              onChange={(crop, percentCrop) => setCrop(percentCrop)}
+              className="w-fit h-fit max-h-[70vh] mx-auto"
+            >
+              <img
+                src={imageTobeAdjusted}
+                onLoad={onImageLoad}
+                className="h-fit max-h-[70vh] mx-auto object-contain"
+              />
+            </ReactCrop>
+            <Button
+              onClick={async (e) => {
+                e.preventDefault();
+
+                const file = await getCroppedImage(imageTobeAdjusted, crop);
+                new Compressor(file, {
+                  quality: 0.6,
+                  maxWidth: 1000,
+                  maxHeight: 1000,
+                  // The compression process is asynchronous,
+                  // which means you have to access the `result` in the `success` hook function.
+                  success(result) {
+                    const url = URL.createObjectURL(result);
+                    setValue("coverPhoto", url);
+                    setImageTobeAdjusted(undefined);
+                  },
+                  error(err) {
+                    console.log(err.message);
+                  },
+                });
+              }}
+            >
+              Continue
+            </Button>
+          </DialogContent>
+        </Dialog>
+      )}
+
       {listOfErrors.length > 0 && (
         <div className="flex flex-col p-3 bg-red-200 text-red-700 border border-red-700 rounded-2xl">
           {listOfErrors.map((error, index) => (
@@ -168,4 +302,50 @@ export default function BasicDetailsForm(form: props) {
       </Button>
     </form>
   );
+}
+
+const getCroppedImage = async (imageSrc: string, crop: any) => {
+  const image = await loadImage(imageSrc);
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+
+  if (!ctx) {
+    throw new Error("Failed to get canvas context");
+  }
+
+  crop.x = (image.width * crop.x) / 100;
+  crop.y = (image.height * crop.y) / 100;
+  crop.width = (image.width * crop.width) / 100;
+  crop.height = (image.height * crop.height) / 100;
+  const scaleX = image.naturalWidth / image.width;
+  const scaleY = image.naturalHeight / image.height;
+
+  canvas.width = crop.width!;
+  canvas.height = crop.height!;
+  ctx.drawImage(
+    image,
+    crop.x! * scaleX,
+    crop.y! * scaleY,
+    crop.width! * scaleX,
+    crop.height! * scaleY,
+    0,
+    0,
+    crop.width!,
+    crop.height!
+  );
+
+  const croppedImageUrl = canvas.toDataURL("image/jpeg");
+  const response = await fetch(croppedImageUrl);
+  const blob = await response.blob();
+  return blob;
+};
+
+// Helper function to load image
+function loadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
 }
