@@ -86,7 +86,6 @@ export default async function Main({ params }: { params: { id: string } }) {
         title={data.title}
         lumicashNumber={data.lumicashNumber}
         ecocashNumber={data.ecocashNumber}
-        whatsappGroupLink={data.whatsappGroupLink}
         dictionary={dict}
       />
       <div className="p-3 space-y-5 my-7">

@@ -99,23 +99,6 @@ export async function POST(request: NextRequest) {
         current_amount: data[0].campaigns.current_amount + data[0].amount,
       }),
     });
-
-    await fetch(origin + "/api/whatsapp/groups/send-campaign-update", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        group_id: data[0].campaigns.whatsapp_group_id,
-        language: data[0].campaigns.language_of_communication,
-        campaign_id: data[0].campaigns.id,
-        name: data[0].donor_name,
-        is_donor_anonymous: data[0].is_donor_anonymous,
-        title: data[0].campaigns.title,
-        amount: data[0].amount,
-        currency: data[0].currency,
-        current_amount: data[0].campaigns.current_amount + data[0].amount,
-        target_amount: data[0].campaigns.target_amount,
-      }),
-    });
   } else {
     throw new Error(
       `Error while confirming the transaction: Status code: ${status}`
@@ -130,9 +113,9 @@ type returnedType = [
     donor_name: string;
     is_donor_anonymous: boolean;
     amount: number;
-    currency: "BIF" | "RWF" | "USD" | "KSH";
+    currency: "BIF" | "USD";
     donor_payment_number: string;
-    payment_method: "ecocash" | "lumicash" | "card" | "mpesa";
+    payment_method: "ecocash" | "lumicash" | "ibbm+" | "card" | "paypal";
     reference: string;
     transaction_date_and_time: Date;
     campaigns: {
@@ -150,7 +133,7 @@ type returnedType = [
   }
 ];
 
-const checkIfPaymentIsPending = async (donationId: string) => {
+export const checkIfPaymentIsPending = async (donationId: string) => {
   const supabase = CreateServerClient();
   const { data, error } = await supabase
     .from("donations")

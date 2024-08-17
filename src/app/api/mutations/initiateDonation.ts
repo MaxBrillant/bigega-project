@@ -4,15 +4,14 @@ import { DonationSchema } from "@/app/validation/donationFormValidation";
 import { getDictionary } from "@/dictionaries/getDictionary";
 import { CreateServerClient } from "@/utils/supabase/serverClient";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import fetch from "node-fetch";
 
 type props = {
   campaignId: number;
   amount: number;
   paymentNumber: string | undefined;
-  paymentMethod: "ecocash" | "lumicash" | "ibbm+";
-  currency: "BIF" | "RWF";
+  paymentMethod: "ecocash" | "lumicash" | "ibbm+" | "card" | "paypal";
+  currency: "BIF" | "USD";
   otp: string | undefined;
   donorName: string;
   isDonorAnonymous: boolean;
@@ -46,7 +45,7 @@ export async function InitiateDonation(formData: props) {
           ? formData.paymentNumber
           : "000",
         payment_method: formData.paymentMethod,
-        currency: "BIF",
+        currency: formData.currency,
       })
       .select()
       .limit(1)
@@ -83,6 +82,8 @@ export async function InitiateDonation(formData: props) {
       } else {
         return { id: data[0].id };
       }
+    } else {
+      return { id: data[0].id };
     }
   } catch (error) {
     throw new Error(

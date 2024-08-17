@@ -129,8 +129,7 @@
       "excuse": "We understand that the process might be long, but we are seeking better and simpler ways to let you donate to this campaign",
       "phone_app": "CLICK HERE to Open your Phone App",
       "waiting": "Waiting for payment confirmation... We will show a message here after receiving your donation",
-      "success_notice": "We have sent a notification of your donation to the WhatsApp Group that is linked to this campaign",
-      "whatsapp_group": "CLICK HERE to Join the WhatsApp Group"
+      "success_notice": "We have sent a notification of your donation to the WhatsApp Group that is linked to this campaign"
     },
     "share": {
       "heading": "Help this campaign reach friends and family",

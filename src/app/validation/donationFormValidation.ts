@@ -10,10 +10,13 @@ export const DonationSchema = (dict: any) =>
         invalid_type_error: dict?.validation?.required_amount,
       }),
 
-      paymentMethod: z.enum(["lumicash", "ecocash", "ibbm+"], {
-        required_error: dict?.validation?.select_method,
-        invalid_type_error: dict?.validation?.select_method,
-      }),
+      paymentMethod: z.enum(
+        ["lumicash", "ecocash", "ibbm+", "card", "paypal"],
+        {
+          required_error: dict?.validation?.select_method,
+          invalid_type_error: dict?.validation?.select_method,
+        }
+      ),
       paymentNumber: z
         .string()
         .refine((data) => isValidNumber("+257" + data), {

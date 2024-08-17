@@ -18,6 +18,7 @@ import "react-image-crop/dist/ReactCrop.css";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import NextImage from "next/image";
 import Compressor from "compressorjs";
+import { IoMdClose } from "react-icons/io";
 
 type props = {
   dictionary: any;
@@ -215,6 +216,17 @@ export default function BasicDetailsForm(form: props) {
             }}
           />
           <div className="relative w-full bg-slate-300 rounded-2xl border border-slate-500 overflow-clip">
+            {watch("coverPhoto") && (
+              <button
+                className="absolute top-1 right-1 p-1 bg-white/80 rounded-full"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setValue("coverPhoto", undefined);
+                }}
+              >
+                <IoMdClose className="w-4 h-4" />
+              </button>
+            )}
             <NextImage
               src={
                 watch("coverPhoto")

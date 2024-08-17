@@ -13,7 +13,6 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 import ConfirmationPopup from "../components/paymentConfirmation";
-import { ImRadioUnchecked } from "react-icons/im";
 import { FaCheckCircle } from "react-icons/fa";
 import { notFound, useRouter, useSearchParams } from "next/navigation";
 
@@ -22,7 +21,6 @@ type props = {
   title: string;
   lumicashNumber: string | undefined;
   ecocashNumber: string | undefined;
-  whatsappGroupLink: string;
   dictionary: any;
 };
 export default function PaymentForm(form: props) {
@@ -33,6 +31,8 @@ export default function PaymentForm(form: props) {
     handleSubmit,
     watch,
     setValue,
+    clearErrors,
+    reset,
     formState: { errors },
   } = useForm<formSchemaType>({
     resolver: zodResolver(DonationSchema(form.dictionary)),
@@ -40,7 +40,7 @@ export default function PaymentForm(form: props) {
   });
 
   const [selectedMethod, setSelectedMethod] = useState<
-    "lumicash" | "ecocash" | "ibbm+" | undefined
+    "lumicash" | "ecocash" | "ibbm+" | "card" | "paypal" | undefined
   >();
 
   const [isWaitingForConfirmation, setIsWaitingForConfirmation] =
@@ -55,21 +55,31 @@ export default function PaymentForm(form: props) {
 
   useEffect(() => {
     if (searchParams.size > 0) {
+      // if (
+      //   (Number.isNaN(Number(searchParams.get("donation"))) ||
+      //     (searchParams.get("method") !== "ecocash" &&
+      //       searchParams.get("method") !== "lumicash" &&
+      //       searchParams.get("method") !== "ibbm+" &&
+      //       searchParams.get("method") !== "card" &&
+      //       searchParams.get("method") !== "paypal") ||
+      //     Number.isNaN(Number(searchParams.get("amount"))) ||
+      //     !searchParams.get("donation") ||
+      //     !searchParams.get("method") ||
+      //     !searchParams.get("amount")) &&
+      //   !searchParams.get("donations") &&
+      //   !searchParams.get("share")
+      // ) {
       if (
-        Number.isNaN(Number(searchParams.get("donation"))) ||
-        searchParams.get("method") !== "ibbm+" ||
-        Number.isNaN(Number(searchParams.get("amount"))) ||
-        !searchParams.get("donation") ||
-        !searchParams.get("method") ||
-        !searchParams.get("amount")
+        (Number.isNaN(Number(searchParams.get("donation"))) ||
+          !searchParams.get("donation") ||
+          !watch("amount") ||
+          !watch("paymentMethod")) &&
+        !searchParams.get("donations") &&
+        !searchParams.get("share")
       ) {
         notFound();
       } else {
         setNewDonationId(Number(searchParams.get("donation")));
-        setValue("amount", Number(searchParams.get("amount")));
-        setSelectedMethod(
-          searchParams.get("method") as "lumicash" | "ecocash" | "ibbm+"
-        );
         setIsWaitingForConfirmation(true);
       }
     }
@@ -108,7 +118,10 @@ export default function PaymentForm(form: props) {
             campaignId: form.id,
             amount: data.amount,
             paymentMethod: data.paymentMethod,
-            currency: "BIF",
+            currency:
+              data.paymentMethod === "card" || data.paymentMethod === "paypal"
+                ? "USD"
+                : "BIF",
             paymentNumber: data.paymentNumber,
             donorName: data.donorName,
             isDonorAnonymous: data.isDonorAnonymous,
@@ -118,18 +131,12 @@ export default function PaymentForm(form: props) {
           if (donation) {
             setIsOtpRequired(false);
             setValue("otp", undefined);
-            setNewDonationId(donation.id);
-            setIsWaitingForConfirmation(true);
+
+            const href = location.pathname.split("/").pop();
+            const redi = async () => push(`/${href}?donation=${donation.id}`);
+            redi();
 
             if (donation.link) {
-              const href = location.pathname.split("/").pop();
-
-              const redi = async () =>
-                push(
-                  `/${href}?donation=${donation.id}&method=ibbm%2B&amount=${data.amount}`
-                );
-              redi();
-
               setTimeout(() => {
                 console.log(donation.link);
                 push(decodeURIComponent(donation.link));
@@ -155,204 +162,135 @@ export default function PaymentForm(form: props) {
         <div className="space-y-3">
           <p className="font-semibold text-lg">{dict.form.heading}</p>
 
-          <div className="divide-y divide-heading/20 bg-white/30 border border-heading/40 overflow-hidden rounded-2xl shadow-xl">
-            <button
-              className={
-                selectedMethod === "ecocash"
-                  ? "w-full flex flex-wrap gap-3 items-center p-4 bg-highlight"
-                  : "w-full flex flex-wrap gap-3 items-center p-4"
-              }
-              onClick={(e) => {
-                e.preventDefault();
-                if (selectedMethod !== "ecocash") {
-                  document?.getElementById("ecocash")?.click();
-                } else {
-                  document?.getElementById("ecocash-number")?.focus();
-                }
-              }}
-            >
-              <input
-                type="radio"
-                value="ecocash"
-                id="ecocash"
-                checked={selectedMethod === "ecocash"}
-                className="hidden"
-                onClick={() => {
-                  setValue("paymentNumber", undefined);
-                  setSelectedMethod("ecocash");
-                  setValue("paymentMethod", "ecocash");
-                }}
-              />
-              {selectedMethod === "ecocash" ? (
-                <FaCheckCircle
-                  onClick={() => document?.getElementById("ecocash")?.click()}
-                  className="w-7 h-7 fill-heading"
-                />
-              ) : (
-                <ImRadioUnchecked
-                  onClick={() => document?.getElementById("ecocash")?.click()}
-                  className="w-6 h-6 fill-heading/40"
-                />
-              )}
-              <Image
-                src={"/ecocash.png"}
-                width={500}
-                height={150}
-                alt="ecocash"
-                className="w-36 object-contain h-fit rounded-lg border border-slate-500"
-              />
-              {selectedMethod === "ecocash" && (
-                <div className="w-full flex flex-row items-center gap-1 justify-evenly">
-                  <p className="font-medium">{dict.form.number}</p>
-                  <Input
-                    type="number"
-                    {...register("paymentNumber", {
-                      setValueAs: (value) => (value === "" ? undefined : value),
-                    })}
-                    id="ecocash-number"
-                    placeholder="71002024"
-                    autoFocus
-                    className="w-36 text-lg bg-white"
-                  />
-                </div>
-              )}
-            </button>
-
-            {form.lumicashNumber && (
-              <button
-                className={
-                  selectedMethod === "lumicash"
-                    ? "w-full flex flex-wrap gap-3 items-center p-4 bg-highlight"
-                    : "w-full flex flex-wrap gap-3 items-center p-4"
-                }
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (selectedMethod !== "lumicash") {
-                    document?.getElementById("lumicash")?.click();
-                  } else {
-                    document?.getElementById("lumicash-number")?.focus();
-                  }
-                }}
-              >
-                <input
-                  type="radio"
-                  value="lumicash"
-                  id="lumicash"
-                  checked={selectedMethod === "lumicash"}
-                  className="hidden"
-                  onClick={() => {
-                    setValue("paymentNumber", undefined);
-                    setSelectedMethod("lumicash");
-                    setValue("paymentMethod", "lumicash");
-                  }}
-                />
-                {selectedMethod === "lumicash" ? (
-                  <FaCheckCircle
-                    onClick={() =>
-                      document?.getElementById("lumicash")?.click()
+          <div className="flex flex-wrap bg-white/30 border border-heading/40 overflow-hidden rounded-2xl shadow-xl">
+            {["lumicash", "ecocash", "ibbm+", "card", "paypal"].map(
+              (method, index) => {
+                return (
+                  <button
+                    className={
+                      selectedMethod === method
+                        ? `${
+                            index > 2
+                              ? "w-1/2 aspect-[2/1]"
+                              : "w-1/3 aspect-[3/2]"
+                          }  relative flex flex-col items-center justify-center bg-highlight border-4 border-heading rounded-2xl`
+                        : `${
+                            index > 2
+                              ? "w-1/2 aspect-[2/1]"
+                              : "w-1/3 aspect-[3/2]"
+                          } ${
+                            (index === 0 || index === 1 || index === 3) &&
+                            " border-r border-black/20"
+                          } ${
+                            (index === 0 || index === 1 || index === 2) &&
+                            " border-b border-black/20"
+                          }`
                     }
-                    className="w-7 h-7 fill-heading"
-                  />
-                ) : (
-                  <ImRadioUnchecked
-                    onClick={() =>
-                      document?.getElementById("lumicash")?.click()
-                    }
-                    className="w-6 h-6 fill-heading/40"
-                  />
-                )}
-                <Image
-                  src={"/lumicash.png"}
-                  width={500}
-                  height={150}
-                  alt="lumicash"
-                  className="w-36 object-contain h-fit rounded-lg border border-slate-500"
-                />
-                {selectedMethod === "lumicash" && (
-                  <div className="w-full flex flex-row items-center gap-1 justify-evenly">
-                    <p className="font-medium">{dict.form.number}</p>
-                    <Input
-                      type="number"
-                      {...register("paymentNumber", {
-                        setValueAs: (value) =>
-                          value === "" ? undefined : value,
-                      })}
-                      id="lumicash-number"
-                      placeholder="62002024"
-                      autoFocus
-                      className="w-36 text-lg bg-white"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      document
+                        ?.getElementById(method === "paypal" ? "pypl" : method)
+                        ?.click();
+                      if (method === "card" || method === "paypal") {
+                        setValue("paymentNumber", undefined);
+                        setTimeout(() => {
+                          document?.getElementById("amount")?.focus();
+                        }, 100);
+                      } else {
+                        setTimeout(() => {
+                          document?.getElementById("payment-number")?.focus();
+                        }, 100);
+                      }
+                    }}
+                  >
+                    <input
+                      type="radio"
+                      value={method === "paypal" ? "pypl" : method}
+                      id={method === "paypal" ? "pypl" : method}
+                      checked={selectedMethod === method}
+                      className="hidden"
+                      onClick={() => {
+                        setValue("paymentNumber", undefined);
+                        clearErrors();
+                        setSelectedMethod(
+                          method as
+                            | "lumicash"
+                            | "ecocash"
+                            | "ibbm+"
+                            | "card"
+                            | "paypal"
+                        );
+                        setValue(
+                          "paymentMethod",
+                          method as
+                            | "lumicash"
+                            | "ecocash"
+                            | "ibbm+"
+                            | "card"
+                            | "paypal"
+                        );
+                      }}
                     />
-                  </div>
-                )}
-              </button>
-            )}
-
-            <button
-              className={
-                selectedMethod === "ibbm+"
-                  ? "w-full flex flex-wrap gap-3 items-center p-4 bg-highlight"
-                  : "w-full flex flex-wrap gap-3 items-center p-4"
+                    {selectedMethod === method && (
+                      <FaCheckCircle
+                        onClick={() =>
+                          document
+                            ?.getElementById(
+                              method === "paypal" ? "pypl" : method
+                            )
+                            ?.click()
+                        }
+                        className="absolute bottom-2 right-2 w-5 h-5 fill-heading"
+                      />
+                    )}
+                    <Image
+                      src={"/" + method + ".jpg"}
+                      width={500}
+                      height={index > 2 ? 250 : 333}
+                      alt={method}
+                      className={`${
+                        selectedMethod === method
+                          ? "w-[80%] rounded-2xl"
+                          : "w-full"
+                      } object-contain`}
+                    />
+                  </button>
+                );
               }
-              onClick={(e) => {
-                e.preventDefault();
-                if (selectedMethod !== "ibbm+") {
-                  document?.getElementById("ibbm+")?.click();
-                } else {
-                  document?.getElementById("ibbm+-number")?.focus();
-                }
-              }}
-            >
-              <input
-                type="radio"
-                value="ibbm+"
-                id="ibbm+"
-                checked={selectedMethod === "ibbm+"}
-                className="hidden"
-                onClick={() => {
-                  setValue("paymentNumber", undefined);
-                  setSelectedMethod("ibbm+");
-                  setValue("paymentMethod", "ibbm+");
-                }}
-              />
-              {selectedMethod === "ibbm+" ? (
-                <FaCheckCircle
-                  onClick={() => document?.getElementById("ibbm+")?.click()}
-                  className="w-7 h-7 fill-heading"
-                />
-              ) : (
-                <ImRadioUnchecked
-                  onClick={() => document?.getElementById("ibbm+")?.click()}
-                  className="w-6 h-6 fill-heading/40"
-                />
-              )}
-              <Image
-                src={"/ibbm+.png"}
-                width={500}
-                height={150}
-                alt="ibbm+"
-                className="w-36 object-contain h-fit rounded-lg border border-slate-500"
-              />
-              {selectedMethod === "ibbm+" && (
-                <div className="w-full flex flex-row items-center gap-1 justify-evenly">
-                  <p className="font-medium">{dict.form.number}</p>
-                  <Input
-                    type="number"
-                    {...register("paymentNumber", {
-                      setValueAs: (value) => (value === "" ? undefined : value),
-                    })}
-                    id="ibbm+-number"
-                    placeholder="62002024"
-                    autoFocus
-                    className="w-36 text-lg bg-white"
-                  />
-                </div>
-              )}
-            </button>
+            )}
           </div>
         </div>
 
-        {selectedMethod && !errors.paymentNumber && <Separator />}
-        {selectedMethod && !errors.paymentNumber && (
+        {selectedMethod &&
+          selectedMethod !== "paypal" &&
+          selectedMethod !== "card" && (
+            <div className="space-y-1">
+              <p className="font-semibold text-lg">{dict.form.number}</p>
+              <Input
+                type="number"
+                {...register("paymentNumber", {
+                  setValueAs: (value) => (value === "" ? undefined : value),
+                })}
+                id={"payment-number"}
+                placeholder={
+                  selectedMethod === "ecocash" ? "71002024" : "62002024"
+                }
+                autoFocus
+              />
+            </div>
+          )}
+
+        {((!watch("paymentNumber") &&
+          (selectedMethod === "paypal" || selectedMethod === "card")) ||
+          (selectedMethod &&
+            watch("paymentNumber") &&
+            !errors.paymentNumber)) && <Separator />}
+
+        {((!watch("paymentNumber") &&
+          (selectedMethod === "paypal" || selectedMethod === "card")) ||
+          (selectedMethod &&
+            watch("paymentNumber") &&
+            !errors.paymentNumber)) && (
           <div className="space-y-1">
             <p className="font-semibold text-lg">{dict.form.amount}</p>
             <div className="w-full flex flex-row py-2 items-center gap-3">
@@ -389,34 +327,45 @@ export default function PaymentForm(form: props) {
             </p>
           </div>
         )}
-        {watch("amount") > 0 &&
+        {((watch("amount") > 0 &&
           !errors.amount &&
-          selectedMethod &&
-          !errors.paymentNumber && <Separator />}
-        {watch("amount") > 0 &&
-          !errors.amount &&
-          selectedMethod &&
-          !errors.paymentNumber && (
-            <div className="space-y-1">
-              <p className="font-semibold text-lg">{dict.form.name}</p>
-              <Input {...register("donorName")} placeholder="Arsene Nduwayo" />
+          !watch("paymentNumber") &&
+          (selectedMethod === "paypal" || selectedMethod === "card")) ||
+          (watch("amount") > 0 &&
+            !errors.amount &&
+            selectedMethod &&
+            watch("paymentNumber") &&
+            !errors.paymentNumber)) && <Separator />}
 
-              <div className="flex flex-row gap-2 pt-2">
-                <input
-                  {...register("isDonorAnonymous")}
-                  type="checkbox"
-                  id="hide"
-                  className="w-4 h-4 mt-1"
-                />
-                <p
-                  className="text-sm"
-                  onClick={() => document?.getElementById("hide")?.click()}
-                >
-                  {dict.form.anonymous}
-                </p>
-              </div>
+        {((watch("amount") > 0 &&
+          !errors.amount &&
+          !watch("paymentNumber") &&
+          (selectedMethod === "paypal" || selectedMethod === "card")) ||
+          (watch("amount") > 0 &&
+            !errors.amount &&
+            selectedMethod &&
+            watch("paymentNumber") &&
+            !errors.paymentNumber)) && (
+          <div className="space-y-1">
+            <p className="font-semibold text-lg">{dict.form.name}</p>
+            <Input {...register("donorName")} placeholder="Arsene Nduwayo" />
+
+            <div className="flex flex-row gap-2 pt-2">
+              <input
+                {...register("isDonorAnonymous")}
+                type="checkbox"
+                id="hide"
+                className="w-4 h-4 mt-1"
+              />
+              <p
+                className="text-sm"
+                onClick={() => document?.getElementById("hide")?.click()}
+              >
+                {dict.form.anonymous}
+              </p>
             </div>
-          )}
+          </div>
+        )}
 
         {listOfErrors.length > 0 && (
           <div className="flex flex-col p-3 bg-red-200 text-red-700 border border-red-700 rounded-2xl">
@@ -425,18 +374,20 @@ export default function PaymentForm(form: props) {
             ))}
           </div>
         )}
-        <Button
-          type="submit"
-          disabled={
-            isPending ||
-            watch("amount") === 0 ||
-            errors.amount != undefined ||
-            errors.donorName != undefined ||
-            !watch("donorName")
-          }
-        >
-          {isPending ? dict.global.loading : dict.global.donate}
-        </Button>
+        {selectedMethod && (
+          <Button
+            type="submit"
+            disabled={
+              isPending ||
+              watch("amount") === 0 ||
+              errors.amount != undefined ||
+              errors.donorName != undefined ||
+              !watch("donorName")
+            }
+          >
+            {isPending ? dict.global.loading : dict.global.donate}
+          </Button>
+        )}
 
         <Dialog
           open={isOtpRequired}
@@ -496,9 +447,22 @@ export default function PaymentForm(form: props) {
         <ConfirmationPopup
           donationId={newDonationId as number}
           amount={watch("amount")}
-          paymentMethod={selectedMethod as "lumicash" | "ecocash" | "ibbm+"}
-          whatsappGroupLink={form.whatsappGroupLink}
+          paymentMethod={
+            selectedMethod as
+              | "lumicash"
+              | "ecocash"
+              | "ibbm+"
+              | "card"
+              | "paypal"
+          }
           dictionary={dict}
+          onSuccess={() => {
+            setIsWaitingForConfirmation(false);
+            push("/" + form.id);
+            reset();
+            setSelectedMethod(undefined);
+            setValue("amount", 0);
+          }}
         />
       )}
     </>

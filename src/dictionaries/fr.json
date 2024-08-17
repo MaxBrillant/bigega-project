@@ -129,8 +129,7 @@
       "excuse": "Nous comprenons que le processus peut être long, mais nous recherchons des moyens plus simples et efficaces de vous permettre de faire un don à cette campagne",
       "phone_app": "CLIQUEZ ICI pour ouvrir votre application téléphonique",
       "waiting": "Nous attendons la confirmation de paiement... Nous afficherons un message ici après avoir reçu votre don",
-      "success_notice": "Nous avons envoyé une notification de votre don au groupe WhatsApp qui est lié à cette campagne",
-      "whatsapp_group": "CLIQUEZ ICI pour rejoindre le groupe WhatsApp"
+      "success_notice": "Nous avons envoyé une notification de votre don au groupe WhatsApp qui est lié à cette campagne"
     },
     "share": {
       "heading": "Partagez cette campagne avec vos amis et proches",

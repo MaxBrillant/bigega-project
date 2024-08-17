@@ -2,17 +2,15 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { CreateBrowserClient } from "@/utils/supabase/browserClient";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Confetti from "react-confetti";
-import Image from "next/image";
-import { CgSpinner } from "react-icons/cg";
+import PayPalCheckout from "./paypalButtons";
 
 export default function ConfirmationPopup(props: {
   donationId: number;
   amount: number;
-  paymentMethod: "lumicash" | "ecocash" | "ibbm+";
-  whatsappGroupLink: string;
+  paymentMethod: "lumicash" | "ecocash" | "ibbm+" | "card" | "paypal";
   dictionary: any;
+  onSuccess: () => void;
 }) {
-  const [open, setOpen] = useState(true);
   const [isPaymentConfirmed, setIsPaymentConfirmed] = useState(false);
 
   useEffect(() => {
@@ -23,20 +21,19 @@ export default function ConfirmationPopup(props: {
 
   return (
     <Dialog
-      open={isPaymentConfirmed ? open : true}
+      open={true}
       onOpenChange={
         isPaymentConfirmed
-          ? setOpen
+          ? () => props.onSuccess()
           : () => {
-              setOpen(true);
               window.alert(dict.confirmation.close_message);
             }
       }
     >
       {!isPaymentConfirmed ? (
-        (props.paymentMethod === "ecocash" ||
-          props.paymentMethod === "lumicash" ||
-          props.paymentMethod === "ibbm+") && (
+        props.paymentMethod === "ecocash" ||
+        props.paymentMethod === "lumicash" ||
+        props.paymentMethod === "ibbm+" ? (
           <DialogContent className="mb-7 max-h-screen overflow-auto">
             <p className="font-semibold text-2xl text-heading">
               {dict.confirmation.confirm_heading.replace(
@@ -120,6 +117,22 @@ export default function ConfirmationPopup(props: {
               </p>
             )}
           </DialogContent>
+        ) : (
+          <DialogContent className="mb-7 max-h-screen overflow-auto">
+            <p className="font-semibold text-2xl text-heading">
+              {props.paymentMethod === "card"
+                ? "Donate with Card"
+                : "Donate with PayPal"}
+            </p>
+            <PayPalCheckout
+              method={props.paymentMethod}
+              amount={props.amount}
+              donationId={props.donationId}
+            />
+            <p className="w-full fit px-5 py-10 text-center animate-pulse bg-background border border-highlight">
+              {dict.confirmation.waiting}
+            </p>
+          </DialogContent>
         )
       ) : (
         <DialogContent className="mb-7 max-h-screen overflow-auto">
@@ -131,12 +144,6 @@ export default function ConfirmationPopup(props: {
             <p className="mt-5 font-medium">
               {dict.confirmation.success_notice}
             </p>
-            <a
-              href={props.whatsappGroupLink}
-              className="mx-auto font-medium text-center text-heading underline underline-offset-4"
-            >
-              {dict.confirmation.whatsapp_group}
-            </a>
           </div>
         </DialogContent>
       )}
